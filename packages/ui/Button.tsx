@@ -1,12 +1,12 @@
 // Layout plan. Job: one clear action. Focal element: the label. Quiet: everything else, no icons, no shadow.
 // One primary per screen (5.5 #8): Ink solid, Dawn text. Secondary: Ink outline. Text-only: for low-emphasis and destructive actions.
 // States: default, pressed, focused, disabled, loading (MASTER_PROMPT §6). Press = scale 0.97 + opacity, 100 ms, transform and opacity only.
-import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { opacity, radius, size, space } from '@tokens';
 
+import { FocusRing, useFocus } from './focus';
 import { Text } from './Text';
 import { useTheme } from './theme';
 import { usePress } from './usePress';
@@ -37,7 +37,7 @@ export function Button({
 }: ButtonProps) {
   const { color } = useTheme();
   const press = usePress(forceState === 'pressed');
-  const [focused, setFocused] = useState(false);
+  const focus = useFocus();
   const inactive = disabled || loading;
 
   const labelTone = variant === 'primary' ? 'inverse' : 'primary';
@@ -54,8 +54,8 @@ export function Button({
       onPress={onPress}
       onPressIn={forceState ? undefined : press.onPressIn}
       onPressOut={forceState ? undefined : press.onPressOut}
-      onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
+      onFocus={focus.onFocus}
+      onBlur={focus.onBlur}
       style={[
         fullWidth ? styles.stretch : styles.hug,
         disabled ? { opacity: opacity.disabled } : undefined,
@@ -84,15 +84,11 @@ export function Button({
             <ActivityIndicator color={labelColor} />
           </View>
         ) : null}
-        {focused || forceState === 'focused' ? (
-          <View pointerEvents="none" style={[styles.ring, { borderColor: color.text.primary }]} />
-        ) : null}
+        <FocusRing visible={focus.focused || forceState === 'focused'} />
       </Animated.View>
     </Pressable>
   );
 }
-
-const ringInset = -(size.focusOffset + size.outline);
 
 const styles = StyleSheet.create({
   hug: { alignSelf: 'flex-start' },
@@ -109,13 +105,4 @@ const styles = StyleSheet.create({
   underline: { textDecorationLine: 'underline' },
   hidden: { opacity: 0 },
   spinner: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
-  ring: {
-    position: 'absolute',
-    top: ringInset,
-    left: ringInset,
-    right: ringInset,
-    bottom: ringInset,
-    borderWidth: size.outline,
-    borderRadius: radius.control + size.focusOffset,
-  },
 });

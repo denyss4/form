@@ -6,7 +6,7 @@ import Sun from 'lucide-react-native/icons/sun';
 import TrendingUp from 'lucide-react-native/icons/trending-up';
 
 import { copy } from '@copy';
-import { font, size } from '@tokens';
+import { chromeMaxFontScale, font, size } from '@tokens';
 import { Text, useTheme } from '@ui';
 
 export default function TabsLayout() {
@@ -18,6 +18,7 @@ export default function TabsLayout() {
         <Text
           variant="caption"
           tone={focused ? 'primary' : 'secondary'}
+          maxFontSizeMultiplier={chromeMaxFontScale}
           style={focused ? { fontFamily: font.body600 } : undefined}
         >
           {title}
@@ -27,7 +28,7 @@ export default function TabsLayout() {
 
   return (
     <Tabs
-      initialRouteName="week"
+      initialRouteName="today"
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: color.text.primary,

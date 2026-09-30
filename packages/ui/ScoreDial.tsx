@@ -3,8 +3,18 @@
 // because the model's range is not a calibrated interval and a gradient would imply a shape it does not have (model.json).
 // The range text and the plan label sit OUTSIDE the dial, so they can wrap at large text sizes. Only the number scales up to 1.3x.
 // Sizes: app (on Today), widget, watch. Below about 20 pt the display token maps to the system font (5.3).
-// Static in P1. The reveal animation is P3 (GAPS G22).
+//
+// The morning reveal (MASTER_PROMPT §6) uses transform and opacity only. The value arc is drawn in full, then hidden by a cover in the
+// colour of the field behind the dial. The cover is one arc, as long as the score's sweep, and it ROTATES forward along the ring, so
+// the arc is uncovered from its start to the score. The track is drawn above the cover so the ring never looks broken. The range bracket
+// and the number fade in. Resolves GAPS G22.
 import { StyleSheet, View } from 'react-native';
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  type SharedValue,
+} from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 
 import { copy } from '@copy';
@@ -15,12 +25,20 @@ import { useTheme } from './theme';
 
 const SCORE_MAX = 100;
 
+export interface ScoreDialReveal {
+  /** 0 = nothing shown yet, 1 = fully revealed. */
+  progress: SharedValue<number>;
+  /** The colour behind the dial. The cover is drawn in it. */
+  field: string;
+}
+
 export interface ScoreDialProps {
   /** null = no score yet (day 1). */
   score: number | null;
   range?: [number, number];
   plan?: PlanId;
   dial?: DialSize;
+  reveal?: ScoreDialReveal;
 }
 
 const polar = (centre: number, radius: number, degrees: number) => {
@@ -53,7 +71,7 @@ export function dialGeometry(dial: DialSize) {
   return { g, centre, bandRadius, valueRadius, height };
 }
 
-export function ScoreDial({ score, range, plan, dial = 'app' }: ScoreDialProps) {
+export function ScoreDial({ score, range, plan, dial = 'app', reveal }: ScoreDialProps) {
   const { color } = useTheme();
   const { g, centre, bandRadius, valueRadius, height } = dialGeometry(dial);
   const ink = plan ? color.plan[plan].base : color.text.primary;
@@ -61,6 +79,14 @@ export function ScoreDial({ score, range, plan, dial = 'app' }: ScoreDialProps) 
   const start = angleOf(0);
   const end = angleOf(SCORE_MAX);
   const hasScore = score !== null;
+  const scoreEnd = hasScore ? angleOf(score) : start;
+  const sweep = scoreEnd - start;
+
+  const settled = useSharedValue(1);
+  const progress = reveal?.progress ?? settled;
+  const cover = useAnimatedStyle(() => ({ transform: [{ rotate: `${progress.value * sweep}deg` }] }));
+  const bracket = useAnimatedStyle(() => ({ opacity: interpolate(progress.value, [0.7, 1], [0, 1], 'clamp') }));
+  const numeral = useAnimatedStyle(() => ({ opacity: interpolate(progress.value, [0.3, 0.8], [0, 1], 'clamp') }));
 
   const label = hasScore
     ? range
@@ -68,33 +94,25 @@ export function ScoreDial({ score, range, plan, dial = 'app' }: ScoreDialProps) 
       : `Form score ${score}`
     : copy.dial.empty;
 
+  const track = (
+    <Path
+      d={arcPath(centre, valueRadius, start, end)}
+      stroke={plan ? ink : color.stroke.hairline}
+      strokeOpacity={plan ? opacity.track : 1}
+      strokeWidth={g.stroke}
+      strokeLinecap="round"
+      fill="none"
+    />
+  );
+  const drawn = hasScore && score > 0;
+
   return (
-    <View
-      accessible
-      accessibilityLabel={label}
-      style={{ width: g.diameter, height }}
-    >
-      <Svg width={g.diameter} height={height} viewBox={`0 0 ${g.diameter} ${height}`}>
-        <Path
-          d={arcPath(centre, valueRadius, start, end)}
-          stroke={plan ? ink : color.stroke.hairline}
-          strokeOpacity={plan ? opacity.track : 1}
-          strokeWidth={g.stroke}
-          strokeLinecap="round"
-          fill="none"
-        />
-        {hasScore && range ? (
+    <View accessible accessibilityLabel={label} style={{ width: g.diameter, height }}>
+      <Svg style={styles.layer} width={g.diameter} height={height} viewBox={`0 0 ${g.diameter} ${height}`}>
+        {reveal ? null : track}
+        {drawn ? (
           <Path
-            d={arcPath(centre, bandRadius, angleOf(range[0]), angleOf(range[1]))}
-            stroke={ink}
-            strokeWidth={g.band}
-            strokeLinecap="butt"
-            fill="none"
-          />
-        ) : null}
-        {hasScore && score > 0 ? (
-          <Path
-            d={arcPath(centre, valueRadius, start, angleOf(score))}
+            d={arcPath(centre, valueRadius, start, scoreEnd)}
             stroke={ink}
             strokeWidth={g.stroke}
             strokeLinecap="round"
@@ -103,8 +121,45 @@ export function ScoreDial({ score, range, plan, dial = 'app' }: ScoreDialProps) 
         ) : null}
       </Svg>
 
+      {reveal && drawn ? (
+        <Animated.View style={[styles.layer, { width: g.diameter, height: g.diameter }, cover]}>
+          <Svg width={g.diameter} height={g.diameter}>
+            <Path
+              d={arcPath(centre, valueRadius, start, scoreEnd)}
+              stroke={reveal.field}
+              strokeWidth={g.stroke + size.hairline * 2}
+              strokeLinecap="round"
+              fill="none"
+            />
+          </Svg>
+        </Animated.View>
+      ) : null}
+
+      {reveal ? (
+        <Svg style={styles.layer} width={g.diameter} height={height} viewBox={`0 0 ${g.diameter} ${height}`}>
+          {track}
+        </Svg>
+      ) : null}
+
+      {hasScore && range ? (
+        <Animated.View style={[styles.layer, bracket]}>
+          <Svg width={g.diameter} height={height} viewBox={`0 0 ${g.diameter} ${height}`}>
+            <Path
+              d={arcPath(centre, bandRadius, angleOf(range[0]), angleOf(range[1]))}
+              stroke={ink}
+              strokeWidth={g.band}
+              strokeLinecap="butt"
+              fill="none"
+            />
+          </Svg>
+        </Animated.View>
+      ) : null}
+
       {hasScore ? (
-        <View style={[styles.number, { width: g.diameter, height: g.diameter }]} pointerEvents="none">
+        <Animated.View
+          style={[styles.number, { width: g.diameter, height: g.diameter }, numeral]}
+          pointerEvents="none"
+        >
           {dial === 'app' ? (
             <Text variant="score" maxFontSizeMultiplier={scoreMaxFontScale}>
               {score}
@@ -118,12 +173,13 @@ export function ScoreDial({ score, range, plan, dial = 'app' }: ScoreDialProps) 
               {score}
             </Text>
           )}
-        </View>
+        </Animated.View>
       ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  layer: { position: 'absolute', top: 0, left: 0 },
   number: { position: 'absolute', top: 0, left: 0, alignItems: 'center', justifyContent: 'center' },
 });

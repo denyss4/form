@@ -14,9 +14,11 @@ import Check from 'lucide-react-native/icons/check';
 
 import { motion, radius, size, space } from '@tokens';
 
+import { FocusRing, useFocus } from './focus';
 import { haptic } from './haptics';
 import { Text } from './Text';
 import { useTheme } from './theme';
+import { useFontScale } from './useFontScale';
 import { usePress } from './usePress';
 
 export interface Choice<T extends string> {
@@ -24,10 +26,21 @@ export interface Choice<T extends string> {
   label: string;
 }
 
-function Option({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
+function Option({
+  label,
+  selected,
+  onPress,
+  columns,
+}: {
+  label: string;
+  selected: boolean;
+  onPress: () => void;
+  columns: number;
+}) {
   const { color } = useTheme();
   const reduceMotion = useReducedMotion();
   const press = usePress();
+  const focus = useFocus();
   const on = useSharedValue(selected ? 1 : 0);
 
   useEffect(() => {
@@ -48,9 +61,12 @@ function Option({ label, selected, onPress }: { label: string; selected: boolean
       onPress={onPress}
       onPressIn={press.onPressIn}
       onPressOut={press.onPressOut}
-      style={styles.grow}
+      onFocus={focus.onFocus}
+      onBlur={focus.onBlur}
+      style={{ flexGrow: 1, flexBasis: `${Math.floor(100 / columns) - 2}%` }}
     >
       <Animated.View style={[styles.option, { borderColor: color.stroke.control }, press.style]}>
+        <FocusRing visible={focus.focused} radius={radius.full} />
         <Animated.View
           pointerEvents="none"
           style={[styles.fill, { backgroundColor: color.text.primary }, shown]}
@@ -78,12 +94,18 @@ export function ChoiceGroup<T extends string>({
   options,
   value,
   onChange,
+  columns: preferred = options.length,
 }: {
   label: string;
   options: Choice<T>[];
   value: T | null;
   onChange: (value: T) => void;
+  /** Options per row. Four options read better as two rows of two. */
+  columns?: number;
 }) {
+  // Larger text needs wider options, so the group stacks: two per row above 1.3x, one per row from 2x.
+  const scale = useFontScale();
+  const columns = scale >= 2 ? 1 : scale > 1.3 ? Math.min(preferred, 2) : preferred;
   return (
     <View accessibilityRole="radiogroup" accessibilityLabel={label} style={styles.group}>
       {options.map((option) => (
@@ -91,6 +113,7 @@ export function ChoiceGroup<T extends string>({
           key={option.value}
           label={option.label}
           selected={option.value === value}
+          columns={columns}
           onPress={() => {
             if (option.value !== value) haptic.selection();
             onChange(option.value);
@@ -102,8 +125,7 @@ export function ChoiceGroup<T extends string>({
 }
 
 const styles = StyleSheet.create({
-  group: { flexDirection: 'row', gap: space.xs },
-  grow: { flex: 1 },
+  group: { flexDirection: 'row', flexWrap: 'wrap', gap: space.xs },
   option: {
     minHeight: size.touch,
     paddingHorizontal: space.md,

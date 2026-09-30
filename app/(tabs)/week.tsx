@@ -4,7 +4,7 @@
 // States: default, loading, no calendar, partial, low confidence, error. `?state=` holds one for review.
 // Accepting moves the session marker to its new day with translateY (transform only), then the week reflows (MASTER_PROMPT §6).
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import Animated, {
   runOnJS,
@@ -18,14 +18,14 @@ import Settings from 'lucide-react-native/icons/settings';
 
 import { copy } from '@copy';
 import { formatDay, formatWeek, weekdayName } from '@format';
-import { martaCalendar } from '@fixtures';
-import { applyMove, buildWeek, coverage, suggestMove } from '@planner';
+import { useWeek } from '@features/useWeek';
+import { coverage } from '@planner';
 import type { WeekDay } from '@planner';
-import { addDays } from '@planner/dates';
 import { useAppState } from '@state';
 import { motion, size, space } from '@tokens';
 import {
   Button,
+  announce,
   haptic,
   IconButton,
   InlineMessage,
@@ -115,21 +115,8 @@ export default function Week() {
   const reduceMotion = useReducedMotion() && params.motion !== 'full';
   const scenario = oneOf(params.state, scenarios, app.calendar === 'connected' ? 'default' : 'empty');
 
-  const weekStart = martaCalendar.meta.weekStart;
-  const events = useMemo(() => {
-    const all = martaCalendar.events;
-    if (scenario === 'partial') return all.filter((e) => e.start < addDays(weekStart, 3)); // Mon to Wed
-    if (scenario === 'lowconf') return all.filter((e) => e.start < addDays(weekStart, 1)); // Mon only
-    return all;
-  }, [scenario, weekStart]);
-
-  const original = useMemo(() => buildWeek(events, weekStart), [events, weekStart]);
-  const suggestion = useMemo(() => (scenario === 'default' ? suggestMove(original) : null), [scenario, original]);
-  const moved = suggestion !== null && app.suggestion === 'moved';
-  const week = useMemo(
-    () => (moved && suggestion ? buildWeek(applyMove(events, suggestion), weekStart) : original),
-    [moved, suggestion, events, weekStart, original],
-  );
+  const subset = scenario === 'partial' || scenario === 'lowconf' ? scenario : scenario === 'default' ? 'all' : 'none';
+  const { weekStart, original, week, suggestion } = useWeek(subset);
   const cov = coverage(week);
 
   // The session marker: measured once at rest, then moved with translateY.
@@ -146,6 +133,7 @@ export default function Week() {
   const commit = () => {
     app.setSuggestion('moved');
     setMoving(false);
+    if (suggestion) announce(copy.suggestion.moved(suggestion.session, weekdayName(suggestion.toDate)));
   };
 
   const accept = () => {
@@ -239,7 +227,10 @@ export default function Week() {
 
   const footer =
     suggestion === null ? null : (
-      <View style={[styles.footer, { borderTopWidth: size.hairline, borderTopColor: color.stroke.hairline }]}>
+      <View
+        aria-live="polite"
+        style={[styles.footer, { borderTopWidth: size.hairline, borderTopColor: color.stroke.hairline }]}
+      >
         {app.suggestion === 'open' ? (
           <>
             <Text variant="bodyStrong">{copy.suggestion.reasons(reasons)}</Text>
@@ -254,7 +245,10 @@ export default function Week() {
               variant="text"
               label={copy.suggestion.keep(weekdayName(suggestion.fromDate))}
               disabled={moving}
-              onPress={() => app.setSuggestion('kept')}
+              onPress={() => {
+                app.setSuggestion('kept');
+                announce(copy.suggestion.kept(suggestion.session, weekdayName(suggestion.fromDate)));
+              }}
             />
           </>
         ) : (

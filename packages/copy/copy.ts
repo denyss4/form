@@ -32,6 +32,72 @@ export const copy = {
       `${label}, ${direction === 'up' ? 'adds' : 'takes away'} ${Math.round(magnitude)} points, ${basis}`,
   },
 
+  today: {
+    title: 'Today',
+    // Why this plan. This is the plan rule (score band x day type), stated plainly. The drivers below explain the score itself.
+    why: {
+      hard: (session: string) => `Your score is high, so ${session} stays a hard session.`,
+      toned: (session: string) => `Your score is near a typical day, so ${session} is kept light.`,
+      lightSession: (session: string) => `${session} is a light session.`,
+      lowSession: (session: string) => `Your score is low, so ${session} gives way to recovery.`,
+      deepwork: 'No session planned. A good day for focused work.',
+      lowDay: 'Your score is low, so today is for recovery.',
+      travelDay: 'A travel day, so today is for recovery.',
+      restDay: 'Nothing planned, so today is for recovery.',
+    },
+    pulling: (list: string, many: boolean) => `${list} ${many ? 'are' : 'is'} pulling your score down.`,
+    helping: (list: string, many: boolean) => `${list} ${many ? 'are' : 'is'} helping.`,
+    usual: 'Your score is at your usual level.',
+    notUsed: (list: string, more: number) => `Left out of this forecast: ${list}${more > 0 ? ` and ${more} more` : ''}.`,
+    fewInputs: 'Few inputs today. Add more for a fuller picture.',
+    accept: 'Accept plan',
+    accepted: 'Plan accepted.',
+    logTonight: 'Log tonight',
+    logged: "Logged. Tomorrow's plan arrives in the morning.",
+    jump: 'Demo: jump to tomorrow morning',
+    day1: {
+      title: 'No score yet',
+      body: 'Log tonight and Form will forecast tomorrow morning.',
+    },
+    error: {
+      title: "Couldn't calculate your score.",
+      body: 'Try again in a moment.',
+      retry: 'Try again',
+    },
+    checkin: {
+      title: 'How do you feel this morning?',
+      hint: "Your rating helps Form check its forecast.",
+      low: 'Very low',
+      high: 'Very high',
+      value: (n: number) => `${n} of 10`,
+      unset: 'Not rated',
+    },
+  },
+
+  log: {
+    title: 'Evening log',
+    close: 'Close',
+    save: 'Save log',
+    effort: {
+      question: (session: string) => `How hard was ${session}?`,
+      skipped: 'Skipped',
+      easy: 'Easy',
+      moderate: 'Moderate',
+      hard: 'Hard',
+    },
+    alcohol: { question: 'Any alcohol today?', no: 'No', yes: 'Yes' },
+    unusual: { question: 'Anything unusual today?', no: 'No', yes: 'Yes' },
+    fit: {
+      question: "Did today's plan fit?",
+      optional: 'Optional',
+      yes: 'Yes',
+      tooHard: 'Too hard',
+      tooEasy: 'Too easy',
+    },
+    remaining: (n: number) => (n === 1 ? 'One more to save.' : `${n} more to save.`),
+    ring: (done: number, total: number) => `${done} of ${total} answered`,
+  },
+
   nav: { back: 'Back', settings: 'Settings' },
   tabs: { today: 'Today', week: 'Week', progress: 'Progress' },
   tag: { work: 'Work', training: 'Training', social: 'Social', travel: 'Travel', rest: 'Rest' },
@@ -143,7 +209,6 @@ export const copy = {
 
   // [GAP: these tabs are built in later phases. They show a labelled placeholder.]
   placeholder: {
-    today: 'Today is built in the next phase.',
     progress: 'Progress is built in a later phase.',
   },
 
@@ -255,11 +320,12 @@ export const copy = {
     screens: {
       note: 'Every screen in every state. Dev only.',
       groups: [
+        { title: 'Today', links: [['Default', '/today?state=default'], ['Reveal, 40%', '/today?state=default&reveal=0.4'], ['Loading', '/today?state=loading'], ['Day 1', '/today?state=day1'], ['Partial, 6 of 11 inputs', '/today?state=partial'], ['Low confidence, 2 of 11', '/today?state=lowconf'], ['Error', '/today?state=error'], ['Evening log open', '/today?state=default&log=open']] },
         { title: 'Onboarding', links: [['Default', '/onboarding'], ['Intro frame at 30%', '/onboarding?intro=0.3'], ['Intro frame at 65%', '/onboarding?intro=0.65']] },
         { title: 'Consent', links: [['Nothing answered', '/consent'], ['Partly answered', '/consent?preset=partial'], ['All answered', '/consent?preset=all']] },
         { title: 'Connect calendar', links: [['Default', '/connect-calendar?state=default'], ['Loading', '/connect-calendar?state=loading'], ['Error', '/connect-calendar?state=error'], ['Calendar consent off', '/connect-calendar?state=off']] },
         { title: 'Week', links: [['Default', '/week?state=default'], ['Loading', '/week?state=loading'], ['No calendar', '/week?state=empty'], ['Partial, 3 of 7 days', '/week?state=partial'], ['Low confidence, 1 of 7 days', '/week?state=lowconf'], ['Error', '/week?state=error']] },
-        { title: 'Other', links: [['Today, placeholder', '/today'], ['Progress, placeholder', '/progress'], ['Settings', '/settings']] },
+        { title: 'Other', links: [['Progress, placeholder', '/progress'], ['Settings', '/settings']] },
       ],
     },
     model: {

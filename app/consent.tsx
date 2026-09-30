@@ -31,7 +31,7 @@ export default function Consent() {
 
   const next = () => {
     app.completeOnboarding();
-    router.replace(app.consents.calendar === 'allow' ? '/connect-calendar' : '/week');
+    router.replace(app.consents.calendar === 'allow' ? '/connect-calendar' : '/today');
   };
 
   return (
@@ -44,7 +44,9 @@ export default function Consent() {
 
         {purposes.map((purpose) => (
           <View key={purpose} style={styles.group}>
-            <Text variant="heading">{copy.consent.purposes[purpose].name}</Text>
+            <Text variant="heading" accessibilityRole="header" level={2}>
+              {copy.consent.purposes[purpose].name}
+            </Text>
             <Text variant="body" tone="secondary">
               {copy.consent.purposes[purpose].what}
             </Text>

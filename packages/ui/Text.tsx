@@ -12,12 +12,15 @@ export interface TextProps extends RNTextProps {
   variant?: TypeToken;
   tone?: TextTone;
   tabular?: boolean;
+  /** Heading level for screen readers. Screen titles are 1, section headings 2. */
+  level?: 1 | 2 | 3;
 }
 
 export function Text({
   variant = 'body',
   tone = 'primary',
   tabular = false,
+  level,
   maxFontSizeMultiplier,
   style,
   ...rest
@@ -45,6 +48,7 @@ export function Text({
   return (
     <RNText
       maxFontSizeMultiplier={maxFontSizeMultiplier}
+      aria-level={level}
       style={[base, tabular ? tabularFigures : undefined, { color: colour }, scaled, style]}
       {...rest}
     />

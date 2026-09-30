@@ -14,6 +14,9 @@ export const formatDay = (date: string) => `${shortDays[weekdayOf(date)]} ${dayN
 /** "Thursday" */
 export const weekdayName = (date: string) => longDays[weekdayOf(date)];
 
+/** "Monday 5 Oct" */
+export const formatLong = (date: string) => `${weekdayName(date)} ${dayNumber(date)} ${monthOf(date)}`;
+
 /** "5–11 Oct", or "28 Sep–4 Oct" across a month end. */
 export function formatWeek(start: string): string {
   const end = addDays(start, 6);

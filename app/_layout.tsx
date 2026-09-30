@@ -1,13 +1,18 @@
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useGlobalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { View } from 'react-native';
+import { useEffect } from 'react';
+import { Platform, View } from 'react-native';
 
 import { AppStateProvider } from '@state';
-import { lightColor } from '@tokens';
-import { ThemeProvider } from '@ui';
+import { lightColor, size } from '@tokens';
+import { oneOf, TextScaleContext, ThemeProvider } from '@ui';
 
 export default function RootLayout() {
+  // Review only, web preview: ?scale=2 imitates a larger system text size on any screen.
+  const { scale } = useGlobalSearchParams<{ scale?: string }>();
+  const textScale = oneOf(scale, [1, 1.5, 2, 3], 1);
+
   // Five static files, one family name per weight (see packages/tokens `font`).
   const [loaded, error] = useFonts({
     'Manrope-SemiBold': require('../assets/fonts/Manrope-SemiBold.ttf'),
@@ -16,6 +21,18 @@ export default function RootLayout() {
     'SourceSans3-Regular': require('../assets/fonts/SourceSans3-Regular.ttf'),
     'SourceSans3-SemiBold': require('../assets/fonts/SourceSans3-SemiBold.ttf'),
   });
+
+  // Web only: the tab bar is drawn by the navigation library and shows no focus indicator, so add one (WCAG 2.4.7).
+  // Our own controls draw a ring instead, so the browser's default outline is switched off on them to avoid a double indicator.
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    const style = document.createElement('style');
+    style.textContent =
+      `[role="tab"]:focus-visible { outline: ${size.outline}px solid ${lightColor.text.primary}; outline-offset: -${size.outline}px; }` +
+      `[role="button"]:focus-visible, [role="radio"]:focus-visible, [role="link"]:focus-visible, [role="slider"]:focus-visible { outline: none; }`;
+    document.head.appendChild(style);
+    return () => style.remove();
+  }, []);
 
   if (error) console.warn('Font load failed, falling back to system fonts:', error);
 
@@ -28,13 +45,15 @@ export default function RootLayout() {
   return (
     <AppStateProvider>
       <ThemeProvider scheme="light">
-        <StatusBar style="dark" />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: lightColor.bg.canvas },
-          }}
-        />
+        <TextScaleContext.Provider value={textScale}>
+          <StatusBar style="dark" />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: lightColor.bg.canvas },
+            }}
+          />
+        </TextScaleContext.Provider>
       </ThemeProvider>
     </AppStateProvider>
   );

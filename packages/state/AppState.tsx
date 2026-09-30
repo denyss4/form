@@ -1,6 +1,11 @@
-// In-memory app state for the demo: consent choices, whether onboarding is done, calendar link, the move suggestion's outcome.
+// In-memory app state for the demo: consent choices, the calendar link, the day's loop (rating, plan, log, forecast) and the scripted clock.
 // [GAP G11: no storage library is approved, so this resets on every launch. That suits the scripted demo. "Reset demo" in Settings does the same.]
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
+
+import { martaWeek } from '@fixtures';
+import type { DailyLog, FormResult } from '@model';
+import type { EveningAnswers } from '@planner/dailyLog';
+import type { PlanId } from '@tokens';
 
 export type Purpose = 'scoring' | 'personalModel' | 'calendar' | 'health';
 export const purposes: Purpose[] = ['scoring', 'personalModel', 'calendar', 'health'];
@@ -8,11 +13,24 @@ export const purposes: Purpose[] = ['scoring', 'personalModel', 'calendar', 'hea
 export type Answer = 'allow' | 'decline';
 export type SuggestionStatus = 'open' | 'moved' | 'kept';
 
+/** A forecast for one morning, with the plan the engine gave it. */
+export interface Forecast {
+  result: FormResult;
+  plan: PlanId;
+}
+
 interface State {
   onboarded: boolean;
   consents: Record<Purpose, Answer | null>;
   calendar: 'none' | 'connected';
   suggestion: SuggestionStatus;
+  demoDay: string; // the scripted "today"
+  revealedFor: string | null; // the last day whose morning reveal has played
+  planAccepted: Record<string, boolean>;
+  readiness: Record<string, number>; // this morning's 0-10 rating, by day
+  logs: Record<string, EveningAnswers>;
+  dailyLogs: Record<string, DailyLog>; // the model's view of each saved log, so tomorrow's forecast can build on it
+  forecasts: Record<string, Forecast>; // by the morning the forecast is for
 }
 
 interface AppState extends State {
@@ -21,6 +39,13 @@ interface AppState extends State {
   completeOnboarding: () => void;
   connectCalendar: () => void;
   setSuggestion: (status: SuggestionStatus) => void;
+  setReadiness: (day: string, value: number) => void;
+  acceptPlan: (day: string) => void;
+  markRevealed: (day: string) => void;
+  /** Saves tonight's log, and the forecast it produced for tomorrow morning. */
+  saveLog: (day: string, answers: EveningAnswers, log: DailyLog, tomorrow?: { day: string; forecast: Forecast }) => void;
+  /** The scripted clock moves to the next morning. */
+  advanceTo: (day: string) => void;
   resetDemo: () => void;
 }
 
@@ -29,6 +54,13 @@ const empty: State = {
   consents: { scoring: null, personalModel: null, calendar: null, health: null },
   calendar: 'none',
   suggestion: 'open',
+  demoDay: martaWeek.meta.demoToday,
+  revealedFor: null,
+  planAccepted: {},
+  readiness: {},
+  logs: {},
+  dailyLogs: {},
+  forecasts: {},
 };
 
 const AppStateContext = createContext<AppState | null>(null);
@@ -53,6 +85,17 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       completeOnboarding: () => setState((s) => ({ ...s, onboarded: true })),
       connectCalendar: () => setState((s) => ({ ...s, calendar: 'connected' })),
       setSuggestion: (suggestion) => setState((s) => ({ ...s, suggestion })),
+      setReadiness: (day, rating) => setState((s) => ({ ...s, readiness: { ...s.readiness, [day]: rating } })),
+      acceptPlan: (day) => setState((s) => ({ ...s, planAccepted: { ...s.planAccepted, [day]: true } })),
+      markRevealed: (day) => setState((s) => (s.revealedFor === day ? s : { ...s, revealedFor: day })),
+      saveLog: (day, answers, log, tomorrow) =>
+        setState((s) => ({
+          ...s,
+          logs: { ...s.logs, [day]: answers },
+          dailyLogs: { ...s.dailyLogs, [day]: log },
+          forecasts: tomorrow ? { ...s.forecasts, [tomorrow.day]: tomorrow.forecast } : s.forecasts,
+        })),
+      advanceTo: (day) => setState((s) => ({ ...s, demoDay: day })),
       resetDemo: () => setState(empty),
     }),
     [state, setConsent],

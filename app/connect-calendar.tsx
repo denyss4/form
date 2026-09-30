@@ -37,14 +37,14 @@ export default function ConnectCalendar() {
           ? 'loading'
           : 'default';
 
-  const leave = () => (router.canGoBack() ? router.back() : router.replace('/week'));
-  const withoutCalendar = () => router.replace('/week');
+  const leave = () => (router.canGoBack() ? router.back() : router.replace('/today'));
+  const withoutCalendar = () => router.replace('/today');
 
   const allow = () => {
     setPhase('loading');
     timer.current = setTimeout(() => {
       app.connectCalendar();
-      router.replace('/week');
+      router.replace('/today');
     }, CONNECT_MS);
   };
 

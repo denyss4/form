@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { copy } from '@copy';
 import { radius, size, space } from '@tokens';
 
+import { FocusRing, useFocus } from './focus';
 import { Text } from './Text';
 import { TextScaleContext } from './textScale';
 import { ThemeProvider, useTheme, type Scheme } from './theme';
@@ -151,12 +152,20 @@ export function GalleryScreen({
 }
 
 export function NavLink({ href, label }: { href: string; label: string }) {
+  const focus = useFocus();
   return (
     <Link href={href} asChild>
-      <Pressable accessibilityRole="link" accessibilityLabel={label} style={styles.link}>
+      <Pressable
+        accessibilityRole="link"
+        accessibilityLabel={label}
+        onFocus={focus.onFocus}
+        onBlur={focus.onBlur}
+        style={styles.link}
+      >
         <Text variant="bodyStrong" style={styles.underline}>
           {label}
         </Text>
+        <FocusRing visible={focus.focused} />
       </Pressable>
     </Link>
   );
@@ -166,7 +175,7 @@ export function NavLink({ href, label }: { href: string; label: string }) {
 export function Section({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
   return (
     <View style={styles.section}>
-      <Text variant="heading" accessibilityRole="header">
+      <Text variant="heading" accessibilityRole="header" level={2}>
         {title}
       </Text>
       {note ? (

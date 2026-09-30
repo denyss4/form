@@ -60,4 +60,5 @@ export const darkColor: ColorTokens = {
 export const opacity = {
   disabled: 0.4,
   track: 0.16, // ScoreDial track: the plan colour, faint
+  scrim: 0.4, // behind a bottom sheet
 } as const;

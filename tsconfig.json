@@ -36,6 +36,12 @@
       ],
       "@state/*": [
         "./packages/state/*"
+      ],
+      "@features/*": [
+        "./packages/features/*"
+      ],
+      "@copy/*": [
+        "./packages/copy/*"
       ]
     }
   },

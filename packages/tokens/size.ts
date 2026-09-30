@@ -7,6 +7,10 @@ export const size = {
   icon: 24,
   iconSm: 20,
   iconMaxScale: 2, // icons follow the text size, up to this multiple
+  ring: 32, // the log's completion ring
+  track: 4, // slider track thickness
+  thumb: 28, // slider thumb
+  tick: 4, // slider step mark
 
   // ScoreDial: a 270-degree arc that opens at the bottom, and a thin bracket outside it for the likely range.
   // [GAP G21: dial sizes are not in the Master. These are proposals; revisit at Review 1.]

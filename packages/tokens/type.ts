@@ -40,3 +40,6 @@ export const systemDisplay = (token: TypeToken): TextStyle => ({
 
 // The score scales with Dynamic Type up to this multiple inside the dial: a number cannot wrap.
 export const scoreMaxFontScale = 1.3;
+
+// Navigation chrome has a fixed height, so its labels stop growing here, as the platforms' own tab bars do.
+export const chromeMaxFontScale = 1.3;

@@ -25,3 +25,7 @@ export const isWeekday = (date: string) => {
 export const shiftIso = (iso: string, days: number) => addDays(dayOf(iso), days) + iso.slice(10);
 
 export const hourOf = (iso: string) => Number(timeOf(iso).slice(0, 2));
+
+/** Whole minutes from one 'YYYY-MM-DDTHH:mm' to another. */
+export const minutesBetween = (start: string, end: string) =>
+  Math.round((Date.parse(`${end}:00Z`) - Date.parse(`${start}:00Z`)) / 60_000);

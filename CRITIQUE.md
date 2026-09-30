@@ -48,3 +48,56 @@ The dial is the identity element and it works: a 270° arc with the likely range
 1. Range line at `type.body` instead of `type.caption` on Today (finding 1)?
 2. Reuse `#6B7C8D` as the dark control stroke (finding 6)?
 3. Any objection to an Ember arc for "Train hard" before testing it with people (finding 4)?
+
+## Review 2: P3, Today and the evening log (stage: refinement)
+
+Screenshots: `docs/screens/p3/`. Web preview at 390 wide. Still unreviewed: a run on the demo device, native VoiceOver and TalkBack, real haptics, and the reveal playing at speed (this machine reports reduced motion and the browser pane was hidden, so the reveal was checked frame by frame with `?reveal=0.4` and on the instant path).
+
+Review 1 questions, answered by "go to P2": the range line is now `type.body`, and the plan label leads the field. Both are built. The dark stroke reuse (`#6B7C8D`) is still to apply in P5.
+
+### Accessibility pass (WCAG 2.2 AA), run against the live web build
+
+| # | Finding | Criterion | Severity | Status |
+|---|---|---|---|---|
+| 1 | Icon buttons, choice options, links, the slider and the tab bar showed no focus indicator | 2.4.7 | 🔴 Critical | **Fixed.** One shared `FocusRing`, plus a web focus style for the tab bar. Verified with real Tab presses |
+| 2 | Every heading was an `h1` | 1.3.1 | 🟡 Moderate | **Fixed.** Screen titles are level 1, section headings level 2 |
+| 3 | Status changes ("Plan accepted.", "Logged.", "Moved…") were silent to screen readers | 4.1.3 | 🟡 Moderate | **Fixed.** The footers are live regions, and iOS gets `announce()`. The web announcement helper creates no live region, hence the footer approach |
+| 4 | The slider had no keyboard control | 2.1.1 | 🟡 Moderate | **Fixed.** Arrows, Home and End. Screen readers get increment and decrement |
+| 5 | Radios, the slider and the progress ring did not expose checked or value state on the web (`accessibilityState` and `accessibilityValue` are ignored there) | 4.1.2 | 🟡 Moderate | **Fixed.** Moved to `aria-*` props everywhere |
+| 6 | The sheet: the scrim was a second "Close" tab stop, and focus fell to the page body on close | 2.4.3 | 🟡 Moderate | **Fixed.** The scrim is not focusable; focus returns to the opener on the web. Focus is trapped inside and Escape closes it (verified) |
+| 7 | Tab bar labels were clipped at large text | 1.4.4 | 🟡 Moderate | **Fixed.** Chrome labels cap at 1.3×, as platform tab bars do (`chromeMaxFontScale`) |
+| 8 | Log options squashed into tall ovals at 2× text | 1.4.4, 1.4.10 | 🟡 Moderate | **Fixed.** ChoiceGroup stacks: two per row above 1.3×, one per row from 2× |
+| 9 | Native screen readers, hardware keyboards and real Dynamic Type were not tested | all | Unknown | **Open.** Judge on the demo phone (GAPS G31) |
+
+Passed: every interactive element measured is at least 44 px (2.5.8 needs 24); every control has an accessible name; `lang="en"`; colour is never the only signal (plan glyph and label, driver arrow and sign, selected check); every colour pair in the light theme passes (lowest 3.59:1); the score stays inside the ring at 3× text; reduced motion gives an instant, static result.
+
+### Design critique
+
+**Overall impression.** Today now looks and reads like a product. The plan-coloured field is the one bold move and it works: the day's answer tints the whole top of the screen. The dial with its separate range bracket is distinctive and honest. The main weakness was clarity of meaning, not looks: the reason line mixed up why the plan is what it is with why the score is what it is.
+
+| # | Area | Finding | Severity | Status |
+|---|---|---|---|---|
+| 1 | Honesty | The reason said "A lighter session is suggested. Training load and alcohol are pulling your score down." But 51 is a typical score. The plan was light because of the score band and the hard session, not because of those drivers. The line implied a cause that was not true | 🟡 Moderate | **Fixed.** Two parts now: the plan rule first ("Your score is near a typical day, so Push is kept light."), then the drivers. Tested, and it never names a driver the model did not return |
+| 2 | Friction | "Did today's plan fit?" appeared even when no plan had been accepted, so the log looked like four questions | 🟡 Moderate | **Fixed.** Asked only after "Accept plan". Otherwise the log is the three core questions |
+| 3 | Clarity | "Not used yet: morning readiness, sleep hours…" promised an action that could not change today's score | 🟢 Minor | **Fixed.** "Left out of this forecast: …" |
+| 4 | Copy | The error said "Check your log" on a morning screen, before any log | 🟢 Minor | **Fixed.** "Try again in a moment." |
+| 5 | Hierarchy | The plan label is 17 pt and the score is 72 pt. The decision still reads smaller than the number. The colour field and the label's position carry it, but a first glance goes to "51" | 🟡 Moderate | **Question for you.** Option: make the plan the screen's title ("Train light", `type.title`) and move "Today, Monday 5 Oct" to the caption. It changes the header pattern, so I did not do it unasked |
+| 6 | Discoverability | The morning check-in is the model's strongest input (importance 0.946), yet it sits below the drivers, under the fold at 844 pt. If people rarely rate, forecasts fall to "1 of 11 inputs", as they did in the demo run | 🟡 Moderate | **Question for you.** Option: place it directly under the field, before the drivers. Costs about 130 pt of driver visibility |
+| 7 | Demo scaffolding | "Demo: jump to tomorrow morning" is a demo control on a real screen | 🟢 Minor | Kept for the demo. Hide or remove in P5 or P6 (GAPS G32) |
+| 8 | Plan honesty | Guessed days on Week still show a confident plan label (Review 1, GAPS G27) | 🟡 Moderate | Open. Decide with you: mute or drop the label on guessed days |
+| 9 | Colour meaning | An Ember (red) field for "Train hard" may read as a warning (Review 1 finding 4) | 🟡 Moderate | Open. Not testable without people. Two or three people at Review 3 |
+| 10 | Reveal | The sweep is a rotating cover; the bracket and number fade in; the field settles. It works frame by frame. Not yet seen at speed | 🟢 Minor | Judge on the phone |
+
+### What works well
+
+- The plan colour field, and the fact that colour never carries meaning alone (glyph, label, sign, check).
+- Honest inputs: "Based on 1 of 11 inputs" and the low-input notice appear when only a workout was logged, and every review state comes from real model runs, never invented numbers.
+- The loop is closed and real: accept, log, save, and the next morning's score comes from the model on tonight's answers.
+- Day 1 shows no fake score: an empty dial, one sentence, one action.
+- The sheet is short, keyboard-safe (trap, Escape, focus return) and readable at 3× text.
+
+### Questions for Review 2
+
+1. Plan as the screen title on Today (finding 5)?
+2. Check-in under the field, before the drivers (finding 6)?
+3. Mute or drop the plan label on guessed days (finding 8)?

@@ -4,7 +4,7 @@
 // [GAP G2: the plan rules and the suggestion rule are proposals, not model facts. The model forecasts only tomorrow morning,
 //  so plans for later days come from day type and the session's intensity. Approve at Review 2.]
 import type { PlanId } from '../tokens/color.ts';
-import { addDays, dayOf, hourOf, isWeekday, shiftIso, timeOf } from './dates.ts';
+import { addDays, dayOf, hourOf, isWeekday, minutesBetween, shiftIso, timeOf } from './dates.ts';
 
 export type DayTag = 'work' | 'training' | 'social' | 'travel' | 'rest';
 export const tagOrder: DayTag[] = ['work', 'training', 'social', 'travel', 'rest'];
@@ -23,6 +23,7 @@ export interface Session {
   eventId: string;
   name: string;
   start: string; // 'HH:mm'
+  minutes: number;
   intensity: 'hard' | 'light';
 }
 
@@ -71,6 +72,7 @@ export function buildWeek(events: CalEvent[], weekStart: string): WeekDay[] {
         eventId: e.id,
         name: e.session ?? e.title,
         start: timeOf(e.start),
+        minutes: minutesBetween(e.start, e.end),
         intensity: e.intensity ?? 'light',
       }));
     return { date, tags, source, sessions, plan: planFor(tags, sessions), events: dayEvents };

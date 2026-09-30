@@ -31,6 +31,11 @@ Dated 2026-09-30. Source: approval of the Step 1 plan, which accepted every reco
 - Calendar provider for the mock: Google Calendar, as text only (no logo, no imitation of its sign-in). Proposal, GAPS G10.
 - Demo state lives in memory and resets each launch; Settings has "Reset demo".
 - Consent: Allow and Not now are equal weight, nothing preselected, Continue stays off until all four are answered. Withdrawal in Settings is the same control.
+- P3: Today puts the plan label first in the field, then the plan's reason, then the dial, then the range line at `type.body` (Review 1). The reason has two parts: why this plan (the plan rule, score band x day type), then why the score is what it is (only the drivers the model returned).
+- Plan engine (proposal, GAPS G2): a low score (below 40) is always recovery; a session is hard only when it is a hard session and the score is 60 or more, otherwise light; with no session a work day is deep work, and travel or rest is recovery.
+- The evening log is three questions (effort only when the calendar has a session, alcohol, anything unusual), plus "Did the plan fit?" only after a plan was accepted. The effort words map to the model's scale by proposal (GAPS G30).
+- The morning 0-10 rating sits below the drivers for now (Review 2 question). It feeds tomorrow's forecast; it does not change today's score.
+- Navigation chrome (tab labels) stops growing at 1.3×. Choice options stack at larger text.
 - Gallery: deep-linkable state (`?theme=dark&scale=3&plan=recover&state=high`), so any review screenshot can be reproduced. Text-size simulation is web preview only.
 - No skills from `/Skills` are installed. Skills that conflict with the Master are not used (see the plan, section D).
 - Explanation text under the plan uses only drivers the model returned. The "gets sharper as you log" line is not shipped.

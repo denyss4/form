@@ -1,23 +1,349 @@
-// Placeholder. Today is built in P3 (ScoreDial on the plan field, drivers, plan, Accept plan).
-import { StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+// Layout plan. Job: decide today's session. Focal element: the ScoreDial on the plan-coloured field. Quiet: the drivers and the check-in.
+// The plan label leads the field, then the reason, then the dial (Review 1 finding 3). The range line is body size, not caption (finding 1).
+// The one bold move: the plan's field colour fills the area behind the dial, and only here (5.1). Everything below sits on the canvas.
+// Morning, first open of the day: the reveal plays once (600 ms, transform and opacity only). Reduced motion: an instant, static result.
+// States: default, loading, day 1, partial input, low confidence, error. `?state=` holds one for review.
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import Animated, {
+  Easing,
+  interpolate,
+  runOnJS,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Settings from 'lucide-react-native/icons/settings';
 
 import { copy } from '@copy';
-import { space } from '@tokens';
-import { ScreenHeader, Text, useTheme } from '@ui';
+import { explain } from '@copy/explain';
+import { EveningLog } from '@features/EveningLog';
+import { todayScenarios, useHistory, useToday } from '@features/useToday';
+import { formatLong } from '@format';
+import { model } from '@model';
+import { forecast } from '@model/forecast';
+import { buildLog } from '@planner/dailyLog';
+import type { EveningAnswers } from '@planner/dailyLog';
+import { bandOf, planForDay } from '@planner/plan';
+import { useAppState } from '@state';
+import { motion, radius, size, space } from '@tokens';
+import {
+  announce,
+  Button,
+  DriverRow,
+  haptic,
+  IconButton,
+  InlineMessage,
+  oneOf,
+  PlanLabel,
+  ScoreDial,
+  ScreenHeader,
+  Skeleton,
+  Slider,
+  Text,
+  useTheme,
+} from '@ui';
+
+const FEW_INPUTS = 3; // this many inputs used, or fewer, is a thin picture
 
 export default function Today() {
   const { color } = useTheme();
+  const router = useRouter();
+  const app = useAppState();
+  const insets = useSafeAreaInsets();
+  const params = useLocalSearchParams<{ state?: string; reveal?: string; log?: string; motion?: string }>();
+  // Review only: ?motion=full plays the reveal even when the device asks for reduced motion.
+  const reduceMotion = useReducedMotion() && params.motion !== 'full';
+
+  const scenario = oneOf(params.state, todayScenarios, 'default');
+  const calendarOn = params.state !== undefined || app.calendar === 'connected';
+  const data = useToday(scenario, calendarOn);
+  const history = useHistory();
+  const [logOpen, setLogOpen] = useState(params.log === 'open');
+  const scroll = useRef<ScrollView>(null);
+
+  // The morning reveal. ?reveal=0.4 holds it at 40% for review.
+  const held = params.reveal === undefined || Number.isNaN(Number(params.reveal))
+    ? undefined
+    : Math.min(Math.max(Number(params.reveal), 0), 1);
+  const ready = data.kind === 'ready';
+  const revealed = app.revealedFor === app.demoDay;
+  const progress = useSharedValue(held ?? (ready && !revealed && !reduceMotion ? 0 : 1));
+  const started = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!ready) return;
+    if (held !== undefined) {
+      progress.set(held);
+      return;
+    }
+    if (started.current === app.demoDay) return;
+    started.current = app.demoDay;
+    if (revealed) {
+      progress.set(1);
+      return;
+    }
+    const settle = () => {
+      haptic.soft();
+      app.markRevealed(app.demoDay);
+    };
+    if (reduceMotion) {
+      progress.set(1);
+      settle();
+      return;
+    }
+    progress.set(0);
+    progress.set(
+      withTiming(
+        1,
+        { duration: motion.reveal.duration, easing: Easing.bezier(...motion.reveal.easing) },
+        (finished) => {
+          if (finished) runOnJS(settle)();
+        },
+      ),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, held, app.demoDay, revealed, reduceMotion]);
+
+  const plan = data.kind === 'ready' ? data.forecast.plan : undefined;
+  const fieldColor = plan ? color.plan[plan].field : color.bg.canvas;
+  const settle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0, motion.reveal.field], [0, 1], 'clamp'),
+  }));
+
+  const day = data.kind === 'loading' ? undefined : data.day;
+  const tomorrow = data.kind === 'loading' ? undefined : data.tomorrow;
+  const logged = app.logs[app.demoDay] !== undefined;
+  const accepted = app.planAccepted[app.demoDay] === true;
+
+  const save = (answers: EveningAnswers) => {
+    if (!day) return;
+    const log = buildLog({ today: day, tomorrow, answers, readiness10: app.readiness[app.demoDay] });
+    let next;
+    if (tomorrow) {
+      const result = forecast(model, history, log); // throws if the model rejects the log
+      next = { day: tomorrow.date, forecast: { result, plan: planForDay(result.score, tomorrow.tags, tomorrow.sessions) } };
+    }
+    app.saveLog(app.demoDay, answers, log, next);
+  };
+
+  const jump = () => {
+    if (!tomorrow) return;
+    app.advanceTo(tomorrow.date);
+    announce(formatLong(tomorrow.date));
+    scroll.current?.scrollTo({ y: 0, animated: false });
+  };
+
+  const header = (
+    <ScreenHeader
+      title={copy.today.title}
+      caption={formatLong(app.demoDay)}
+      right={<IconButton icon={Settings} label={copy.nav.settings} onPress={() => router.push('/settings')} />}
+    />
+  );
+
+  let field;
+  let below = null;
+  let footer = null;
+
+  if (data.kind === 'loading') {
+    field = (
+      <>
+        {header}
+        <Skeleton width="40%" height={size.icon} />
+        <Skeleton width="90%" />
+        <Skeleton width="60%" />
+        <View style={styles.dial}>
+          <Skeleton width={size.dial.app.diameter} height={size.dial.app.diameter} />
+        </View>
+      </>
+    );
+  } else if (data.kind === 'error') {
+    field = (
+      <>
+        {header}
+        <InlineMessage title={copy.today.error.title} body={copy.today.error.body}>
+          <Button variant="secondary" label={copy.today.error.retry} onPress={() => router.replace('/today')} />
+        </InlineMessage>
+      </>
+    );
+  } else if (data.kind === 'day1') {
+    field = (
+      <>
+        {header}
+        <View style={styles.dial}>
+          <ScoreDial score={null} />
+        </View>
+        <Text variant="heading">{copy.today.day1.title}</Text>
+        <Text variant="body" tone="secondary">
+          {copy.today.day1.body}
+        </Text>
+      </>
+    );
+    footer = <Button label={copy.today.logTonight} fullWidth onPress={() => setLogOpen(true)} />;
+  } else {
+    const { result, plan: p } = data.forecast;
+    const skipped = result.skippedInputs;
+    const rating = app.readiness[app.demoDay] ?? null;
+
+    field = (
+      <>
+        {header}
+        <View style={styles.lead}>
+          <PlanLabel plan={p} />
+          <Text variant="body">
+            {explain(p, result.drivers, { band: bandOf(result.score), tags: data.day.tags, sessions: data.day.sessions })}
+          </Text>
+        </View>
+        <View style={styles.dial}>
+          <ScoreDial
+            score={result.score}
+            range={result.range}
+            plan={p}
+            reveal={{ progress, field: color.plan[p].field }}
+          />
+        </View>
+        <View style={styles.annotation}>
+          <Text variant="body">{copy.range(result.range[0], result.range[1])}</Text>
+          <Text variant="caption" tone="secondary">
+            {copy.inputsBasis(result.confidence.used, result.confidence.total)}
+          </Text>
+          {result.confidence.used <= FEW_INPUTS ? (
+            <Text variant="caption" tone="secondary">
+              {copy.today.fewInputs}
+            </Text>
+          ) : null}
+        </View>
+      </>
+    );
+
+    below = (
+      <>
+        <View style={styles.section}>
+          <Text variant="heading" accessibilityRole="header" level={2}>
+            {copy.whyHeading(result.score)}
+          </Text>
+          <View>
+            {result.drivers.length === 0 ? (
+              <Text variant="body" tone="secondary">
+                {copy.noDrivers}
+              </Text>
+            ) : (
+              result.drivers.map((driver, i) => (
+                <DriverRow key={driver.id} driver={driver} divider={i < result.drivers.length - 1} />
+              ))
+            )}
+          </View>
+          {skipped.length > 0 ? (
+            <Text variant="caption" tone="secondary">
+              {copy.today.notUsed(
+                skipped
+                  .slice(0, 2)
+                  .map((s) => s.label.toLowerCase())
+                  .join(', '),
+                skipped.length - 2,
+              )}
+            </Text>
+          ) : null}
+        </View>
+
+        <View style={styles.section}>
+          <Text variant="heading" accessibilityRole="header" level={2}>
+            {copy.today.checkin.title}
+          </Text>
+          <Slider
+            label={copy.today.checkin.title}
+            value={rating}
+            onChange={(v) => app.setReadiness(app.demoDay, v)}
+            valueText={rating === null ? copy.today.checkin.unset : copy.today.checkin.value(rating)}
+            lowLabel={copy.today.checkin.low}
+            highLabel={copy.today.checkin.high}
+          />
+          <Text variant="caption" tone="secondary">
+            {copy.today.checkin.hint}
+          </Text>
+        </View>
+
+        {!logged && !accepted ? (
+          <View style={styles.section}>
+            <Button variant="text" label={copy.today.logTonight} onPress={() => setLogOpen(true)} />
+          </View>
+        ) : null}
+      </>
+    );
+
+    footer = logged ? (
+      <>
+        <Text variant="body">{copy.today.logged}</Text>
+        {tomorrow && app.forecasts[tomorrow.date] ? (
+          <Button variant="text" label={copy.today.jump} onPress={jump} />
+        ) : null}
+      </>
+    ) : accepted ? (
+      <>
+        <Text variant="body">{copy.today.accepted}</Text>
+        <Button label={copy.today.logTonight} fullWidth onPress={() => setLogOpen(true)} />
+      </>
+    ) : (
+      <Button
+        label={copy.today.accept}
+        fullWidth
+        onPress={() => {
+          haptic.light();
+          app.acceptPlan(app.demoDay);
+          announce(copy.today.accepted);
+        }}
+      />
+    );
+  }
+
   return (
-    <SafeAreaView edges={['top']} style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
-      <ScreenHeader title={copy.tabs.today} />
-      <Text variant="body" tone="secondary">
-        {copy.placeholder.today}
-      </Text>
-    </SafeAreaView>
+    <View style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
+      <ScrollView ref={scroll} contentContainerStyle={styles.content}>
+        <View style={[styles.field, { paddingTop: insets.top + space.xs }]}>
+          <Animated.View
+            pointerEvents="none"
+            style={[StyleSheet.absoluteFill, styles.fieldBg, { backgroundColor: fieldColor }, settle]}
+          />
+          {field}
+        </View>
+        {below}
+      </ScrollView>
+
+      {footer ? (
+        <View
+          aria-live="polite"
+          style={[styles.footer, { borderTopWidth: size.hairline, borderTopColor: color.stroke.hairline }]}
+        >
+          {footer}
+        </View>
+      ) : null}
+
+      {day ? (
+        <EveningLog
+          key={day.date}
+          visible={logOpen}
+          day={day}
+          planAccepted={accepted}
+          onClose={() => setLogOpen(false)}
+          onSave={save}
+        />
+      ) : null}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, paddingHorizontal: space.margin, paddingTop: space.md, gap: space.md },
+  screen: { flex: 1 },
+  content: { paddingBottom: space.lg },
+  field: { paddingHorizontal: space.margin, paddingBottom: space.lg, gap: space.sm },
+  fieldBg: { borderBottomLeftRadius: radius.sheet, borderBottomRightRadius: radius.sheet },
+  lead: { gap: space.xs, marginTop: space.xs },
+  dial: { alignItems: 'center', marginTop: space.sm },
+  annotation: { alignItems: 'center', gap: space.xxs },
+  section: { paddingHorizontal: space.margin, marginTop: space.xl, gap: space.sm },
+  footer: { paddingHorizontal: space.margin, paddingTop: space.md, paddingBottom: space.md, gap: space.xs },
 });

@@ -8,6 +8,7 @@ import ArrowLeft from 'lucide-react-native/icons/arrow-left';
 import { copy } from '@copy';
 import { size, space } from '@tokens';
 
+import { FocusRing, useFocus } from './focus';
 import { Text } from './Text';
 import { useTheme } from './theme';
 import { useIconSize } from './useIconSize';
@@ -17,6 +18,7 @@ export function IconButton({ icon: Icon, label, onPress }: { icon: LucideIcon; l
   const { color } = useTheme();
   const iconPx = useIconSize(size.icon);
   const press = usePress();
+  const focus = useFocus();
   return (
     <Pressable
       accessibilityRole="button"
@@ -24,9 +26,12 @@ export function IconButton({ icon: Icon, label, onPress }: { icon: LucideIcon; l
       onPress={onPress}
       onPressIn={press.onPressIn}
       onPressOut={press.onPressOut}
+      onFocus={focus.onFocus}
+      onBlur={focus.onBlur}
     >
       <Animated.View style={[styles.icon, press.style]}>
         <Icon color={color.text.primary} size={iconPx} strokeWidth={size.outline} />
+        <FocusRing visible={focus.focused} />
       </Animated.View>
     </Pressable>
   );
@@ -45,17 +50,23 @@ export function ScreenHeader({
 }) {
   const { color } = useTheme();
   const iconPx = useIconSize(size.icon);
+  const backFocus = useFocus();
   return (
     <View style={styles.wrap}>
       {onBack ? (
-        <Pressable accessibilityRole="button" accessibilityLabel={copy.nav.back} onPress={onBack} style={styles.back}>
+        <Pressable accessibilityRole="button" accessibilityLabel={copy.nav.back} onPress={onBack}
+          onFocus={backFocus.onFocus}
+          onBlur={backFocus.onBlur}
+          style={styles.back}
+        >
           <ArrowLeft color={color.text.primary} size={iconPx} strokeWidth={size.outline} />
           <Text variant="bodyStrong">{copy.nav.back}</Text>
+          <FocusRing visible={backFocus.focused} />
         </Pressable>
       ) : null}
       <View style={styles.titleRow}>
         <View style={styles.grow}>
-          <Text variant="title" accessibilityRole="header">
+          <Text variant="title" accessibilityRole="header" level={1}>
             {title}
           </Text>
           {caption ? (
