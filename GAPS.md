@@ -12,7 +12,7 @@ Facts that are missing. Nothing here may be invented. Each gap is also marked `[
 | G6 | Definition of "right" in "Form got 5 of 7 days right" and of "fit" | Plan Fit Rate | A + B | Proposal: the user's own yes / too hard / too easy |
 | G7 | What "Measured" means on Felt vs Measured (no wearable sync in scope) | Felt vs Measured | B | Proposal: felt rating vs Form's forecast, from fixtures |
 | G8 | Dark-theme plan-field tints are undefined | Dark theme | A | Dark is secondary; decide in P5 |
-| G9 | Dark control stroke on raised is 2.91:1 (< 3) | Dark inputs | A | Value needed, approval required |
+| G9 | Dark control stroke on raised is 2.91:1 (< 3) | Dark inputs | A | Proposal, no new colour: reuse the light stroke `#6B7C8D` in dark (4.05:1 on canvas, 3.40:1 on raised). Needs approval (CRITIQUE finding 6) |
 | G10 | Calendar provider for the mocked OAuth | Onboarding | A | Ask before P2 |
 | G11 | "Once per day" reveal needs persistence, and no storage library is listed | Today reveal | A | In-memory plus a dev reset for the demo. A storage dependency needs approval |
 | G12 | Marta's scripted week (`/fixtures`) does not exist yet | All demo data | B | Built in P1 from real `predict` runs |
@@ -23,3 +23,8 @@ Facts that are missing. Nothing here may be invented. Each gap is also marked `[
 | G17 | Which Expo Go the demo phone can install (SDK support) | Demo device | User | P0.1 gate |
 | G18 | App icon, adaptive icon and splash are Expo placeholders (`assets/`) | Store and launch | A | Replace after the identity is set; generated assets go in `assets/generated/LOG.md` |
 | G19 | Tabular digits, fonts and layout were verified in the web preview only. Native rendering and largest Dynamic Type are unverified | Type | User | Open `/gallery/type` on the demo phone and compare digit widths |
+| G20 | The Master gives no values for press opacity, disabled opacity, spring stiffness, the ScoreDial track opacity, or the sheet shadow (opacity, radius, offset) | Motion, shadow, controls | A | Proposals in `packages/tokens` (0.8, 0.4, 200, 0.16, 0.12 / 24 / −8). Revisit at Review 1 and 2 |
+| G21 | ScoreDial sizes (app 264, widget 120, watch 88) and stroke and bracket widths are not in the Master | ScoreDial | A | Proposals in `size.dial`. The bracket is likely too thin at watch size (CRITIQUE finding 5) |
+| G22 | The reveal ("arc sweeps to the score") is naturally a stroke-dash animation, which is neither transform nor opacity (Master §6) | Today reveal, P3 | A | Decide in P3: a rotating mask driven by transform, or a one-off exception for you to approve |
+| G23 | The scripted demo clock is a proposal: logs run Mon 28 Sep to Sun 4 Oct 2026, and "today" in the demo is Mon 5 Oct | Fixtures, demo | B | Confirm, or give another week. Changing it means editing `fixtures/build.mjs` and re-running `npm run fixtures` |
+| G24 | Lucide 1.49 has no `waves` icon, so Recover uses `Moon` instead of the planned `Waves` | PlanGlyph | A | Decided. Moon may read as "sleep"; check with people at Review 2 |

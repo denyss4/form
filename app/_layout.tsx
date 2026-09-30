@@ -3,7 +3,8 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
 
-import { color } from '@tokens';
+import { lightColor } from '@tokens';
+import { ThemeProvider } from '@ui';
 
 export default function RootLayout() {
   // Five static files, one family name per weight (see packages/tokens `font`).
@@ -19,18 +20,19 @@ export default function RootLayout() {
 
   // Hold on the canvas colour until the fonts are ready, so text never flashes in a fallback face.
   if (!loaded && !error) {
-    return <View style={{ flex: 1, backgroundColor: color.bg.canvas }} />;
+    return <View style={{ flex: 1, backgroundColor: lightColor.bg.canvas }} />;
   }
 
+  // Light is the primary theme. The gallery layers its own dev theme on top.
   return (
-    <>
+    <ThemeProvider scheme="light">
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: color.bg.canvas },
+          contentStyle: { backgroundColor: lightColor.bg.canvas },
         }}
       />
-    </>
+    </ThemeProvider>
   );
 }

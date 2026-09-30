@@ -1,0 +1,730 @@
+{
+  "meta": {
+    "kind": "scripted persona",
+    "persona": "Marta, 29, product analyst, Warsaw",
+    "note": "The logs are scripted. Scores, ranges and drivers are real predict.mjs output.",
+    "model_version": "v2-ridge-ef303c083a1a",
+    "demoToday": "2026-10-05"
+  },
+  "days": [
+    {
+      "date": "2026-09-28",
+      "forecastFor": "2026-09-29",
+      "log": {
+        "date": "2026-09-28",
+        "tags": [
+          "work",
+          "training"
+        ],
+        "tomorrow_tags": [
+          "work"
+        ],
+        "readiness": 70,
+        "sleep_hours": 7.2,
+        "sleep_quality": 4,
+        "mood": 4,
+        "stress": 2,
+        "fatigue": 2,
+        "soreness": 2,
+        "workout_minutes": 65,
+        "workout_effort": 7,
+        "steps": 10400,
+        "calories_burned": 3050,
+        "very_active_minutes": 52,
+        "alcohol": false,
+        "readiness_history": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "load_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "raw": {
+        "feature_date": "2026-09-28",
+        "date": "2026-09-29",
+        "score": 53,
+        "range": [
+          36,
+          70
+        ],
+        "raw_score": 52.828044755772346,
+        "top_drivers": [
+          {
+            "driver": "Training load",
+            "points": -4.4
+          },
+          {
+            "driver": "Recent readiness",
+            "points": 3.9
+          },
+          {
+            "driver": "Fatigue and soreness",
+            "points": 0.9
+          }
+        ],
+        "missing_inputs": [
+          "readiness_7d",
+          "readiness_dev"
+        ],
+        "algorithm": "ridge",
+        "model_version": "v2-ridge-ef303c083a1a"
+      },
+      "result": {
+        "score": 53,
+        "range": [
+          36,
+          70
+        ],
+        "confidence": {
+          "used": 11,
+          "total": 11
+        },
+        "drivers": [
+          {
+            "id": "training-load",
+            "label": "Training load",
+            "direction": "down",
+            "basis": "typical",
+            "magnitude": 4.4
+          },
+          {
+            "id": "recent-readiness",
+            "label": "Recent readiness",
+            "direction": "up",
+            "basis": "typical",
+            "magnitude": 3.9
+          },
+          {
+            "id": "fatigue-and-soreness",
+            "label": "Fatigue and soreness",
+            "direction": "up",
+            "basis": "typical",
+            "magnitude": 0.9
+          }
+        ],
+        "plan": null,
+        "skippedInputs": []
+      }
+    },
+    {
+      "date": "2026-09-29",
+      "forecastFor": "2026-09-30",
+      "log": {
+        "date": "2026-09-29",
+        "tags": [
+          "work"
+        ],
+        "tomorrow_tags": [
+          "work",
+          "training"
+        ],
+        "readiness": 65,
+        "sleep_hours": 6.8,
+        "sleep_quality": 3,
+        "mood": 3,
+        "stress": 3,
+        "fatigue": 3,
+        "soreness": 3,
+        "workout_minutes": 0,
+        "steps": 7600,
+        "calories_burned": 2750,
+        "very_active_minutes": 12,
+        "alcohol": false,
+        "readiness_history": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          70
+        ],
+        "load_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          455
+        ]
+      },
+      "raw": {
+        "feature_date": "2026-09-29",
+        "date": "2026-09-30",
+        "score": 66,
+        "range": [
+          49,
+          83
+        ],
+        "raw_score": 66.37091576655646,
+        "top_drivers": [
+          {
+            "driver": "Recent readiness",
+            "points": 14.8
+          },
+          {
+            "driver": "Training load",
+            "points": -0.2
+          },
+          {
+            "driver": "Sleep",
+            "points": 0
+          }
+        ],
+        "missing_inputs": [],
+        "algorithm": "ridge",
+        "model_version": "v2-ridge-ef303c083a1a"
+      },
+      "result": {
+        "score": 66,
+        "range": [
+          49,
+          83
+        ],
+        "confidence": {
+          "used": 11,
+          "total": 11
+        },
+        "drivers": [
+          {
+            "id": "recent-readiness",
+            "label": "Recent readiness",
+            "direction": "up",
+            "basis": "typical",
+            "magnitude": 14.8
+          }
+        ],
+        "plan": null,
+        "skippedInputs": []
+      }
+    },
+    {
+      "date": "2026-09-30",
+      "forecastFor": "2026-10-01",
+      "log": {
+        "date": "2026-09-30",
+        "tags": [
+          "work",
+          "training"
+        ],
+        "tomorrow_tags": [
+          "work",
+          "social"
+        ],
+        "readiness": 60,
+        "sleep_hours": 6.2,
+        "sleep_quality": 3,
+        "mood": 3,
+        "stress": 4,
+        "fatigue": 3,
+        "soreness": 3,
+        "workout_minutes": 75,
+        "workout_effort": 8,
+        "steps": 11200,
+        "calories_burned": 3150,
+        "very_active_minutes": 58,
+        "alcohol": false,
+        "readiness_history": [
+          null,
+          null,
+          null,
+          null,
+          70,
+          65
+        ],
+        "load_history": [
+          0,
+          0,
+          0,
+          0,
+          455,
+          0
+        ]
+      },
+      "raw": {
+        "feature_date": "2026-09-30",
+        "date": "2026-10-01",
+        "score": 59,
+        "range": [
+          42,
+          76
+        ],
+        "raw_score": 59.17719631035233,
+        "top_drivers": [
+          {
+            "driver": "Recent readiness",
+            "points": 12
+          },
+          {
+            "driver": "Training load",
+            "points": -4.6
+          },
+          {
+            "driver": "Mood and stress",
+            "points": -0.2
+          }
+        ],
+        "missing_inputs": [],
+        "algorithm": "ridge",
+        "model_version": "v2-ridge-ef303c083a1a"
+      },
+      "result": {
+        "score": 59,
+        "range": [
+          42,
+          76
+        ],
+        "confidence": {
+          "used": 11,
+          "total": 11
+        },
+        "drivers": [
+          {
+            "id": "recent-readiness",
+            "label": "Recent readiness",
+            "direction": "up",
+            "basis": "typical",
+            "magnitude": 12
+          },
+          {
+            "id": "training-load",
+            "label": "Training load",
+            "direction": "down",
+            "basis": "typical",
+            "magnitude": 4.6
+          }
+        ],
+        "plan": null,
+        "skippedInputs": []
+      }
+    },
+    {
+      "date": "2026-10-01",
+      "forecastFor": "2026-10-02",
+      "log": {
+        "date": "2026-10-01",
+        "tags": [
+          "work",
+          "social"
+        ],
+        "tomorrow_tags": [
+          "work",
+          "travel"
+        ],
+        "readiness": 50,
+        "sleep_hours": 6,
+        "sleep_quality": 2,
+        "mood": 3,
+        "stress": 4,
+        "fatigue": 4,
+        "soreness": 3,
+        "workout_minutes": 0,
+        "steps": 8300,
+        "calories_burned": 2800,
+        "very_active_minutes": 10,
+        "alcohol": true,
+        "readiness_history": [
+          null,
+          null,
+          null,
+          70,
+          65,
+          60
+        ],
+        "load_history": [
+          0,
+          0,
+          0,
+          455,
+          0,
+          600
+        ]
+      },
+      "raw": {
+        "feature_date": "2026-10-01",
+        "date": "2026-10-02",
+        "score": 56,
+        "range": [
+          39,
+          73
+        ],
+        "raw_score": 55.52864321740508,
+        "top_drivers": [
+          {
+            "driver": "Recent readiness",
+            "points": 7.2
+          },
+          {
+            "driver": "Alcohol",
+            "points": -1.5
+          },
+          {
+            "driver": "Fatigue and soreness",
+            "points": -1
+          }
+        ],
+        "missing_inputs": [],
+        "algorithm": "ridge",
+        "model_version": "v2-ridge-ef303c083a1a"
+      },
+      "result": {
+        "score": 56,
+        "range": [
+          39,
+          73
+        ],
+        "confidence": {
+          "used": 11,
+          "total": 11
+        },
+        "drivers": [
+          {
+            "id": "recent-readiness",
+            "label": "Recent readiness",
+            "direction": "up",
+            "basis": "typical",
+            "magnitude": 7.2
+          },
+          {
+            "id": "alcohol",
+            "label": "Alcohol",
+            "direction": "down",
+            "basis": "typical",
+            "magnitude": 1.5
+          },
+          {
+            "id": "fatigue-and-soreness",
+            "label": "Fatigue and soreness",
+            "direction": "down",
+            "basis": "typical",
+            "magnitude": 1
+          }
+        ],
+        "plan": null,
+        "skippedInputs": []
+      }
+    },
+    {
+      "date": "2026-10-02",
+      "forecastFor": "2026-10-03",
+      "log": {
+        "date": "2026-10-02",
+        "tags": [
+          "work"
+        ],
+        "tomorrow_tags": [
+          "rest"
+        ],
+        "readiness": 45,
+        "sleep_hours": 5.8,
+        "sleep_quality": 2,
+        "mood": 2,
+        "stress": 4,
+        "fatigue": 4,
+        "soreness": 2,
+        "workout_minutes": 0,
+        "steps": 6400,
+        "calories_burned": 2650,
+        "very_active_minutes": 5,
+        "alcohol": false,
+        "readiness_history": [
+          null,
+          null,
+          70,
+          65,
+          60,
+          50
+        ],
+        "load_history": [
+          0,
+          0,
+          455,
+          0,
+          600,
+          0
+        ]
+      },
+      "raw": {
+        "feature_date": "2026-10-02",
+        "date": "2026-10-03",
+        "score": 53,
+        "range": [
+          36,
+          70
+        ],
+        "raw_score": 52.90484047907788,
+        "top_drivers": [
+          {
+            "driver": "Recent readiness",
+            "points": 3.9
+          },
+          {
+            "driver": "Tomorrow's day type",
+            "points": -1.4
+          },
+          {
+            "driver": "Fatigue and soreness",
+            "points": -1.1
+          }
+        ],
+        "missing_inputs": [],
+        "algorithm": "ridge",
+        "model_version": "v2-ridge-ef303c083a1a"
+      },
+      "result": {
+        "score": 53,
+        "range": [
+          36,
+          70
+        ],
+        "confidence": {
+          "used": 11,
+          "total": 11
+        },
+        "drivers": [
+          {
+            "id": "recent-readiness",
+            "label": "Recent readiness",
+            "direction": "up",
+            "basis": "typical",
+            "magnitude": 3.9
+          },
+          {
+            "id": "tomorrows-day-type",
+            "label": "Tomorrow's day type",
+            "direction": "down",
+            "basis": "typical",
+            "magnitude": 1.4
+          },
+          {
+            "id": "fatigue-and-soreness",
+            "label": "Fatigue and soreness",
+            "direction": "down",
+            "basis": "typical",
+            "magnitude": 1.1
+          }
+        ],
+        "plan": null,
+        "skippedInputs": []
+      }
+    },
+    {
+      "date": "2026-10-03",
+      "forecastFor": "2026-10-04",
+      "log": {
+        "date": "2026-10-03",
+        "tags": [
+          "rest"
+        ],
+        "tomorrow_tags": [
+          "training"
+        ],
+        "readiness": 60,
+        "sleep_hours": 8,
+        "sleep_quality": 4,
+        "mood": 4,
+        "stress": 2,
+        "fatigue": 3,
+        "soreness": 2,
+        "workout_minutes": 0,
+        "steps": 9000,
+        "calories_burned": 2900,
+        "very_active_minutes": 20,
+        "alcohol": false,
+        "readiness_history": [
+          null,
+          70,
+          65,
+          60,
+          50,
+          45
+        ],
+        "load_history": [
+          0,
+          455,
+          0,
+          600,
+          0,
+          0
+        ]
+      },
+      "raw": {
+        "feature_date": "2026-10-03",
+        "date": "2026-10-04",
+        "score": 58,
+        "range": [
+          41,
+          75
+        ],
+        "raw_score": 58.47540735809748,
+        "top_drivers": [
+          {
+            "driver": "Recent readiness",
+            "points": 7.7
+          },
+          {
+            "driver": "Tomorrow's day type",
+            "points": -1.4
+          },
+          {
+            "driver": "Sleep",
+            "points": 0.7
+          }
+        ],
+        "missing_inputs": [],
+        "algorithm": "ridge",
+        "model_version": "v2-ridge-ef303c083a1a"
+      },
+      "result": {
+        "score": 58,
+        "range": [
+          41,
+          75
+        ],
+        "confidence": {
+          "used": 11,
+          "total": 11
+        },
+        "drivers": [
+          {
+            "id": "recent-readiness",
+            "label": "Recent readiness",
+            "direction": "up",
+            "basis": "typical",
+            "magnitude": 7.7
+          },
+          {
+            "id": "tomorrows-day-type",
+            "label": "Tomorrow's day type",
+            "direction": "down",
+            "basis": "typical",
+            "magnitude": 1.4
+          },
+          {
+            "id": "sleep",
+            "label": "Sleep",
+            "direction": "up",
+            "basis": "typical",
+            "magnitude": 0.7
+          }
+        ],
+        "plan": null,
+        "skippedInputs": []
+      }
+    },
+    {
+      "date": "2026-10-04",
+      "forecastFor": "2026-10-05",
+      "log": {
+        "date": "2026-10-04",
+        "tags": [
+          "training"
+        ],
+        "tomorrow_tags": [
+          "work"
+        ],
+        "readiness": 55,
+        "sleep_hours": 6.1,
+        "sleep_quality": 2,
+        "mood": 3,
+        "stress": 4,
+        "fatigue": 4,
+        "soreness": 4,
+        "workout_minutes": 75,
+        "workout_effort": 8,
+        "steps": 14500,
+        "calories_burned": 3100,
+        "very_active_minutes": 80,
+        "alcohol": true,
+        "readiness_history": [
+          70,
+          65,
+          60,
+          50,
+          45,
+          60
+        ],
+        "load_history": [
+          455,
+          0,
+          600,
+          0,
+          0,
+          0
+        ]
+      },
+      "raw": {
+        "feature_date": "2026-10-04",
+        "date": "2026-10-05",
+        "score": 51,
+        "range": [
+          34,
+          68
+        ],
+        "raw_score": 50.898817416191555,
+        "top_drivers": [
+          {
+            "driver": "Recent readiness",
+            "points": 6.2
+          },
+          {
+            "driver": "Training load",
+            "points": -4.2
+          },
+          {
+            "driver": "Alcohol",
+            "points": -1.5
+          }
+        ],
+        "missing_inputs": [],
+        "algorithm": "ridge",
+        "model_version": "v2-ridge-ef303c083a1a"
+      },
+      "result": {
+        "score": 51,
+        "range": [
+          34,
+          68
+        ],
+        "confidence": {
+          "used": 11,
+          "total": 11
+        },
+        "drivers": [
+          {
+            "id": "recent-readiness",
+            "label": "Recent readiness",
+            "direction": "up",
+            "basis": "typical",
+            "magnitude": 6.2
+          },
+          {
+            "id": "training-load",
+            "label": "Training load",
+            "direction": "down",
+            "basis": "typical",
+            "magnitude": 4.2
+          },
+          {
+            "id": "alcohol",
+            "label": "Alcohol",
+            "direction": "down",
+            "basis": "typical",
+            "magnitude": 1.5
+          }
+        ],
+        "plan": null,
+        "skippedInputs": []
+      }
+    }
+  ]
+}

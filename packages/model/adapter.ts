@@ -3,9 +3,10 @@
 // The screens render only these fields. Relative imports with extensions so `node --test` can run this file.
 import { copy } from '../copy/copy.ts';
 import type { InputId } from '../copy/copy.ts';
+import type { PlanId } from '../tokens/color.ts';
 import type { RawResult } from './predict.mjs';
 
-export type PlanId = 'hard' | 'light' | 'recover' | 'deepwork';
+export type { PlanId };
 
 export interface FormDriver {
   id: string;

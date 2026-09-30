@@ -1,0 +1,25 @@
+// Marta's scripted week. Demo data comes only from here (MASTER_PROMPT §4). Rebuild with `npm run fixtures`.
+import type { DailyLog, FormResult, RawResult } from '@model';
+
+import data from './marta-week.json';
+
+export interface FixtureDay {
+  date: string; // the evening the log was written
+  forecastFor: string; // the morning the score is for
+  log: DailyLog;
+  raw: RawResult;
+  result: FormResult;
+}
+
+export interface MartaWeek {
+  meta: {
+    kind: string;
+    persona: string;
+    note: string;
+    model_version: string;
+    demoToday: string;
+  };
+  days: FixtureDay[];
+}
+
+export const martaWeek = data as unknown as MartaWeek;

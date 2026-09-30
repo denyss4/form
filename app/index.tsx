@@ -1,55 +1,52 @@
 // Layout plan. Job: prove fonts, tokens and the model run together on the device.
 // Focal element: the score with its likely range. Quiet: everything else, one text link.
 import { Link } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { copy } from '@copy';
 import { model, predict, toFormResult } from '@model';
 import type { DailyLog } from '@model';
 import example from '@model/example-input.json';
-import { color, space, type } from '@tokens';
+import { size, space } from '@tokens';
+import { Text, useTheme } from '@ui';
 
-// [GAP: /fixtures (Marta's week) does not exist yet. This is the model kit's own example log.]
+// [GAP: /fixtures (Marta's week) is the demo data. This screen keeps the model kit's own example log as the P0 check.]
 const result = toFormResult(predict(model, example as DailyLog));
 
 export default function Hello() {
+  const { color } = useTheme();
   return (
-    <SafeAreaView style={styles.screen}>
-      <Text accessibilityRole="header" style={[type.title, styles.ink]}>
+    <SafeAreaView style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
+      <Text variant="title" accessibilityRole="header">
         {copy.dev.appName}
       </Text>
 
       <View style={styles.score}>
-        <Text style={[type.score, styles.ink]}>{result.score}</Text>
-        <Text style={[type.caption, styles.secondary]}>
+        <Text variant="score">{result.score}</Text>
+        <Text variant="caption" tone="secondary">
           {copy.range(result.range[0], result.range[1])}
         </Text>
       </View>
 
-      <Text style={[type.body, styles.secondary]}>{copy.dev.exampleNote}</Text>
+      <Text variant="body" tone="secondary">
+        {copy.dev.exampleNote}
+      </Text>
 
-      <Link href="/gallery/type" style={[type.bodyStrong, styles.link]}>
-        {copy.dev.typeLink}
+      <Link href="/gallery" asChild>
+        <Pressable accessibilityRole="link" style={styles.link}>
+          <Text variant="bodyStrong" style={styles.underline}>
+            {copy.dev.galleryLink}
+          </Text>
+        </Pressable>
       </Link>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    paddingHorizontal: space.margin,
-    paddingTop: space.lg,
-    backgroundColor: color.bg.canvas,
-  },
+  screen: { flex: 1, paddingHorizontal: space.margin, paddingTop: space.lg },
   score: { marginTop: space.xxl, marginBottom: space.xl },
-  ink: { color: color.text.primary },
-  secondary: { color: color.text.secondary },
-  link: {
-    marginTop: space.lg,
-    paddingVertical: space.sm, // 12 + 24 line + 12 = 48 touch target
-    color: color.text.primary,
-    textDecorationLine: 'underline',
-  },
+  link: { marginTop: space.lg, minHeight: size.touch, justifyContent: 'center', alignSelf: 'flex-start' },
+  underline: { textDecorationLine: 'underline' },
 });

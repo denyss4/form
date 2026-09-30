@@ -7,7 +7,7 @@ Feature freeze at the end of P3. P4 is screens only. At every Review, stop and w
 | Phase | Deliverables | Acceptance | A / B (h) | Checkpoint | Status |
 |---|---|---|---|---|---|
 | P0 | Repo, Expo TS scaffold, fonts, docs, lint rule, model intake, adapter spec | Build runs on the demo device and prints `51, likely 34–68` | 2 / 1 | Device run | Built and verified off-device. Waiting on the demo phone |
-| P1 | `packages/tokens`, Text, Button, PlanGlyph, ScoreDial (app, widget, watch), DriverRow, `/gallery`, `fixtures/marta-week.json` | `npm run check` passes; every token and state screenshotted at 390×844 and the largest Dynamic Type | 4 / 1 | Review 1 + `/design:design-critique` (exploration) | Not started |
+| P1 | `packages/tokens`, Text, Button, PlanGlyph, ScoreDial (app, widget, watch), DriverRow, `/gallery`, `fixtures/marta-week.json` | `npm run check` passes; every token and state screenshotted at 390×844 and the largest Dynamic Type | 4 / 1 | Review 1 + `/design:design-critique` (exploration) | Built and critiqued. **Waiting at Review 1** (see `CRITIQUE.md`) |
 | P2 | Onboarding, consent (4 purposes), mocked calendar import, Week view, scripted move suggestion | Every state screenshotted; accept and decline both reflow | 3.5 / 2.5 | Screenshots | Not started |
 | P3 | 3-tap evening log, Today (reveal, drivers, plan, colour field), `plan()`, adapter wiring, morning slider | Reveal honours reduced motion; explanations use only returned drivers; day-1 state | 4 / 3 | Review 2 + critique + accessibility pass | Not started |
 | P4 | Plan Fit meter, Felt vs Measured, mocked Health-sync and calendar-write screens | Every state screenshotted | 2 / 2 | Screenshots, then freeze | Not started |

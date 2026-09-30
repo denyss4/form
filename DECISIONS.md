@@ -22,7 +22,11 @@ Dated 2026-09-30. Source: approval of the Step 1 plan, which accepted every reco
 - 3-tap log maps to model inputs: effort → `workout_effort`; calendar Training event → `workout_minutes` and tags; alcohol → `alcohol`; "anything unusual?" → `notes` only (no model field).
 - Day types on Week are tags, not plan state: Ink text plus a glyph, no colour.
 - `type.score` scales up to 1.3× Dynamic Type inside the dial. The range and plan label sit outside the arc and wrap. Confirm at Review 2.
-- Icon library: `lucide-react-native` (nothing in `/Components` to prefer).
+- Icon library: `lucide-react-native` (nothing in `/Components` to prefer). Imported per icon (`lucide-react-native/icons/<name>`). Plan glyphs: Dumbbell, Footprints, Moon, Focus (`Waves` does not exist in lucide 1.49).
+- ScoreDial (P1): a 270° arc, opening at the bottom. The likely range is a thin flat bracket outside the arc in the plan colour, with no shading or taper, because the model's range is not a calibrated interval. The plan colour tints the field behind it, not the arc's meaning. Range text and plan label sit outside the dial so they can wrap.
+- Icons follow the text size (Dynamic Type), up to 2×. The score number caps at 1.3×.
+- Theme: light is primary. Dark tokens exist for review only; dark plan fields and hairline are placeholders (GAPS G8, G9).
+- Gallery: deep-linkable state (`?theme=dark&scale=3&plan=recover&state=high`), so any review screenshot can be reproduced. Text-size simulation is web preview only.
 - No skills from `/Skills` are installed. Skills that conflict with the Master are not used (see the plan, section D).
 - Explanation text under the plan uses only drivers the model returned. The "gets sharper as you log" line is not shipped.
 - The move suggestion is one scripted scenario from fixtures, not a general engine.
