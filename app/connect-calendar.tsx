@@ -3,13 +3,13 @@
 // [GAP G10: the provider name is a proposal. It is text only: no logo, no imitation of the provider's own sign-in.]
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { copy } from '@copy';
 import { useAppState } from '@state';
 import { space } from '@tokens';
-import { Button, InlineMessage, oneOf, ScreenHeader, Text, useTheme } from '@ui';
+import { Busy, Button, InlineMessage, oneOf, ScreenHeader, Text, useTheme } from '@ui';
 
 const views = ['auto', 'default', 'loading', 'error', 'off'] as const;
 const CONNECT_MS = 1400; // the mock sign-in takes a moment
@@ -51,11 +51,11 @@ export default function ConnectCalendar() {
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
       <ScrollView contentContainerStyle={styles.content}>
-        <ScreenHeader title={copy.calendar.title} onBack={view === 'loading' ? undefined : leave} />
+        <ScreenHeader title={copy.calendar.title} onBack={leave} />
 
         {view === 'loading' ? (
           <View style={styles.progress} accessibilityRole="progressbar" accessibilityLabel={copy.calendar.reading}>
-            <ActivityIndicator color={color.text.primary} />
+            <Busy color={color.text.primary} />
             <Text variant="bodyStrong">{copy.calendar.reading}</Text>
             <Text variant="caption" tone="secondary">
               {copy.calendar.readingNote}

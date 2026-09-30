@@ -61,10 +61,19 @@ Dated 2026-09-30. Source: approval of the Step 1 plan, which accepted every reco
 - **Felt = morning rating x 10.** This puts the rating on the score's 0 to 100 scale for the comparison. The fit answers and ratings in Marta's week are scripted. (GAPS G35.)
 - **Titles stop growing at 2x text.** (GAPS G34.)
 
+## Made in P5 (design engineer, for Review 3)
+
+- **One plan per day, on every screen.** Where the model has a forecast for a day, the score decides that day's plan, on Week as on Today. Days ahead follow the calendar, and Week says so in one line. (Found on the iPhone: Week said "Train hard" for Monday while Today said "Train light".)
+- **Week opens on the move.** When a suggestion is open, Week scrolls just far enough to show both days it names, so the session's travel is on screen when it plays.
+- **Session names are named as sessions.** "Your Push session is kept light", not "Push is kept light". "Answer 3 more to save."
+- **Dark control stroke** reuses `#6B7C8D`. No new colour.
+- **Polish-length test** is `?pseudo=1` on the web or `EXPO_PUBLIC_PSEUDO=1` on the phone. Review only, no library.
+- **Busy indicator.** One shared component: the native indicator, and a static icon under reduced motion (the exception decided at P4). The calendar connect screen keeps its Back button while it loads.
+
 ## Still open
 
 - Demo phones (decision 7).
-- A lighter dark-theme control stroke: `#5C7189` on raised `#172A3E` is 2.91:1 (needs 3). Propose a value for approval in P1.
+- ~~A lighter dark-theme control stroke~~ Closed in P5: `#6B7C8D` (the light stroke) is reused in dark.
 - Calendar provider name for the mocked OAuth.
 - Definition of "fit" for Plan Fit Rate (proposal: the user's own yes / too hard / too easy answer).
 - Plan thresholds (score band × day type). Person B proposes; approve at Review 2.

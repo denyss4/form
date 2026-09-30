@@ -31,3 +31,10 @@ Goal mode, what-if simulator, Precise food logging, partner sync, coach or B2B d
 - An accuracy summary after day 21, only when the personal-pattern check has run on real logs. Not before: the scripted ratings must never become a number.
 - Settings "Connections" rows always say "Preview". When real sync exists they should show the real state.
 - Plan Fit over more than a week, with a simple week-by-week step. No streak, no reward.
+
+## From P5
+
+- Show the full licence texts in the app (GAPS G39), with the PMData credit in P6.
+- The unrated morning slider keeps its thumb at the "Very low" end. Try hiding the thumb until a first touch.
+- Real Polish copy, reviewed by a native speaker (GAPS G40).
+- Four distinct dark field tints (today all four equal the raised surface).

@@ -1,8 +1,9 @@
 // Every user-facing string lives here (DECISIONS.md #6). English only.
 // Keep strings short enough to survive +30% for Polish (P5 pseudo-localisation test).
 // Wording rules: MASTER_PROMPT §7. Explanations may cite only drivers the model returned.
+import { pseudoLocalise, pseudoRequested } from './pseudo.ts';
 
-export const copy = {
+const base = {
   range: (lo: number, hi: number) => `Likely ${lo}–${hi}`,
   inputsBasis: (used: number, total: number) => `Based on ${used} of ${total} inputs`,
   basis: {
@@ -36,10 +37,10 @@ export const copy = {
     title: 'Today',
     // Why this plan. This is the plan rule (score band x day type), stated plainly. The drivers below explain the score itself.
     why: {
-      hard: (session: string) => `Your score is high, so ${session} stays a hard session.`,
-      toned: (session: string) => `Your score is near a typical day, so ${session} is kept light.`,
-      lightSession: (session: string) => `${session} is a light session.`,
-      lowSession: (session: string) => `Your score is low, so ${session} gives way to recovery.`,
+      hard: (session: string) => `Your score is high, so your ${session} session stays hard.`,
+      toned: (session: string) => `Your score is near a typical day, so your ${session} session is kept light.`,
+      lightSession: (session: string) => `Your ${session} session is a light one.`,
+      lowSession: (session: string) => `Your score is low, so your ${session} session gives way to recovery.`,
       deepwork: 'No session planned. A good day for focused work.',
       lowDay: 'Your score is low, so today is for recovery.',
       travelDay: 'A travel day, so today is for recovery.',
@@ -79,7 +80,7 @@ export const copy = {
     close: 'Close',
     save: 'Save log',
     effort: {
-      question: (session: string) => `How hard was ${session}?`,
+      question: (session: string) => `How hard was your ${session} session?`,
       skipped: 'Skipped',
       easy: 'Easy',
       moderate: 'Moderate',
@@ -94,7 +95,7 @@ export const copy = {
       tooHard: 'Too hard',
       tooEasy: 'Too easy',
     },
-    remaining: (n: number) => (n === 1 ? 'One more to save.' : `${n} more to save.`),
+    remaining: (n: number) => (n === 1 ? 'Answer one more to save.' : `Answer ${n} more to save.`),
     ring: (done: number, total: number) => `${done} of ${total} answered`,
   },
 
@@ -169,6 +170,7 @@ export const copy = {
 
   week: {
     title: 'Week',
+    planNote: "Plans for days ahead follow your calendar. Each morning's score can change them.",
     coverage: (found: number, total: number) => `Events found for ${found} of ${total} days.`,
     lowConfidence: 'Most day types are guessed from the weekday.',
     guessed: 'guessed from the weekday',
@@ -434,4 +436,7 @@ export const copy = {
   },
 } as const;
 
-export type InputId = keyof typeof copy.inputs;
+// The Polish-length test swaps in a grown copy of every string (see pseudo.ts). A normal run uses the real one.
+export const copy: typeof base = pseudoRequested() ? pseudoLocalise(base) : base;
+
+export type InputId = keyof typeof base.inputs;

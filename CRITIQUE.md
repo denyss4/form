@@ -23,9 +23,9 @@ The dial is the identity element and it works: a 270° arc with the likely range
 | 7 | Accessibility | Disabled controls use 0.4 opacity. WCAG exempts inactive controls, but the label is hard to read | 🟢 Minor | Opacity values are proposals (GAPS G20). Revisit at Review 2 with the device |
 | 8 | Accessibility | The ScoreDial track at 16% opacity is about 1.2:1. It marks where 100 sits, but the value is also given as text, so no information is lost | 🟢 Minor | Accepted. Noted so a reviewer does not read it as a miss |
 | 9 | Consistency | The dev picker's selected pill looks like a primary button. Log options in P3 need a selected state with a checkmark (Master §6), not this pill | 🟢 Minor | Dev-only. Build a separate `Option` in P3 |
-| 10 | Six identical "Inside the likely range" lines in a row | Banned pattern 3, in spirit | 🟡 Moderate | **Fixed.** The user decided: one summary line, and a marker only for a day outside the range. The outside state is in `?state=outside` and `/gallery/range` |
-| 11 | The "Connecting" indicator loops | Motion: no loops | 🟢 Minor | **Decided.** Indeterminate indicator plus "Connecting to your calendar"; static icon under reduced motion. An exception, recorded in DECISIONS.md |
-| 12 | With ±17.2, every scripted day lands inside the range, so "6 of 6 days landed inside the likely range" can read as accuracy | Never invent accuracy | 🟡 Moderate | **Argued, then the user decided to show it.** It is a count, not a score, and the range is not a calibrated interval (`model.json`). The screen still says "Too few days to read much" under 3 days, and the demo note says the ratings are scripted. Re-check the wording at Review 3 |
+| 10 | Consistency | Driver values are whole points (+6, −4, −2) and cannot sum to the score, and the heading "Why 51" implies they explain all of it. They explain the difference from a typical day, and only the top three are shown | 🟡 Moderate | Deferred to P3 copy review. Candidate heading "What moved it". Each row already says "vs. a typical day" |
+| 11 | Empty state | The day-1 dial shows the track and "No score yet" but no action. Master §7: empty states invite one action | 🟡 Moderate | Deferred to P3, where the Today day-1 state carries the "log" action. The gallery shows the dial alone |
+| 12 | Interaction | Pressed secondary and text-only buttons look close to default in a still image. The press is scale 0.97 plus opacity for 100 ms, which needs a hand to judge | 🟢 Minor | Judge on the device |
 
 ### Fixed during P1 (found while building and reviewing)
 
@@ -119,9 +119,38 @@ Three-line layout plans are at the top of each screen file. Progress: job "show 
 | 7 | The live flow showed "Train light" for a day Today called "Deep-work day": Progress used the calendar week while Today had no calendar | Facts must agree across screens | 🔴 Critical | **Fixed.** Progress uses the same week rule as Today. Re-run live: Mon 5 shows "Too easy, Deep-work day" |
 | 8 | "You logged on 7 of the last 7 days" did not move after logging tonight, and the partial state still said 7 | Explain every number | 🟡 Moderate | **Fixed.** The window is the 7 days ending today, and the review states thin it out |
 | 9 | Skeleton for the ring was a rounded square | Loading in the final shape | 🟢 Minor | **Fixed.** `Skeleton round` |
-| 10 | Six identical "Inside the likely range" lines in a row | Banned pattern 3 (identical repeated blocks), in spirit | 🟡 Moderate | **Open.** Kept so the outside-range case has an explicit state; proposal in `LATER.md`: show it only for exceptions |
-| 11 | The "Connecting" spinner loops | Motion: no loops | 🟢 Minor | **Open.** GAPS G36 |
-| 12 | With ±17.2, every scripted day lands inside the range. "Inside" is not evidence of accuracy | Never invent accuracy | 🟡 Moderate | **Argued.** No summary count is shown, only the per-day line. The caption says what the 21-day check will do, and nothing more |
+| 10 | Six identical "Inside the likely range" lines in a row | Banned pattern 3, in spirit | 🟡 Moderate | **Fixed.** The user decided: one summary line, and a marker only for a day outside the range. The outside state is in `?state=outside` and `/gallery/range` |
+| 11 | The "Connecting" indicator loops | Motion: no loops | 🟢 Minor | **Decided.** Indeterminate indicator plus "Connecting to your calendar"; static icon under reduced motion. An exception, recorded in DECISIONS.md |
+| 12 | With ±17.2, every scripted day lands inside the range, so "6 of 6 days landed inside the likely range" can read as accuracy | Never invent accuracy | 🟡 Moderate | **Argued, then the user decided to show it.** It is a count, not a score, and the range is not a calibrated interval (`model.json`). The screen still says "Too few days to read much" under 3 days, and the demo note says the ratings are scripted. Re-check the wording at Review 3 |
 
 Pros: one number per screen, no tiles, no card in a card, hairlines and space only. The felt/forecast markers differ by shape (dot and ring), not colour. The permission previews say what would happen, then say plainly that nothing did.
 Cons: Progress was long and pushed the Felt vs forecast link below the first screen. **Answered by the user:** keep 7 days, one line each, link under the summary. Built; all six scripted days and the link now sit on the first screen at 390×844.
+
+## Device review: iPhone, Expo Go (stage: refinement)
+
+Screenshots: `docs/screens/device/` (9 stills from the user's iPhone, 375 pt wide, Expo Go on SDK 57). First look at the app on a real screen. Not seen from these stills: haptics, the reveal at speed, Reduce Motion, VoiceOver, Dynamic Type, and the Felt vs forecast, Health data, Calendar changes and onboarding screens.
+
+| # | Finding | Evidence | Severity | Status |
+|---|---|---|---|---|
+| 1 | Week said "Train hard" for Monday while Today said "Train light" for the same day. Week's plan ignored the score | `iphone-week` vs `iphone-today-top` | 🔴 Critical | **Fixed.** `withScores` gives a forecast day its plan from the score, on both screens. Tested. Week now reads "Train light" |
+| 2 | The suggestion footer hid Thursday, so the move's animation (Thursday to Wednesday) would start off screen | `iphone-week` | 🟡 Moderate | **Fixed.** Week scrolls to show both days above the footer |
+| 3 | Content scrolls behind the status bar on Today ("Based on 11 of 11 inputs" runs under the clock) | `iphone-today-scrolled` | 🟡 Moderate | **Fixed in code** (a strip under the status bar, opacity only). Not testable on the web, where the inset is 0. Check on the phone |
+| 4 | "so Push is kept light" reads as a verb | `iphone-today-top` | 🟡 Moderate | **Fixed.** "so your Push session is kept light" |
+| 5 | "3 more to save." is ambiguous | `iphone-evening-log` | 🟢 Minor | **Fixed.** "Answer 3 more to save." |
+| 6 | Expo Go's blue tools button covers our Settings gear and some content | every still | 🟡 Moderate for the demo | **Not ours.** GAPS G37: hide it in Expo Go or demo from a development build |
+| 7 | Low Power Mode is on in every still | battery icon | Info | GAPS G38 |
+| 8 | "The full texts are in assets/licenses" is a repository path | `iphone-settings-connections` | 🟢 Minor | Open, GAPS G39 |
+| 9 | The unrated morning slider keeps its thumb at the "Very low" end next to "Not rated" | `iphone-today-scrolled` | 🟢 Minor | Open, LATER.md |
+| 10 | The morning check-in, the model's strongest input, is below the fold on a real phone (Review 2 finding 6) | `iphone-today-top` | 🟡 Moderate | Open. Question for Review 3 |
+| 11 | Sunday, guessed from the weekday, still shows a confident "Recover" label (GAPS G27) | `iphone-week-scrolled` | 🟡 Moderate | Open. Question for Review 3 |
+
+What the phone confirms: Manrope and Source Sans render correctly; the dial, the range bracket and the plan field look as designed, with the field running under the status bar; safe areas and the home indicator are right; the tab bar labels are not clipped; Progress's one-line rows fit at 375 pt; the consent choices keep equal weight with a check for the chosen one; the evening log's four groups fit one screen without scrolling.
+
+## P5 checks: reduced motion, Polish length, dark contrast
+
+Screenshots: `docs/screens/p5/`. Web preview at 375 × 812, the iPhone's size.
+
+- **Reduced-motion pass.** Every animated file was listed and read. Seven already honoured it (press, choice options, completion ring, sheet, reveal, move marker, intro mark). Two did not: the busy indicator in `Button` (loading) and on the calendar connect screen. Both now use one `Busy` component: the native indicator normally, a static icon under reduced motion. The connect screen also lost its disappearing Back button. The screens were viewed on this machine, which reports reduced motion. Not yet seen on the phone with Reduce Motion on.
+- **Polish-length test.** `?pseudo=1` grows every string in `copy.ts` by 32% in total (382 strings, with Polish letters; a test checks it, and that numbers are untouched). Viewed at 375 pt: Today, the evening log, Week, Consent, Connect calendar, Progress, Felt vs forecast. No clipped, truncated or overlapping text. The tightest spot is Progress: "Deep-work day" and the status share one line, and the plan label wraps inside its own column when it has to. Not viewed: Settings, Health data, Calendar changes, onboarding (same components). Driver labels baked into the fixture JSON are not grown (GAPS G40).
+- **Dark contrast.** The gallery, recomputed: the control stroke passes 3:1 on canvas, raised and all four fields (lowest 3.40:1). GAPS G9 closed.
+- **Builds.** `npm run check`, 26 tests, and `expo export` for both iOS and Android exit 0.

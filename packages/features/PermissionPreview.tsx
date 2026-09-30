@@ -5,13 +5,11 @@
 // (what happened and what to do), and consent off. The indicator is a decided exception to "no loops" (DECISIONS.md): there is no real progress to show.
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
-import { useReducedMotion } from 'react-native-reanimated';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import LoaderCircle from 'lucide-react-native/icons/loader-circle';
 
-import { size, space } from '@tokens';
-import { Button, InlineMessage, oneOf, ScreenHeader, Text, useIconSize, useTheme } from '@ui';
+import { space } from '@tokens';
+import { Busy, Button, InlineMessage, oneOf, ScreenHeader, Text, useTheme } from '@ui';
 
 export interface PermissionCopy {
   title: string;
@@ -42,9 +40,6 @@ export function PermissionPreview({
   const { color } = useTheme();
   const router = useRouter();
   const params = useLocalSearchParams<{ state?: string; motion?: string }>();
-  // Review only: ?motion=full shows the moving indicator even when the device asks for reduced motion.
-  const reduceMotion = useReducedMotion() && params.motion !== 'full';
-  const iconPx = useIconSize(size.icon);
   const [phase, setPhase] = useState<'idle' | 'loading' | 'done'>('idle');
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -74,11 +69,7 @@ export function PermissionPreview({
 
         {view === 'loading' ? (
           <View style={styles.progress} accessibilityRole="progressbar" accessibilityLabel={copy.reading}>
-            {reduceMotion ? (
-              <LoaderCircle color={color.text.primary} size={iconPx} strokeWidth={size.outline} />
-            ) : (
-              <ActivityIndicator color={color.text.primary} />
-            )}
+            <Busy color={color.text.primary} forceMotion={params.motion === 'full'} />
             <Text variant="bodyStrong">{copy.reading}</Text>
           </View>
         ) : view === 'done' ? (

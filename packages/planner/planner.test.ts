@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { addDays, shiftIso, weekdayOf } from './dates.ts';
+import { planForDay, withScores } from './plan.ts';
 import { applyMove, buildWeek, classify, coverage, suggestMove } from './week.ts';
 import type { CalEvent } from './week.ts';
 
@@ -69,4 +70,15 @@ test('days without events are guessed from the weekday, and no suggestion appear
   assert.equal(partial[3].source, 'guessed');
   assert.deepEqual(partial[3].tags, ['work']);
   assert.equal(suggestMove(partial), null);
+});
+
+test('a forecast score decides a day\'s plan on Week the same way it does on Today', () => {
+  const week = buildWeek(events, weekStart);
+  assert.equal(week[0].plan, 'hard'); // day type and session only
+  const typical = withScores(week, (date) => (date === week[0].date ? 51 : undefined));
+  assert.equal(typical[0].plan, planForDay(51, week[0].tags, week[0].sessions)); // what Today shows
+  assert.equal(typical[0].plan, 'light');
+  assert.deepEqual(typical.slice(1).map((d) => d.plan), week.slice(1).map((d) => d.plan)); // days without a forecast are unchanged
+  assert.equal(withScores(week, () => 65)[0].plan, 'hard');
+  assert.equal(withScores(week, () => 30)[0].plan, 'recover');
 });

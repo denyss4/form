@@ -1,11 +1,12 @@
 // Layout plan. Job: one clear action. Focal element: the label. Quiet: everything else, no icons, no shadow.
 // One primary per screen (5.5 #8): Ink solid, Dawn text. Secondary: Ink outline. Text-only: for low-emphasis and destructive actions.
 // States: default, pressed, focused, disabled, loading (MASTER_PROMPT §6). Press = scale 0.97 + opacity, 100 ms, transform and opacity only.
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { opacity, radius, size, space } from '@tokens';
 
+import { Busy } from './Busy';
 import { FocusRing, useFocus } from './focus';
 import { Text } from './Text';
 import { useTheme } from './theme';
@@ -81,7 +82,7 @@ export function Button({
         </Text>
         {loading ? (
           <View style={styles.spinner} pointerEvents="none">
-            <ActivityIndicator color={labelColor} />
+            <Busy small color={labelColor} />
           </View>
         ) : null}
         <FocusRing visible={focus.focused || forceState === 'focused'} />

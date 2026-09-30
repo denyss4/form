@@ -5,11 +5,12 @@
 // States: default, loading, day 1, partial input, low confidence, error. `?state=` holds one for review.
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   Easing,
   interpolate,
   runOnJS,
+  useAnimatedScrollHandler,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
@@ -63,7 +64,7 @@ export default function Today() {
   const data = useToday(scenario, calendarOn);
   const history = useHistory();
   const [logOpen, setLogOpen] = useState(params.log === 'open');
-  const scroll = useRef<ScrollView>(null);
+  const scroll = useRef<Animated.ScrollView>(null);
 
   // The morning reveal. ?reveal=0.4 holds it at 40% for review.
   const held = params.reveal === undefined || Number.isNaN(Number(params.reveal))
@@ -112,6 +113,19 @@ export default function Today() {
   const fieldColor = plan ? color.plan[plan].field : color.bg.canvas;
   const settle = useAnimatedStyle(() => ({
     opacity: interpolate(progress.value, [0, motion.reveal.field], [0, 1], 'clamp'),
+  }));
+
+  // A strip under the status bar, so content scrolling up never runs behind the clock (found on the iPhone). It shows the plan field
+  // while the field is behind it, then the canvas. Opacity only.
+  const scrollY = useSharedValue(0);
+  const fieldHeight = useSharedValue(0);
+  const onScroll = useAnimatedScrollHandler((e) => {
+    scrollY.set(e.contentOffset.y);
+  });
+  const edge = useAnimatedStyle(() => ({
+    opacity:
+      interpolate(fieldHeight.value - insets.top - scrollY.value, [0, 8], [0, 1], 'clamp') *
+      interpolate(progress.value, [0, motion.reveal.field], [0, 1], 'clamp'),
   }));
 
   const day = data.kind === 'loading' ? undefined : data.day;
@@ -302,8 +316,11 @@ export default function Today() {
 
   return (
     <View style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
-      <ScrollView ref={scroll} contentContainerStyle={styles.content}>
-        <View style={[styles.field, { paddingTop: insets.top + space.xs }]}>
+      <Animated.ScrollView ref={scroll} onScroll={onScroll} scrollEventThrottle={16} contentContainerStyle={styles.content}>
+        <View
+          onLayout={(e) => fieldHeight.set(e.nativeEvent.layout.height)}
+          style={[styles.field, { paddingTop: insets.top + space.xs }]}
+        >
           <Animated.View
             pointerEvents="none"
             style={[StyleSheet.absoluteFill, styles.fieldBg, { backgroundColor: fieldColor }, settle]}
@@ -311,7 +328,11 @@ export default function Today() {
           {field}
         </View>
         {below}
-      </ScrollView>
+      </Animated.ScrollView>
+
+      <View pointerEvents="none" style={[styles.strip, { height: insets.top, backgroundColor: color.bg.canvas }]}>
+        <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: fieldColor }, edge]} />
+      </View>
 
       {footer ? (
         <View
@@ -339,6 +360,7 @@ export default function Today() {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   content: { paddingBottom: space.lg },
+  strip: { position: 'absolute', top: 0, left: 0, right: 0 },
   field: { paddingHorizontal: space.margin, paddingBottom: space.lg, gap: space.sm },
   fieldBg: { borderBottomLeftRadius: radius.sheet, borderBottomRightRadius: radius.sheet },
   lead: { gap: space.xs, marginTop: space.xs },

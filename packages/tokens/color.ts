@@ -34,7 +34,7 @@ export const lightColor: ColorTokens = {
 
 // Dark theme: defined by the Master, secondary for the demo.
 // [GAP G8: the dark hairline and the dark plan-field tints are not specified. Placeholders reuse `raised`; no new colour.]
-// [GAP G9: the control stroke on `raised` is 2.91:1, below 3:1. The spec value is kept until a replacement is approved.]
+// [GAP G9, closed in P5: the spec value #5C7189 was 2.91:1 on `raised`. The light control stroke is reused: 4.05:1 on canvas, 3.40:1 on raised.]
 export const darkColor: ColorTokens = {
   bg: {
     canvas: '#0E1B2A',
@@ -45,7 +45,7 @@ export const darkColor: ColorTokens = {
     secondary: '#9DB0C3',
   },
   stroke: {
-    control: '#5C7189',
+    control: '#6B7C8D',
     hairline: '#172A3E',
   },
   plan: {

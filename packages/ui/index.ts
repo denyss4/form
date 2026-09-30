@@ -1,3 +1,4 @@
+export { Busy } from './Busy';
 export { Button } from './Button';
 export type { ButtonProps, ButtonVariant } from './Button';
 export { ChoiceGroup } from './ChoiceGroup';

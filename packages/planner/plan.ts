@@ -4,7 +4,7 @@
 // [GAP G2: the thresholds and the rules below are proposals, not model facts. The model gives a score and a range; it does not
 //  say what to do. Approve at Review 2.]
 import type { PlanId } from '../tokens/color.ts';
-import type { DayTag, Session } from './week.ts';
+import type { DayTag, Session, WeekDay } from './week.ts';
 
 export type ScoreBand = 'low' | 'mid' | 'high';
 
@@ -25,4 +25,15 @@ export function planForDay(score: number, tags: DayTag[], sessions: Session[]): 
   if (sessions.length > 0) return band === 'high' && sessions.some((s) => s.intensity === 'hard') ? 'hard' : 'light';
   if (tags.includes('travel') || !tags.includes('work')) return 'recover';
   return 'deepwork';
+}
+
+/**
+ * The week's plans come from day type and session intensity. Where the model has a forecast for a day, the score decides
+ * instead, so Week and Today never give one day two different plans (found on the iPhone: Week said "Train hard", Today "Train light").
+ */
+export function withScores(week: WeekDay[], scoreOf: (date: string) => number | undefined): WeekDay[] {
+  return week.map((day) => {
+    const score = scoreOf(day.date);
+    return score === undefined ? day : { ...day, plan: planForDay(score, day.tags, day.sessions) };
+  });
 }

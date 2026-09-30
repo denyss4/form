@@ -42,6 +42,7 @@ const LOW_CONFIDENCE_DAYS = 2; // this many days with events, or fewer, is mostl
 
 interface Slot {
   y: number; // the row's top, in the list
+  h: number; // the row's height
   slot: number; // the session line's top, inside the row
 }
 
@@ -122,8 +123,26 @@ export default function Week() {
   // The session marker: measured once at rest, then moved with translateY.
   const layouts = useRef<Record<string, Slot>>({});
   const record = (date: string, patch: Partial<Slot>) => {
-    const previous = layouts.current[date] ?? { y: 0, slot: 0 };
+    const previous = layouts.current[date] ?? { y: 0, h: 0, slot: 0 };
     layouts.current[date] = { ...previous, ...patch };
+    showTheMove();
+  };
+
+  // When the week opens with a suggestion, scroll so both days it names sit above the footer. The footer covers the lower third,
+  // and the session's travel between the two rows has to be visible when it plays (found on the iPhone: Thursday was hidden).
+  const list = useRef<ScrollView>(null);
+  const listTop = useRef<number | null>(null);
+  const shown = useRef(false);
+  const viewHeight = useRef(0);
+  const showTheMove = () => {
+    if (shown.current || !suggestion || app.suggestion !== 'open' || listTop.current === null || viewHeight.current === 0) return;
+    const to = layouts.current[suggestion.toDate];
+    const from = layouts.current[suggestion.fromDate];
+    if (!to?.h || !from?.h) return;
+    shown.current = true;
+    // The least scroll that puts both rows fully above the footer, so the header stays in view as long as it can.
+    const lowest = Math.max(to.y + to.h, from.y + from.h);
+    list.current?.scrollTo({ y: Math.max(0, listTop.current + lowest - viewHeight.current + space.sm), animated: false });
   };
   const [moving, setMoving] = useState(false);
   const [startY, setStartY] = useState(0);
@@ -188,6 +207,11 @@ export default function Week() {
     const markerTime = suggestion ? original.find((d) => d.date === suggestion.fromDate)?.sessions[0]?.start : undefined;
     body = (
       <>
+        <View style={styles.notes}>
+          <Text variant="caption" tone="secondary">
+            {copy.week.planNote}
+          </Text>
+        </View>
         {cov.eventDays < cov.total ? (
           <View style={styles.notes}>
             <Text variant="caption" tone="secondary">
@@ -200,14 +224,19 @@ export default function Week() {
             ) : null}
           </View>
         ) : null}
-        <View>
+        <View
+          onLayout={(e) => {
+            listTop.current = e.nativeEvent.layout.y;
+            showTheMove();
+          }}
+        >
           {week.map((day, i) => (
             <Row
               key={day.date}
               day={day}
               divider={i < week.length - 1}
               hideSlot={hidden.includes(day.date)}
-              onRow={(e) => record(day.date, { y: e.nativeEvent.layout.y })}
+              onRow={(e) => record(day.date, { y: e.nativeEvent.layout.y, h: e.nativeEvent.layout.height })}
               onSlot={(e) => record(day.date, { slot: e.nativeEvent.layout.y })}
             />
           ))}
@@ -263,7 +292,14 @@ export default function Week() {
 
   return (
     <SafeAreaView edges={['top']} style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        ref={list}
+        onLayout={(e) => {
+          viewHeight.current = e.nativeEvent.layout.height;
+          showTheMove();
+        }}
+        contentContainerStyle={styles.content}
+      >
         {header}
         {body}
       </ScrollView>

@@ -39,7 +39,7 @@
     "test:model": "node --test packages/model/adapter.test.ts",
     "verify:model": "node packages/model/verify.mjs",
     "fixtures": "node fixtures/build.mjs",
-    "test": "node --test packages/model/adapter.test.ts packages/planner/planner.test.ts packages/planner/tonight.test.ts packages/planner/progress.test.ts"
+    "test": "node --test packages/model/adapter.test.ts packages/planner/planner.test.ts packages/planner/tonight.test.ts packages/planner/progress.test.ts packages/copy/pseudo.test.ts"
   },
   "private": true
 }

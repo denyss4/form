@@ -97,18 +97,18 @@ test('the reason line uses only drivers the model returned', async () => {
   // The plan's reason (the rule) comes first, then why the score is what it is (the drivers).
   assert.equal(
     explain('light', drivers, monday),
-    'Your score is near a typical day, so Push is kept light. Training load and alcohol are pulling your score down.',
+    'Your score is near a typical day, so your Push session is kept light. Training load and alcohol are pulling your score down.',
   );
   assert.equal(
     explain('hard', [drivers[0]], { ...monday, band: 'high' as const }),
-    'Your score is high, so Push stays a hard session. Recent readiness is helping.',
+    'Your score is high, so your Push session stays hard. Recent readiness is helping.',
   );
   assert.equal(
     explain('deepwork', [], { band: 'mid', tags: ['work'], sessions: [] }),
     'No session planned. A good day for focused work. Your score is at your usual level.',
   );
   const low = explain('recover', [], { band: 'low', tags: ['work', 'training'], sessions: [push] });
-  assert.equal(low, 'Your score is low, so Push gives way to recovery. Your score is at your usual level.');
+  assert.equal(low, 'Your score is low, so your Push session gives way to recovery. Your score is at your usual level.');
   // Never a driver the model did not return: no sleep anywhere.
   assert.ok(!/sleep/i.test(explain('light', drivers, monday)) && !/sleep/i.test(low));
 });
