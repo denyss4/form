@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Form DailyLog v2",
+  "description": "One day's log. `readiness` is that morning's check-in and becomes the label for the day before. Only `date` is required; missing fields are filled with the model's typical value and listed in missing_inputs.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["date"],
+  "properties": {
+    "date": {"type": "string", "format": "date", "description": "Calendar day this log describes (YYYY-MM-DD)"},
+    "tags": {"type": "array", "items": {"enum": ["work", "training", "rest", "travel", "social"]}, "uniqueItems": true, "description": "Day-type tags; several can apply"},
+    "tomorrow_tags": {"type": "array", "items": {"enum": ["work", "training", "rest", "travel", "social"]}, "uniqueItems": true, "description": "Planned tags for tomorrow; if absent, Mon-Fri counts as a workday"},
+    "readiness": {"type": "number", "minimum": 0, "maximum": 100, "description": "Morning check-in: how ready do you feel (0-10 slider x 10)"},
+    "readiness_history": {"type": "array", "maxItems": 6, "items": {"type": ["number", "null"], "minimum": 0, "maximum": 100}, "description": "Morning readiness for the 6 days before, oldest first; fill with withHistory()"},
+    "sleep_hours": {"type": "number", "minimum": 0, "maximum": 24, "description": "Sleep of the night that ended this morning"},
+    "sleep_quality": {"type": "number", "minimum": 1, "maximum": 5},
+    "mood": {"type": "number", "minimum": 1, "maximum": 5},
+    "stress": {"type": "number", "minimum": 1, "maximum": 5},
+    "fatigue": {"type": "number", "minimum": 1, "maximum": 5},
+    "soreness": {"type": "number", "minimum": 1, "maximum": 5},
+    "workout_minutes": {"type": "number", "minimum": 0, "maximum": 1440, "description": "Total training minutes today; 0 = no training"},
+    "workout_effort": {"type": "number", "minimum": 1, "maximum": 10, "description": "Perceived effort of today's training (default 5)"},
+    "load_history": {"type": "array", "maxItems": 6, "items": {"type": ["number", "null"], "minimum": 0}, "description": "Training load (minutes x effort) for the 6 days before; fill with withHistory()"},
+    "steps": {"type": "number", "minimum": 0, "maximum": 200000},
+    "calories_burned": {"type": "number", "minimum": 0, "maximum": 15000},
+    "very_active_minutes": {"type": "number", "minimum": 0, "maximum": 1440},
+    "alcohol": {"type": "boolean"},
+    "calories_consumed": {"type": "number", "minimum": 0, "maximum": 15000, "description": "Stored for Goal mode and future models; not used by the v2 score"},
+    "protein_g": {"type": "number", "minimum": 0, "maximum": 1000, "description": "Not used by the v2 score"},
+    "fat_g": {"type": "number", "minimum": 0, "maximum": 1000, "description": "Not used by the v2 score"},
+    "carbs_g": {"type": "number", "minimum": 0, "maximum": 2000, "description": "Not used by the v2 score"},
+    "notes": {"type": "string", "maxLength": 2000}
+  }
+}

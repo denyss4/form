@@ -1,0 +1,31 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@tokens": [
+        "./packages/tokens/index.ts"
+      ],
+      "@model": [
+        "./packages/model/index.ts"
+      ],
+      "@model/*": [
+        "./packages/model/*"
+      ],
+      "@copy": [
+        "./packages/copy/copy.ts"
+      ]
+    }
+  },
+  "include": [
+    "app",
+    "packages",
+    "*.ts",
+    "*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "packages/**/*.test.ts"
+  ]
+}

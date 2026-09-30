@@ -1,0 +1,185 @@
+{
+ "format": "Form readiness model v2",
+ "status": "ready",
+ "algorithm": "ridge",
+ "data_source": "personal",
+ "pair_count": 137,
+ "minimum_pairs": 21,
+ "target": "Self-rated readiness on the following morning, 0-100",
+ "feature_names": [
+  "readiness_today",
+  "readiness_7d",
+  "readiness_dev",
+  "sleep_hours",
+  "sleep_quality",
+  "mood",
+  "stress",
+  "fatigue",
+  "soreness",
+  "training_load",
+  "training_load_7d",
+  "workout_minutes",
+  "is_training_day",
+  "steps",
+  "calories_burned",
+  "very_active_minutes",
+  "alcohol",
+  "tomorrow_is_workday"
+ ],
+ "groups": {
+  "Recent readiness": [
+   "readiness_today",
+   "readiness_7d",
+   "readiness_dev"
+  ],
+  "Sleep": [
+   "sleep_hours",
+   "sleep_quality"
+  ],
+  "Mood and stress": [
+   "mood",
+   "stress"
+  ],
+  "Fatigue and soreness": [
+   "fatigue",
+   "soreness"
+  ],
+  "Training load": [
+   "training_load",
+   "training_load_7d",
+   "workout_minutes",
+   "is_training_day"
+  ],
+  "Daily activity": [
+   "steps",
+   "calories_burned",
+   "very_active_minutes"
+  ],
+  "Alcohol": [
+   "alcohol"
+  ],
+  "Tomorrow's day type": [
+   "tomorrow_is_workday"
+  ]
+ },
+ "artifact": {
+  "fill": [
+   70.0,
+   61.42857142857143,
+   3.095238095238095,
+   5.816666666666666,
+   3.0,
+   3.0,
+   3.0,
+   3.0,
+   3.0,
+   0.0,
+   588.81,
+   0.0,
+   0.0,
+   12231.0,
+   3533.56,
+   39.0,
+   0.0,
+   1.0
+  ],
+  "mean": [
+   62.846715328467155,
+   61.93065693430654,
+   0.7309697601668405,
+   5.893065693430656,
+   2.72992700729927,
+   2.9708029197080292,
+   2.875912408759124,
+   2.5839416058394162,
+   2.562043795620438,
+   73.91856447688563,
+   514.6798783454984,
+   12.193552311435523,
+   0.22627737226277372,
+   12697.189781021898,
+   3621.1670802919707,
+   48.76642335766423,
+   0.0,
+   0.7007299270072993
+  ],
+  "scale": [
+   13.559757179182022,
+   5.956970406197831,
+   12.36223397345462,
+   0.7880459328478558,
+   0.4757422112934407,
+   0.26858933566385573,
+   0.32968145374120345,
+   0.5216808287651281,
+   0.524735788485005,
+   153.29443600557363,
+   361.12392148968166,
+   25.282609550719627,
+   0.4184207488457378,
+   4051.4986062793973,
+   510.9752308739218,
+   32.39677887334192,
+   1.0,
+   0.4579383106965876
+  ],
+  "coefficients": [
+   2.2313378899883967,
+   1.3145682165932644,
+   3.2451114964080086,
+   -1.3532747215593057,
+   1.5039806503333777,
+   -0.7263222212309404,
+   -0.17844125260601157,
+   0.07821571712500336,
+   -1.9924173884478145,
+   -3.3881739609336217,
+   -0.2913760984241321,
+   -3.016914722812027,
+   -3.824512710653187,
+   -1.0105009783423475,
+   -1.9700651371508302,
+   1.1029006132867478,
+   0.0,
+   -0.6387261930900778
+  ],
+  "intercept": 62.335766423357654,
+  "baseline": 62.33576642335766,
+  "alpha": 10.0,
+  "reference": [
+   70.0,
+   61.42857142857143,
+   3.095238095238095,
+   5.816666666666666,
+   3.0,
+   3.0,
+   3.0,
+   3.0,
+   3.0,
+   0.0,
+   588.81,
+   0.0,
+   0.0,
+   12231.0,
+   3533.56,
+   39.0,
+   0.0,
+   1.0
+  ]
+ },
+ "validation": {
+  "method": "Chronological holdout on this user's own days; alpha tuned on earlier days",
+  "training_pairs": 109,
+  "test_pairs": 28,
+  "mae_by_candidate": {
+   "population": 12.75,
+   "personal_mean": 13.89,
+   "ridge": 7.14
+  },
+  "chosen": "ridge",
+  "mae": 7.14,
+  "error_band": 8.5
+ },
+ "trained_at": "2026-09-30T10:44:18.221296+00:00",
+ "version": "v2-ridge-f7967d59e7f0"
+}

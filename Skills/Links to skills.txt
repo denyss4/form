@@ -1,0 +1,5 @@
+`npx skills add coreyhaines31/marketingskills`
+`npx skills@latest add emilkowalski/skills`
+`npx skills add https://github.com/wshobson/agents --skill wcag-audit-patterns`
+`npx skills add https://github.com/shadcn-ui/ui --skill shadcn`
+`npx skills add https://github.com/ibelick/ui-skills --skill fixing-accessibility`

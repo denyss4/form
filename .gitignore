@@ -1,0 +1,26 @@
+# Dependencies and build output
+node_modules/
+.expo/
+dist/
+web-build/
+ios/
+android/
+*.log
+npm-debug.*
+.DS_Store
+.env*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.tsbuildinfo
+expo-env.d.ts
+
+# Not part of the app: kept out of git and out of Metro (see metro.config.js)
+pmdata/
+form-model/
+FORM-ML-Kit/
+FORM-ML-Kit-v2/
+hiring-agent/
+Inspirations/

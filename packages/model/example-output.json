@@ -1,0 +1,27 @@
+{
+  "feature_date": "2026-10-04",
+  "date": "2026-10-05",
+  "score": 51,
+  "range": [
+    34,
+    68
+  ],
+  "raw_score": 50.53211807291683,
+  "top_drivers": [
+    {
+      "driver": "Recent readiness",
+      "points": 7.4
+    },
+    {
+      "driver": "Training load",
+      "points": -4.4
+    },
+    {
+      "driver": "Alcohol",
+      "points": -1.5
+    }
+  ],
+  "missing_inputs": [],
+  "algorithm": "ridge",
+  "model_version": "v2-ridge-ef303c083a1a"
+}

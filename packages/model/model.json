@@ -1,0 +1,179 @@
+{
+ "format": "Form readiness model v2",
+ "status": "ready",
+ "algorithm": "ridge",
+ "data_source": "pmdata",
+ "pair_count": 1720,
+ "minimum_pairs": 21,
+ "target": "Self-rated readiness on the following morning, 0-100",
+ "feature_names": [
+  "readiness_today",
+  "readiness_7d",
+  "readiness_dev",
+  "sleep_hours",
+  "sleep_quality",
+  "mood",
+  "stress",
+  "fatigue",
+  "soreness",
+  "training_load",
+  "training_load_7d",
+  "workout_minutes",
+  "is_training_day",
+  "steps",
+  "calories_burned",
+  "very_active_minutes",
+  "alcohol",
+  "tomorrow_is_workday"
+ ],
+ "groups": {
+  "Recent readiness": [
+   "readiness_today",
+   "readiness_7d",
+   "readiness_dev"
+  ],
+  "Sleep": [
+   "sleep_hours",
+   "sleep_quality"
+  ],
+  "Mood and stress": [
+   "mood",
+   "stress"
+  ],
+  "Fatigue and soreness": [
+   "fatigue",
+   "soreness"
+  ],
+  "Training load": [
+   "training_load",
+   "training_load_7d",
+   "workout_minutes",
+   "is_training_day"
+  ],
+  "Daily activity": [
+   "steps",
+   "calories_burned",
+   "very_active_minutes"
+  ],
+  "Alcohol": [
+   "alcohol"
+  ],
+  "Tomorrow's day type": [
+   "tomorrow_is_workday"
+  ]
+ },
+ "artifact": {
+  "fill": [
+   50.0,
+   50.0,
+   0.0,
+   6.783333333333333,
+   3.0,
+   3.0,
+   3.0,
+   3.0,
+   3.0,
+   0.0,
+   774.5166666666667,
+   0.0,
+   0.0,
+   11655.5,
+   2986.4750000000004,
+   36.0,
+   0.0,
+   1.0
+  ],
+  "mean": [
+   49.424418604651166,
+   49.685229789590196,
+   -0.2098421926910299,
+   6.774844961240304,
+   3.01453488372093,
+   3.182558139534884,
+   2.9290697674418604,
+   2.75,
+   2.8488372093023258,
+   169.77943053046758,
+   1157.9427413886976,
+   30.440145348837202,
+   0.41337209302325584,
+   11758.116279069767,
+   2983.6411802325474,
+   44.979069767441864,
+   0.20813953488372092,
+   0.7127906976744186
+  ],
+  "scale": [
+   17.282370611820298,
+   15.374243180128891,
+   10.665551295376462,
+   1.322539024787932,
+   0.69409328000008,
+   0.5719594758098129,
+   0.6520747351713492,
+   0.61403166345143,
+   0.5395398957265158,
+   276.29171012626693,
+   1257.3640319041363,
+   47.727947445116705,
+   0.4924384283672647,
+   5972.9108616233225,
+   752.7739790204979,
+   43.761637963794186,
+   0.40597717780942977,
+   0.45246007446319314
+  ],
+  "coefficients": [
+   3.3466383145253817,
+   10.547304608655798,
+   0.49929223945648343,
+   -0.08079539504503383,
+   0.5267637815013259,
+   -0.2490960735146255,
+   -0.13235000877816114,
+   -0.6029843450775566,
+   0.06356903903270886,
+   -1.0695616636736847,
+   0.633565816733802,
+   0.343041191317906,
+   -1.4324236002557444,
+   -0.21289537203635783,
+   -0.9575420279647392,
+   0.7612593938324856,
+   -0.6187954745858099,
+   0.6197369721305536
+  ],
+  "intercept": 49.54651162790695,
+  "baseline": 49.54651162790697,
+  "alpha": 10.0,
+  "reference": [
+   50.0,
+   50.0,
+   0.0,
+   6.783333333333333,
+   3.0,
+   3.0,
+   3.0,
+   3.0,
+   3.0,
+   0.0,
+   774.5166666666667,
+   0.0,
+   0.0,
+   11655.5,
+   2986.4750000000004,
+   36.0,
+   0.0,
+   1.0
+  ]
+ },
+ "validation": {
+  "method": "Leave-one-person-out on PMData (16 people); every error is for an unseen person",
+  "mae": 10.75,
+  "baseline_tomorrow_equals_today_mae": 11.44,
+  "error_band": 17.2,
+  "error_band_note": "80th-percentile absolute error for unseen people; not a calibrated interval"
+ },
+ "trained_at": "2026-09-30T10:43:33.972909+00:00",
+ "version": "v2-ridge-ef303c083a1a"
+}

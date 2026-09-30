@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-04",
+  "readiness": 55,
+  "readiness_history": [
+    60,
+    null,
+    70,
+    65,
+    50,
+    58
+  ],
+  "tags": [
+    "training"
+  ],
+  "tomorrow_tags": [
+    "rest"
+  ],
+  "workout_minutes": 75,
+  "workout_effort": 8,
+  "load_history": [
+    0,
+    300,
+    0,
+    450,
+    0,
+    0
+  ],
+  "sleep_hours": 6.1,
+  "sleep_quality": 2,
+  "mood": 3,
+  "stress": 4,
+  "fatigue": 4,
+  "soreness": 4,
+  "alcohol": true,
+  "steps": 14500,
+  "calories_burned": 3100,
+  "very_active_minutes": 80
+}
