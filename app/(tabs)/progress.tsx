@@ -1,5 +1,5 @@
 // Layout plan. Job: show whether the plans fit, in the person's own words. Focal element: the Plan Fit ring and its one sentence.
-// Quiet: the day list, the logging line and the link to Felt vs forecast. No score, no streak, no reward: a process measure (MASTER_PROMPT §2).
+// Quiet: the day list (one line a day) and the logging line. The link to Felt vs forecast sits directly under the summary. No score, no streak, no reward: a process measure (MASTER_PROMPT §2).
 // A Recover day that fit counts the same as a training day that fit. The ring shows answered days only, never more than was answered.
 // States: default, loading, no feedback yet, partial, low confidence, error. `?state=` holds one for review.
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -30,7 +30,7 @@ import {
 const WINDOW = 7; // the ring covers the last week of answers
 const FEW_DAYS = 3; // fewer answered days than this are flagged as too few to read much [GAP G33: a proposal]
 
-function FitRow({ day, divider }: { day: FitDay; divider: boolean }) {
+function FitRow({ day, divider, compact }: { day: FitDay; divider: boolean; compact: boolean }) {
   const { color } = useTheme();
   const status = copy.progress.fit.status[day.fit ?? 'none'];
   return (
@@ -42,11 +42,29 @@ function FitRow({ day, divider }: { day: FitDay; divider: boolean }) {
         divider ? { borderBottomWidth: size.hairline, borderBottomColor: color.stroke.hairline } : undefined,
       ]}
     >
-      <View style={styles.line}>
-        <Text variant="bodyStrong" style={styles.noShrink}>{formatDay(day.date)}</Text>
-        <Text variant="body">{status}</Text>
-      </View>
-      <PlanLabel plan={day.plan} />
+      {compact ? (
+        <View style={styles.oneLine}>
+          <Text variant="bodyStrong" style={styles.dayColumn}>
+            {formatDay(day.date)}
+          </Text>
+          <View style={styles.planColumn}>
+            <PlanLabel plan={day.plan} />
+          </View>
+          <Text variant="body" style={styles.noShrink}>
+            {status}
+          </Text>
+        </View>
+      ) : (
+        <>
+          <View style={styles.line}>
+            <Text variant="bodyStrong" style={styles.noShrink}>
+              {formatDay(day.date)}
+            </Text>
+            <Text variant="body">{status}</Text>
+          </View>
+          <PlanLabel plan={day.plan} />
+        </>
+      )}
     </View>
   );
 }
@@ -62,9 +80,9 @@ function SkeletonBody() {
         </View>
       </View>
       {Array.from({ length: 4 }, (_, i) => (
-        <View key={i} style={styles.row}>
-          <Skeleton width="30%" height={size.icon} />
-          <Skeleton width="42%" />
+        <View key={i} style={[styles.row, styles.oneLine]}>
+          <Skeleton width="22%" />
+          <Skeleton width="40%" height={size.icon} />
         </View>
       ))}
     </View>
@@ -77,7 +95,9 @@ export default function Progress() {
   const params = useLocalSearchParams<{ state?: string }>();
   const scenario = oneOf(params.state, progressScenarios, 'default');
   const data = useProgress(scenario);
-  const stacked = useFontScale() >= 2; // the ring moves above its sentence, so the sentence keeps a readable width
+  const fontScale = useFontScale();
+  const stacked = fontScale >= 2; // the ring moves above its sentence, so the sentence keeps a readable width
+  const compact = fontScale < 1.5; // one line per day; larger text puts the plan on its own line
 
   const header = (
     <ScreenHeader
@@ -134,21 +154,21 @@ export default function Progress() {
                 ) : null}
               </View>
             </View>
-            <View>
-              {shown.map((day, i) => (
-                <FitRow key={day.date} day={day} divider={i < shown.length - 1} />
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.group}>
-            <Text variant="body">{copy.progress.logging(data.logged.days, data.logged.of)}</Text>
             <LinkRow
               label={copy.progress.felt.title}
               caption={copy.progress.felt.note}
               divider={false}
               onPress={() => router.push('/felt-vs-forecast')}
             />
+          </View>
+
+          <View style={styles.group}>
+            <View>
+              {shown.map((day, i) => (
+                <FitRow key={day.date} day={day} divider={i < shown.length - 1} compact={compact} />
+              ))}
+            </View>
+            <Text variant="body">{copy.progress.logging(data.logged.days, data.logged.of)}</Text>
           </View>
         </>
       );
@@ -176,5 +196,8 @@ const styles = StyleSheet.create({
   row: { paddingVertical: space.sm, gap: space.xxs },
   line: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', columnGap: space.sm },
   noShrink: { flexShrink: 0 },
+  oneLine: { flexDirection: 'row', alignItems: 'center', columnGap: space.sm },
+  dayColumn: { width: '22%', flexShrink: 0 },
+  planColumn: { flex: 1 },
   state: { marginTop: space.md, gap: space.sm, alignItems: 'flex-start' },
 });

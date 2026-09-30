@@ -10,6 +10,7 @@ const pages = [
   { href: '/gallery/plan', label: copy.dev.hub.plan },
   { href: '/gallery/dial', label: copy.dev.hub.dial },
   { href: '/gallery/drivers', label: copy.dev.hub.drivers },
+  { href: '/gallery/range', label: copy.dev.hub.range },
   { href: '/gallery/model', label: copy.dev.hub.model },
 ] as const;
 

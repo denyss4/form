@@ -1,14 +1,17 @@
 // Layout plan. Job: ask for one permission, clearly as a preview. Focal element: the primary action. Quiet: the preview note.
 // Both mocked permission screens (Health data, calendar changes) use this. Nothing is connected: a preview says so at the top, and
 // pressing Allow shows what would happen, then says plainly that nothing did (MASTER_PROMPT §8: "screens only, clearly mocked").
-// States: default, loading (over 1 s: progress and a plain line), done, error (what happened and what to do), and consent off.
+// States: default, loading (over 1 s: an indeterminate indicator and a plain line; a static icon under reduced motion), done, error
+// (what happened and what to do), and consent off. The indicator is a decided exception to "no loops" (DECISIONS.md): there is no real progress to show.
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import LoaderCircle from 'lucide-react-native/icons/loader-circle';
 
-import { space } from '@tokens';
-import { Button, InlineMessage, oneOf, ScreenHeader, Text, useTheme } from '@ui';
+import { size, space } from '@tokens';
+import { Button, InlineMessage, oneOf, ScreenHeader, Text, useIconSize, useTheme } from '@ui';
 
 export interface PermissionCopy {
   title: string;
@@ -38,7 +41,10 @@ export function PermissionPreview({
 }) {
   const { color } = useTheme();
   const router = useRouter();
-  const params = useLocalSearchParams<{ state?: string }>();
+  const params = useLocalSearchParams<{ state?: string; motion?: string }>();
+  // Review only: ?motion=full shows the moving indicator even when the device asks for reduced motion.
+  const reduceMotion = useReducedMotion() && params.motion !== 'full';
+  const iconPx = useIconSize(size.icon);
   const [phase, setPhase] = useState<'idle' | 'loading' | 'done'>('idle');
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -68,7 +74,11 @@ export function PermissionPreview({
 
         {view === 'loading' ? (
           <View style={styles.progress} accessibilityRole="progressbar" accessibilityLabel={copy.reading}>
-            <ActivityIndicator color={color.text.primary} />
+            {reduceMotion ? (
+              <LoaderCircle color={color.text.primary} size={iconPx} strokeWidth={size.outline} />
+            ) : (
+              <ActivityIndicator color={color.text.primary} />
+            )}
             <Text variant="bodyStrong">{copy.reading}</Text>
           </View>
         ) : view === 'done' ? (

@@ -44,9 +44,22 @@ Dated 2026-09-30. Source: approval of the Step 1 plan, which accepted every reco
 ## Made in P4 (design engineer, for Review 3)
 
 - Plan Fit counts the days the person answered "Yes" to "Did the plan fit?". A followed Recover day counts like a followed training day. No streak, no points. Each ring arc is one day, in the same order as the list beneath it.
-- The second screen is called "Felt vs forecast", not "Felt vs Measured": nothing on it is measured. It shows each morning's rating beside the forecast, and the likely range. It shows no accuracy number, because the ratings in the demo are scripted.
+- The second screen is called "Felt vs forecast", not "Felt vs Measured": nothing on it is measured. It shows each morning's rating beside the forecast, and the likely range. It shows a count of days inside the range, never an accuracy score, because the ratings in the demo are scripted and the range is not a calibrated interval.
 - The Health data and Calendar changes screens start with "Preview. Nothing is connected in this demo." Allow and Not now look the same (consent rule, GDPR Art. 9). Calendar changes is separate from reading the calendar, and the consent text now says "Form only reads your calendar."
 - Screen titles stop growing at 2x text (GAPS G34).
+
+## Decided by the user on the P4 questions
+
+- **Progress list.** All 7 days stay. One line per day. The "Felt vs forecast" link sits directly under the meter summary. No "Load more" on a fixed 7-day list. At 1.5x text and above the plan drops to its own line, so nothing is cut.
+- **Felt vs forecast.** One summary line: "6 of 6 days landed inside the likely range." A per-row marker appears only for a day outside the range. The outside-range state stays in the state picker (`/felt-vs-forecast?state=outside`) and in `/gallery/range`. Fixture data is not changed: that state moves one day's felt value at run time, for review only.
+- **Connecting.** An indeterminate native ActivityIndicator plus the line "Connecting to your calendar" (Health data: "Connecting to your health data"). Under reduced motion: a static icon and the same line. **This is a decided exception to the no-loop rule (Master §6).** There is no real progress to show, so there is no determinate bar. GAPS G36 is closed.
+- **Connectors.** None are authorised. None are in scope.
+
+## Provisional product rules (not model facts, pending Person B)
+
+- **3 = too few to read much.** With fewer than 3 answered days (Progress) or 3 labelled days (Felt vs forecast) the screen says "Too few to read much." The number 3 is a product rule, not a model fact. The 21-day threshold is different: it is `minimum_pairs` in `model.json`. (GAPS G33.)
+- **Felt = morning rating x 10.** This puts the rating on the score's 0 to 100 scale for the comparison. The fit answers and ratings in Marta's week are scripted. (GAPS G35.)
+- **Titles stop growing at 2x text.** (GAPS G34.)
 
 ## Still open
 

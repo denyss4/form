@@ -238,7 +238,7 @@ export const copy = {
     scale: 'Both are on a 0 to 100 scale.',
     legend: { forecast: 'Forecast', felt: 'Felt', range: 'Likely range' },
     row: (felt: number, forecast: number, lo: number, hi: number) => `Felt ${felt}, forecast ${forecast}, likely ${lo}–${hi}`,
-    inside: 'Inside the likely range',
+    summary: (inside: number, days: number) => `${inside} of ${days} ${days === 1 ? 'day' : 'days'} landed inside the likely range.`,
     outside: 'Outside the likely range',
     a11y: (day: string, felt: number, forecast: number, lo: number, hi: number, inside: boolean) =>
       `${day}: felt ${felt}, forecast ${forecast}, likely ${lo} to ${hi}. ${inside ? 'Inside' : 'Outside'} the likely range.`,
@@ -260,7 +260,7 @@ export const copy = {
     body: 'Form would read steps, calories burned, active minutes and sleep from Apple Health or Health Connect, so your log fills itself in.',
     allow: 'Allow access (preview)',
     notNow: 'Not now',
-    reading: 'Connecting',
+    reading: 'Connecting to your health data',
     done: { title: 'Preview only.', body: 'No health data was read.', action: 'Done' },
     error: {
       title: 'Health access was denied.',
@@ -281,7 +281,7 @@ export const copy = {
     body: 'Form would add the sessions you accept to your calendar, for example a session you moved to another day. This is separate from reading your calendar, and it stays off unless you allow it.',
     allow: 'Allow changes (preview)',
     notNow: 'Not now',
-    reading: 'Connecting',
+    reading: 'Connecting to your calendar',
     done: { title: 'Preview only.', body: 'Your calendar was not changed.', action: 'Done' },
     error: {
       title: 'Calendar changes were denied.',
@@ -346,6 +346,7 @@ export const copy = {
       plan: 'Plan glyphs',
       dial: 'Score dial',
       drivers: 'Drivers',
+      range: 'Range bar',
       screens: 'Screens',
       model: 'Model check',
     },
@@ -401,6 +402,10 @@ export const copy = {
       extremes: 'Score extremes',
       forecastFor: (date: string) => `Forecast for ${date}`,
     },
+    range: {
+      note: "Marta's real forecast and likely range for one morning. Only the felt value changes, to show each state.",
+      states: { inside: 'Felt inside the range', below: 'Felt below the range', above: 'Felt above the range', edge: 'Felt on the edge of the range' },
+    },
     screens: {
       note: 'Every screen in every state. Dev only.',
       groups: [
@@ -410,7 +415,7 @@ export const copy = {
         { title: 'Connect calendar', links: [['Default', '/connect-calendar?state=default'], ['Loading', '/connect-calendar?state=loading'], ['Error', '/connect-calendar?state=error'], ['Calendar consent off', '/connect-calendar?state=off']] },
         { title: 'Week', links: [['Default', '/week?state=default'], ['Loading', '/week?state=loading'], ['No calendar', '/week?state=empty'], ['Partial, 3 of 7 days', '/week?state=partial'], ['Low confidence, 1 of 7 days', '/week?state=lowconf'], ['Error', '/week?state=error']] },
         { title: 'Progress', links: [['Default', '/progress?state=default'], ['Loading', '/progress?state=loading'], ['No feedback yet', '/progress?state=empty'], ['Partial, 3 days', '/progress?state=partial'], ['Low confidence, 1 day', '/progress?state=lowconf'], ['Error', '/progress?state=error']] },
-        { title: 'Felt vs forecast', links: [['Default', '/felt-vs-forecast?state=default'], ['Loading', '/felt-vs-forecast?state=loading'], ['No ratings yet', '/felt-vs-forecast?state=empty'], ['Partial, 3 days', '/felt-vs-forecast?state=partial'], ['Low confidence, 1 day', '/felt-vs-forecast?state=lowconf'], ['Error', '/felt-vs-forecast?state=error']] },
+        { title: 'Felt vs forecast', links: [['Default', '/felt-vs-forecast?state=default'], ['Loading', '/felt-vs-forecast?state=loading'], ['No ratings yet', '/felt-vs-forecast?state=empty'], ['Outside range, 1 day', '/felt-vs-forecast?state=outside'], ['Partial, 3 days', '/felt-vs-forecast?state=partial'], ['Low confidence, 1 day', '/felt-vs-forecast?state=lowconf'], ['Error', '/felt-vs-forecast?state=error']] },
         { title: 'Health data, preview', links: [['Default', '/health-sync?state=default'], ['Connecting', '/health-sync?state=loading'], ['Done', '/health-sync?state=done'], ['Error', '/health-sync?state=error'], ['Consent off', '/health-sync?state=off']] },
         { title: 'Calendar changes, preview', links: [['Default', '/calendar-write?state=default'], ['Connecting', '/calendar-write?state=loading'], ['Done', '/calendar-write?state=done'], ['Error', '/calendar-write?state=error'], ['Calendar off', '/calendar-write?state=off']] },
         { title: 'Other', links: [['Settings', '/settings']] },

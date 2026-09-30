@@ -11,8 +11,8 @@ import { useAppState } from '@state';
 
 import { useWeek } from './useWeek';
 
-export type ProgressScenario = 'default' | 'loading' | 'empty' | 'partial' | 'lowconf' | 'error';
-export const progressScenarios: ProgressScenario[] = ['default', 'loading', 'empty', 'partial', 'lowconf', 'error'];
+export type ProgressScenario = 'default' | 'loading' | 'empty' | 'partial' | 'lowconf' | 'error' | 'outside';
+export const progressScenarios: ProgressScenario[] = ['default', 'loading', 'empty', 'partial', 'lowconf', 'error', 'outside'];
 
 export type ProgressData =
   | { kind: 'loading' }
@@ -61,6 +61,8 @@ export function useProgress(scenario: ProgressScenario): ProgressData {
       if (result) pairs.push({ date, forecast: result.score, range: result.range, felt: rating * 10 });
     }
 
+    // Review only: 'outside' moves one day's felt rating below its likely range, so that state can be seen. Fixture data is untouched.
+    const shown = scenario === 'outside' ? pairs.sort(byDate).map((p, i) => (i === 2 ? { ...p, felt: Math.max(0, p.range[0] - 10) } : p)) : pairs;
     const limit = scenario === 'empty' ? 0 : scenario === 'partial' ? 3 : scenario === 'lowconf' ? 1 : Infinity;
     const from = addDays(app.demoDay, 1 - WINDOW);
     const loggedDates = new Set([...martaWeek.days.map((d) => d.date), ...Object.keys(app.logs)]);
@@ -70,7 +72,7 @@ export function useProgress(scenario: ProgressScenario): ProgressData {
     return {
       kind: 'ready',
       fit: fit.sort(byDate).slice(0, limit),
-      pairs: pairs.sort(byDate).slice(0, limit),
+      pairs: shown.sort(byDate).slice(0, limit),
       logged: { days: Math.min(n, limit), of: WINDOW }, // the review scenarios thin the history out, so the count follows
       from,
     };

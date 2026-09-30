@@ -3,8 +3,9 @@
 // and the thick segment is the likely range. Nothing here claims accuracy: it puts two numbers side by side.
 import { StyleSheet, View } from 'react-native';
 
-import { radius, size } from '@tokens';
-import { useTheme } from '@ui';
+import { copy } from '@copy';
+import { radius, size, space } from '@tokens';
+import { Text, useTheme } from '@ui';
 
 const pct = (v: number) => `${Math.min(100, Math.max(0, v))}%` as const;
 
@@ -61,7 +62,28 @@ export function LegendShape({ kind }: { kind: 'forecast' | 'felt' | 'range' }) {
   );
 }
 
+/** Forecast, felt and likely range, each with its shape. */
+export function RangeLegend() {
+  const items = [
+    ['forecast', copy.feltVsForecast.legend.forecast],
+    ['felt', copy.feltVsForecast.legend.felt],
+    ['range', copy.feltVsForecast.legend.range],
+  ] as const;
+  return (
+    <View style={styles.legend}>
+      {items.map(([kind, label]) => (
+        <View key={kind} style={styles.legendItem}>
+          <LegendShape kind={kind} />
+          <Text variant="caption">{label}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
+  legend: { flexDirection: 'row', flexWrap: 'wrap', columnGap: space.md, rowGap: space.xs },
+  legendItem: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   bar: { height: size.touch / 2, justifyContent: 'center', marginHorizontal: size.marker / 2 },
   track: { height: size.outline, borderRadius: radius.full },
   range: { position: 'absolute', height: size.ringStroke, borderRadius: radius.full },

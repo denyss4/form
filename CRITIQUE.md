@@ -23,9 +23,9 @@ The dial is the identity element and it works: a 270° arc with the likely range
 | 7 | Accessibility | Disabled controls use 0.4 opacity. WCAG exempts inactive controls, but the label is hard to read | 🟢 Minor | Opacity values are proposals (GAPS G20). Revisit at Review 2 with the device |
 | 8 | Accessibility | The ScoreDial track at 16% opacity is about 1.2:1. It marks where 100 sits, but the value is also given as text, so no information is lost | 🟢 Minor | Accepted. Noted so a reviewer does not read it as a miss |
 | 9 | Consistency | The dev picker's selected pill looks like a primary button. Log options in P3 need a selected state with a checkmark (Master §6), not this pill | 🟢 Minor | Dev-only. Build a separate `Option` in P3 |
-| 10 | Consistency | Driver values are whole points (+6, −4, −2) and cannot sum to the score, and the heading "Why 51" implies they explain all of it. They explain the difference from a typical day, and only the top three are shown | 🟡 Moderate | Deferred to P3 copy review. Candidate heading "What moved it". Each row already says "vs. a typical day" |
-| 11 | Empty state | The day-1 dial shows the track and "No score yet" but no action. Master §7: empty states invite one action | 🟡 Moderate | Deferred to P3, where the Today day-1 state carries the "log" action. The gallery shows the dial alone |
-| 12 | Interaction | Pressed secondary and text-only buttons look close to default in a still image. The press is scale 0.97 plus opacity for 100 ms, which needs a hand to judge | 🟢 Minor | Judge on the device |
+| 10 | Six identical "Inside the likely range" lines in a row | Banned pattern 3, in spirit | 🟡 Moderate | **Fixed.** The user decided: one summary line, and a marker only for a day outside the range. The outside state is in `?state=outside` and `/gallery/range` |
+| 11 | The "Connecting" indicator loops | Motion: no loops | 🟢 Minor | **Decided.** Indeterminate indicator plus "Connecting to your calendar"; static icon under reduced motion. An exception, recorded in DECISIONS.md |
+| 12 | With ±17.2, every scripted day lands inside the range, so "6 of 6 days landed inside the likely range" can read as accuracy | Never invent accuracy | 🟡 Moderate | **Argued, then the user decided to show it.** It is a count, not a score, and the range is not a calibrated interval (`model.json`). The screen still says "Too few days to read much" under 3 days, and the demo note says the ratings are scripted. Re-check the wording at Review 3 |
 
 ### Fixed during P1 (found while building and reviewing)
 
@@ -104,7 +104,7 @@ Passed: every interactive element measured is at least 44 px (2.5.8 needs 24); e
 
 ## P4 self-review: Progress, Felt vs forecast, Health data, Calendar changes (stage: refinement)
 
-Screenshots: `docs/screens/p4/` (29 files, 390 wide, web preview). P4 has no Review gate in the roadmap, so this is my own pass against the banned-pattern list and the Master, not a `/design:design-critique` run. That run is for Review 3, after P5. Not run on a device. Still unreviewed: native VoiceOver and TalkBack, real Dynamic Type, and the spinner on a phone.
+Screenshots: `docs/screens/p4/` (31 files, 390 wide, web preview). P4 has no Review gate in the roadmap, so this is my own pass against the banned-pattern list and the Master, not a `/design:design-critique` run. That run is for Review 3, after P5. Not run on a device. Still unreviewed: native VoiceOver and TalkBack, real Dynamic Type, and the spinner on a phone.
 
 Three-line layout plans are at the top of each screen file. Progress: job "show whether the plans fit", focal element the Plan Fit ring and its sentence, quiet the day list. Felt vs forecast: job "put each felt rating beside the forecast", focal element the two markers, quiet the legend and the 21-day caption.
 
@@ -124,4 +124,4 @@ Three-line layout plans are at the top of each screen file. Progress: job "show 
 | 12 | With ±17.2, every scripted day lands inside the range. "Inside" is not evidence of accuracy | Never invent accuracy | 🟡 Moderate | **Argued.** No summary count is shown, only the per-day line. The caption says what the 21-day check will do, and nothing more |
 
 Pros: one number per screen, no tiles, no card in a card, hairlines and space only. The felt/forecast markers differ by shape (dot and ring), not colour. The permission previews say what would happen, then say plainly that nothing did.
-Cons: Progress is long (7 rows) and pushes the Felt vs forecast link below the first screen. Alternative: put the link in the header, or show the last 4 days with a "Load more". Question for Review 3: which one?
+Cons: Progress was long and pushed the Felt vs forecast link below the first screen. **Answered by the user:** keep 7 days, one line each, link under the summary. Built; all six scripted days and the link now sit on the first screen at 390×844.

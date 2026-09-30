@@ -28,9 +28,6 @@ Goal mode, what-if simulator, Precise food logging, partner sync, coach or B2B d
 
 ## From P4
 
-- Felt vs forecast shows the last 7 days only. A "Load more" for older days once there is real history.
 - An accuracy summary after day 21, only when the personal-pattern check has run on real logs. Not before: the scripted ratings must never become a number.
-- Show the "inside the likely range" line only for days outside it. Six identical lines in a row are noise (P4 self-review finding).
-- Replace the "Connecting" spinner with a determinate bar (GAPS G36).
 - Settings "Connections" rows always say "Preview". When real sync exists they should show the real state.
 - Plan Fit over more than a week, with a simple week-by-week step. No streak, no reward.

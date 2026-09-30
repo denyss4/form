@@ -19,6 +19,7 @@ export { Slider } from './Slider';
 export { Skeleton } from './Skeleton';
 export { Text } from './Text';
 export { useFontScale } from './useFontScale';
+export { useIconSize } from './useIconSize';
 export { TextScaleContext } from './textScale';
 export type { TextProps, TextTone } from './Text';
 export { ThemeProvider, useTheme } from './theme';

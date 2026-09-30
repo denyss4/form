@@ -1,65 +1,21 @@
 // Layout plan. Job: put each morning's felt rating next to what Form forecast the evening before. Focal element: the two markers on one line.
 // Quiet: the legend, the scale note and the 21-day caption. The screen is called "Felt vs forecast", not "Felt vs measured": nothing here
-// is measured. It deliberately shows no accuracy number: the felt ratings are a scripted persona's, so a summary would claim too much.
-// States: default, loading, no ratings yet, partial, low confidence, error. `?state=` holds one for review.
+// is measured. The summary is a count of days inside the range, not an accuracy score: the ratings are a scripted persona's, and the
+// range is not a calibrated interval (model.json). Only a day outside the range gets its own marker.
+// States: default, loading, no ratings yet, partial, low confidence, a day outside the range, error. `?state=` holds one for review.
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { copy } from '@copy';
-import { formatDay } from '@format';
-import { LegendShape, RangeBar } from '@features/RangeBar';
+import { PairRow } from '@features/PairRow';
+import { RangeLegend } from '@features/RangeBar';
 import { progressScenarios, useProgress } from '@features/useProgress';
-import { insideRange, LEARNING_DAYS, type Pair } from '@planner/progress';
+import { insideRange, LEARNING_DAYS } from '@planner/progress';
 import { size, space } from '@tokens';
 import { Button, InlineMessage, oneOf, ScreenHeader, Skeleton, Text, useTheme } from '@ui';
 
 const FEW_DAYS = 3; // same threshold as Progress [GAP G33]
-
-function PairRow({ pair, divider }: { pair: Pair; divider: boolean }) {
-  const { color } = useTheme();
-  const inside = insideRange(pair);
-  const [lo, hi] = pair.range;
-  return (
-    <View
-      accessible
-      accessibilityLabel={copy.feltVsForecast.a11y(formatDay(pair.date), pair.felt, pair.forecast, lo, hi, inside)}
-      style={[
-        styles.row,
-        divider ? { borderBottomWidth: size.hairline, borderBottomColor: color.stroke.hairline } : undefined,
-      ]}
-    >
-      <View style={styles.line}>
-        <Text variant="bodyStrong" style={styles.noShrink}>{formatDay(pair.date)}</Text>
-        <Text variant="caption" tone="secondary">
-          {inside ? copy.feltVsForecast.inside : copy.feltVsForecast.outside}
-        </Text>
-      </View>
-      <Text variant="body" tabular>
-        {copy.feltVsForecast.row(pair.felt, pair.forecast, lo, hi)}
-      </Text>
-      <RangeBar forecast={pair.forecast} range={pair.range} felt={pair.felt} />
-    </View>
-  );
-}
-
-function Legend() {
-  const items = [
-    ['forecast', copy.feltVsForecast.legend.forecast],
-    ['felt', copy.feltVsForecast.legend.felt],
-    ['range', copy.feltVsForecast.legend.range],
-  ] as const;
-  return (
-    <View style={styles.legend}>
-      {items.map(([kind, label]) => (
-        <View key={kind} style={styles.legendItem}>
-          <LegendShape kind={kind} />
-          <Text variant="caption">{label}</Text>
-        </View>
-      ))}
-    </View>
-  );
-}
 
 function SkeletonBody() {
   return (
@@ -109,7 +65,10 @@ export default function FeltVsForecast() {
         <Text variant="body" tone="secondary">
           {copy.feltVsForecast.intro}
         </Text>
-        <Legend />
+        <Text variant="bodyStrong" aria-live="polite">
+          {copy.feltVsForecast.summary(data.pairs.filter(insideRange).length, n)}
+        </Text>
+        <RangeLegend />
         <View>
           {data.pairs.map((pair, i) => (
             <PairRow key={pair.date} pair={pair} divider={i < n - 1} />
@@ -147,11 +106,7 @@ export default function FeltVsForecast() {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   content: { paddingHorizontal: space.margin, paddingTop: space.xs, paddingBottom: space.lg, gap: space.md },
-  legend: { flexDirection: 'row', flexWrap: 'wrap', columnGap: space.md, rowGap: space.xs },
-  legendItem: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   row: { paddingVertical: space.sm, gap: space.xxs },
-  line: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', columnGap: space.sm },
-  noShrink: { flexShrink: 0 },
   notes: { gap: space.xs },
   rule: { borderTopWidth: size.hairline, marginVertical: space.xs },
   state: { marginTop: space.md, gap: space.sm, alignItems: 'flex-start' },
