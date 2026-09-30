@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 
 import { toFormResult } from '../packages/model/adapter.ts';
 import { predict, withHistory } from '../packages/model/predict.mjs';
+import { planForDay } from '../packages/planner/plan.ts';
 
 const read = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'));
 const model = read('../packages/model/model.json');
@@ -49,16 +50,41 @@ const scripted = [
   },
 ];
 
+// Marta's own answers to "Did the plan fit?", scripted. Keyed by the morning the plan was for.
+const fit = {
+  '2026-09-29': 'yes',
+  '2026-09-30': 'tooHard',
+  '2026-10-01': 'yes',
+  '2026-10-02': 'yes',
+  '2026-10-03': 'yes',
+  '2026-10-04': 'yes',
+};
+const byDate = new Map(scripted.map((l) => [l.date, l]));
+
 const days = withHistory(scripted).map((log) => {
   const raw = predict(model, log);
-  return { date: log.date, forecastFor: raw.date, log, raw, result: toFormResult(raw) };
+  const result = toFormResult(raw);
+  // The outcome exists once the morning has happened: the log written that day holds the felt rating and what the day was.
+  const that = byDate.get(raw.date);
+  let outcome = null;
+  if (that) {
+    const sessions = that.workout_minutes > 0
+      ? [{ eventId: '', name: '', start: '', minutes: that.workout_minutes, intensity: (that.workout_effort ?? 0) >= 7 ? 'hard' : 'light' }]
+      : [];
+    outcome = {
+      felt: that.readiness ?? null, // the 0-100 morning rating
+      plan: planForDay(result.score, that.tags ?? [], sessions),
+      fit: fit[raw.date] ?? null,
+    };
+  }
+  return { date: log.date, forecastFor: raw.date, log, raw, result, outcome };
 });
 
 const out = {
   meta: {
     kind: 'scripted persona',
     persona: 'Marta, 29, product analyst, Warsaw',
-    note: 'The logs are scripted. Scores, ranges and drivers are real predict.mjs output.',
+    note: 'The logs, the felt ratings and the "Did the plan fit?" answers are scripted. Scores, ranges and drivers are real predict.mjs output.',
     model_version: model.version,
     demoToday: '2026-10-05', // [GAP G23: the scripted demo clock is a proposal. The last forecast is for this morning.]
   },

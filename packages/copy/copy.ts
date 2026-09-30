@@ -131,7 +131,7 @@ export const copy = {
       },
       calendar: {
         name: 'Read your calendar',
-        what: 'Event titles and times, to predict day types such as work, training and travel. Form never changes your calendar.',
+        what: 'Event titles and times, to predict day types such as work, training and travel. Form only reads your calendar.',
       },
       health: {
         name: 'Read health data',
@@ -202,14 +202,98 @@ export const copy = {
     licences: 'Licences',
     fonts: 'Fonts: Manrope and Source Sans 3, under the SIL Open Font License 1.1. The full texts are in assets/licenses.',
     model: 'The model is trained on PMData (Simula, CC BY 4.0).',
+    connections: 'Connections',
+    healthRow: { label: 'Health data', status: 'Preview, not connected' },
+    calendarWriteRow: { label: 'Calendar changes', status: 'Preview, off' },
     demo: 'Demo',
     reset: 'Reset demo',
     gallery: 'Open gallery',
   },
 
-  // [GAP: these tabs are built in later phases. They show a labelled placeholder.]
-  placeholder: {
-    progress: 'Progress is built in a later phase.',
+  progress: {
+    title: 'Progress',
+    demoNote: 'Demo data: a scripted week for Marta. Not real user data.',
+    fit: {
+      title: 'Plan fit',
+      headline: (fit: number, answered: number) => `The plan fit on ${fit} of ${answered} ${answered === 1 ? 'day' : 'days'}.`,
+      source: 'From your own answers to "Did the plan fit?".',
+      tooFew: (n: number) => (n === 1 ? 'One day so far. Too few to read much.' : `${n} days so far. Too few to read much.`),
+      status: { yes: 'Fit', tooHard: 'Too hard', tooEasy: 'Too easy', none: 'No answer' },
+      ring: (fit: number, answered: number) => `Plan fit: ${fit} of ${answered} ${answered === 1 ? 'day' : 'days'}`,
+      day: (day: string, plan: string, status: string) => `${day}, ${plan}, ${status}`,
+    },
+    logging: (days: number, of: number) => `You logged on ${days} of the last ${of} days.`,
+    felt: { title: 'Felt vs forecast', note: 'Your morning rating next to what Form forecast.' },
+    empty: {
+      title: 'No plan feedback yet',
+      body: 'Accept a plan, then answer "Did the plan fit?" in your evening log. It shows up here.',
+      action: 'Go to Today',
+    },
+    error: { title: "Couldn't load your history.", body: 'Try again in a moment.', retry: 'Try again' },
+  },
+
+  feltVsForecast: {
+    title: 'Felt vs forecast',
+    intro: 'Each morning you rate how you feel. Here it is next to what Form forecast the evening before.',
+    scale: 'Both are on a 0 to 100 scale.',
+    legend: { forecast: 'Forecast', felt: 'Felt', range: 'Likely range' },
+    row: (felt: number, forecast: number, lo: number, hi: number) => `Felt ${felt}, forecast ${forecast}, likely ${lo}–${hi}`,
+    inside: 'Inside the likely range',
+    outside: 'Outside the likely range',
+    a11y: (day: string, felt: number, forecast: number, lo: number, hi: number, inside: boolean) =>
+      `${day}: felt ${felt}, forecast ${forecast}, likely ${lo} to ${hi}. ${inside ? 'Inside' : 'Outside'} the likely range.`,
+    labelled: (n: number, of: number) => `Labelled days so far: ${n} of ${of}.`,
+    learning: 'On day 21 Form checks whether your own pattern predicts you better than the typical one.',
+    tooFew: 'Too few days to read much.',
+    empty: {
+      title: 'No ratings yet',
+      body: 'Rate how you feel each morning on Today. Your rating appears here next to the forecast.',
+      action: 'Go to Today',
+    },
+    error: { title: "Couldn't load your history.", body: 'Try again in a moment.', retry: 'Try again' },
+  },
+
+  // Mocked permission screens (MASTER_PROMPT §8). Nothing is connected; each says so.
+  health: {
+    title: 'Health data',
+    preview: 'Preview. Nothing is connected in this demo.',
+    body: 'Form would read steps, calories burned, active minutes and sleep from Apple Health or Health Connect, so your log fills itself in.',
+    allow: 'Allow access (preview)',
+    notNow: 'Not now',
+    reading: 'Connecting',
+    done: { title: 'Preview only.', body: 'No health data was read.', action: 'Done' },
+    error: {
+      title: 'Health access was denied.',
+      body: 'Try again, or carry on without it. You can connect it later in Settings.',
+      retry: 'Try again',
+      without: 'Carry on without it',
+    },
+    off: {
+      title: 'Health data is off.',
+      body: 'You chose Not now for health data. Change that in Settings to connect it.',
+      settings: 'Open Settings',
+    },
+  },
+
+  calendarWrite: {
+    title: 'Calendar changes',
+    preview: 'Preview. Nothing is connected in this demo.',
+    body: 'Form would add the sessions you accept to your calendar, for example a session you moved to another day. This is separate from reading your calendar, and it stays off unless you allow it.',
+    allow: 'Allow changes (preview)',
+    notNow: 'Not now',
+    reading: 'Connecting',
+    done: { title: 'Preview only.', body: 'Your calendar was not changed.', action: 'Done' },
+    error: {
+      title: 'Calendar changes were denied.',
+      body: 'Try again, or keep Form read-only. You can change this later in Settings.',
+      retry: 'Try again',
+      without: 'Keep it read-only',
+    },
+    off: {
+      title: 'Calendar is off.',
+      body: 'Changes need calendar access first. Turn your calendar on in Settings.',
+      settings: 'Open Settings',
+    },
   },
 
   // Model driver groups, keyed by the id the adapter derives from the group name.
@@ -325,7 +409,11 @@ export const copy = {
         { title: 'Consent', links: [['Nothing answered', '/consent'], ['Partly answered', '/consent?preset=partial'], ['All answered', '/consent?preset=all']] },
         { title: 'Connect calendar', links: [['Default', '/connect-calendar?state=default'], ['Loading', '/connect-calendar?state=loading'], ['Error', '/connect-calendar?state=error'], ['Calendar consent off', '/connect-calendar?state=off']] },
         { title: 'Week', links: [['Default', '/week?state=default'], ['Loading', '/week?state=loading'], ['No calendar', '/week?state=empty'], ['Partial, 3 of 7 days', '/week?state=partial'], ['Low confidence, 1 of 7 days', '/week?state=lowconf'], ['Error', '/week?state=error']] },
-        { title: 'Other', links: [['Progress, placeholder', '/progress'], ['Settings', '/settings']] },
+        { title: 'Progress', links: [['Default', '/progress?state=default'], ['Loading', '/progress?state=loading'], ['No feedback yet', '/progress?state=empty'], ['Partial, 3 days', '/progress?state=partial'], ['Low confidence, 1 day', '/progress?state=lowconf'], ['Error', '/progress?state=error']] },
+        { title: 'Felt vs forecast', links: [['Default', '/felt-vs-forecast?state=default'], ['Loading', '/felt-vs-forecast?state=loading'], ['No ratings yet', '/felt-vs-forecast?state=empty'], ['Partial, 3 days', '/felt-vs-forecast?state=partial'], ['Low confidence, 1 day', '/felt-vs-forecast?state=lowconf'], ['Error', '/felt-vs-forecast?state=error']] },
+        { title: 'Health data, preview', links: [['Default', '/health-sync?state=default'], ['Connecting', '/health-sync?state=loading'], ['Done', '/health-sync?state=done'], ['Error', '/health-sync?state=error'], ['Consent off', '/health-sync?state=off']] },
+        { title: 'Calendar changes, preview', links: [['Default', '/calendar-write?state=default'], ['Connecting', '/calendar-write?state=loading'], ['Done', '/calendar-write?state=done'], ['Error', '/calendar-write?state=error'], ['Calendar off', '/calendar-write?state=off']] },
+        { title: 'Other', links: [['Settings', '/settings']] },
       ],
     },
     model: {

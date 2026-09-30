@@ -27,7 +27,23 @@ function arc(centre: number, radius: number, from: number, to: number) {
   return `M ${point(from)} A ${radius} ${radius} 0 ${to - from > 180 ? 1 : 0} 1 ${point(to)}`;
 }
 
-export function CompletionRing({ done, total }: { done: number; total: number }) {
+export function CompletionRing({
+  done,
+  total,
+  diameter = size.ring,
+  stroke = size.outline,
+  label,
+  marks,
+}: {
+  done: number;
+  total: number;
+  diameter?: number;
+  stroke?: number;
+  /** Spoken name. Defaults to "N of M answered", the evening log's wording. */
+  label?: string;
+  /** One flag per arc, in order. Lets an arc stand for a specific day. Without it the first `done` arcs fill. */
+  marks?: boolean[];
+}) {
   const { color } = useTheme();
   const reduceMotion = useReducedMotion();
   const complete = total > 0 && done >= total;
@@ -43,35 +59,35 @@ export function CompletionRing({ done, total }: { done: number; total: number })
   }, [complete, reduceMotion, closed]);
 
   const full = useAnimatedStyle(() => ({ opacity: closed.value }));
-  const centre = size.ring / 2;
-  const radius = centre - size.outline;
+  const centre = diameter / 2;
+  const radius = centre - stroke;
   const slice = 360 / Math.max(total, 1);
 
   return (
     <View
       accessible
       accessibilityRole="progressbar"
-      accessibilityLabel={copy.log.ring(Math.min(done, total), total)}
+      accessibilityLabel={label ?? copy.log.ring(Math.min(done, total), total)}
       aria-valuemin={0}
       aria-valuemax={total}
       aria-valuenow={Math.min(done, total)}
-      style={{ width: size.ring, height: size.ring }}
+      style={{ width: diameter, height: diameter }}
     >
-      <Svg width={size.ring} height={size.ring}>
+      <Svg width={diameter} height={diameter}>
         {Array.from({ length: total }, (_, i) => (
           <Path
             key={i}
             d={arc(centre, radius, i * slice + GAP_DEGREES / 2, (i + 1) * slice - GAP_DEGREES / 2)}
-            stroke={i < done ? color.text.primary : color.stroke.control}
-            strokeWidth={size.outline}
+            stroke={(marks ? marks[i] : i < done) ? color.text.primary : color.stroke.control}
+            strokeWidth={stroke}
             strokeLinecap="round"
             fill="none"
           />
         ))}
       </Svg>
       <Animated.View style={[StyleSheet.absoluteFill, full]}>
-        <Svg width={size.ring} height={size.ring}>
-          <Circle cx={centre} cy={centre} r={radius} stroke={color.text.primary} strokeWidth={size.outline} fill={color.bg.raised} />
+        <Svg width={diameter} height={diameter}>
+          <Circle cx={centre} cy={centre} r={radius} stroke={color.text.primary} strokeWidth={stroke} fill={color.bg.raised} />
         </Svg>
       </Animated.View>
     </View>

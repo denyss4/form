@@ -6,7 +6,7 @@ import Animated from 'react-native-reanimated';
 import ArrowLeft from 'lucide-react-native/icons/arrow-left';
 
 import { copy } from '@copy';
-import { size, space } from '@tokens';
+import { size, space, titleMaxFontScale } from '@tokens';
 
 import { FocusRing, useFocus } from './focus';
 import { Text } from './Text';
@@ -66,7 +66,7 @@ export function ScreenHeader({
       ) : null}
       <View style={styles.titleRow}>
         <View style={styles.grow}>
-          <Text variant="title" accessibilityRole="header" level={1}>
+          <Text variant="title" accessibilityRole="header" level={1} maxFontSizeMultiplier={titleMaxFontScale}>
             {title}
           </Text>
           {caption ? (

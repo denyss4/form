@@ -6,13 +6,22 @@ import { radius, size } from '@tokens';
 
 import { useTheme } from './theme';
 
-export function Skeleton({ width, height = size.iconSm }: { width: DimensionValue; height?: number }) {
+export function Skeleton({
+  width,
+  height = size.iconSm,
+  round = false,
+}: {
+  width: DimensionValue;
+  height?: number;
+  /** A circle, for a ring or a dial. */
+  round?: boolean;
+}) {
   const { color } = useTheme();
   return (
     <View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
-      style={{ width, height, borderRadius: radius.control, backgroundColor: color.stroke.hairline }}
+      style={{ width, height, borderRadius: round ? radius.full : radius.control, backgroundColor: color.stroke.hairline }}
     />
   );
 }

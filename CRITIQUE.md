@@ -101,3 +101,27 @@ Passed: every interactive element measured is at least 44 px (2.5.8 needs 24); e
 1. Plan as the screen title on Today (finding 5)?
 2. Check-in under the field, before the drivers (finding 6)?
 3. Mute or drop the plan label on guessed days (finding 8)?
+
+## P4 self-review: Progress, Felt vs forecast, Health data, Calendar changes (stage: refinement)
+
+Screenshots: `docs/screens/p4/` (29 files, 390 wide, web preview). P4 has no Review gate in the roadmap, so this is my own pass against the banned-pattern list and the Master, not a `/design:design-critique` run. That run is for Review 3, after P5. Not run on a device. Still unreviewed: native VoiceOver and TalkBack, real Dynamic Type, and the spinner on a phone.
+
+Three-line layout plans are at the top of each screen file. Progress: job "show whether the plans fit", focal element the Plan Fit ring and its sentence, quiet the day list. Felt vs forecast: job "put each felt rating beside the forecast", focal element the two markers, quiet the legend and the 21-day caption.
+
+| # | Finding | Rule | Severity | Status |
+|---|---|---|---|---|
+| 1 | The ring's light arc sat last while the "Too hard" day was second in the list, so the ring and the list disagreed | Explain every number | 🟡 Moderate | **Fixed.** Each arc is one day, in list order (`marks` on `CompletionRing`) |
+| 2 | Allow access beside a text link "Not now" on a Health data consent: unequal weight | Consent, GDPR Art. 9 (Master §7) | 🔴 Critical | **Fixed.** Both are the same outlined button |
+| 3 | "Preview. Nothing is connected" was a small grey caption: the most important line on the screen was the quietest | Clearly mocked (Master §8) | 🟡 Moderate | **Fixed.** `bodyStrong`, directly under the title |
+| 4 | The Back button disappeared while connecting, so the title jumped up by 48 | Stable layout | 🟢 Minor | **Fixed.** Back stays. Leaving cancels the mock |
+| 5 | "Progress" broke mid-word at 3x text | Dynamic Type, text wraps | 🟡 Moderate | **Fixed** for titles (cap at 2x, GAPS G34). Summary row stacks at 2x. Day and verdict wrap instead of splitting "Tue 29" |
+| 6 | "The plan fit on 1 of 1 days" | Copy | 🟢 Minor | **Fixed.** "day" when the count is 1 |
+| 7 | The live flow showed "Train light" for a day Today called "Deep-work day": Progress used the calendar week while Today had no calendar | Facts must agree across screens | 🔴 Critical | **Fixed.** Progress uses the same week rule as Today. Re-run live: Mon 5 shows "Too easy, Deep-work day" |
+| 8 | "You logged on 7 of the last 7 days" did not move after logging tonight, and the partial state still said 7 | Explain every number | 🟡 Moderate | **Fixed.** The window is the 7 days ending today, and the review states thin it out |
+| 9 | Skeleton for the ring was a rounded square | Loading in the final shape | 🟢 Minor | **Fixed.** `Skeleton round` |
+| 10 | Six identical "Inside the likely range" lines in a row | Banned pattern 3 (identical repeated blocks), in spirit | 🟡 Moderate | **Open.** Kept so the outside-range case has an explicit state; proposal in `LATER.md`: show it only for exceptions |
+| 11 | The "Connecting" spinner loops | Motion: no loops | 🟢 Minor | **Open.** GAPS G36 |
+| 12 | With ±17.2, every scripted day lands inside the range. "Inside" is not evidence of accuracy | Never invent accuracy | 🟡 Moderate | **Argued.** No summary count is shown, only the per-day line. The caption says what the 21-day check will do, and nothing more |
+
+Pros: one number per screen, no tiles, no card in a card, hairlines and space only. The felt/forecast markers differ by shape (dot and ring), not colour. The permission previews say what would happen, then say plainly that nothing did.
+Cons: Progress is long (7 rows) and pushes the Felt vs forecast link below the first screen. Alternative: put the link in the header, or show the last 4 days with a "Load more". Question for Review 3: which one?

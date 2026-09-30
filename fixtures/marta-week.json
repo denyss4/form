@@ -2,7 +2,7 @@
   "meta": {
     "kind": "scripted persona",
     "persona": "Marta, 29, product analyst, Warsaw",
-    "note": "The logs are scripted. Scores, ranges and drivers are real predict.mjs output.",
+    "note": "The logs, the felt ratings and the \"Did the plan fit?\" answers are scripted. Scores, ranges and drivers are real predict.mjs output.",
     "model_version": "v2-ridge-ef303c083a1a",
     "demoToday": "2026-10-05"
   },
@@ -114,6 +114,11 @@
         ],
         "plan": null,
         "skippedInputs": []
+      },
+      "outcome": {
+        "felt": 65,
+        "plan": "deepwork",
+        "fit": "yes"
       }
     },
     {
@@ -205,6 +210,11 @@
         ],
         "plan": null,
         "skippedInputs": []
+      },
+      "outcome": {
+        "felt": 60,
+        "plan": "hard",
+        "fit": "tooHard"
       }
     },
     {
@@ -305,6 +315,11 @@
         ],
         "plan": null,
         "skippedInputs": []
+      },
+      "outcome": {
+        "felt": 50,
+        "plan": "deepwork",
+        "fit": "yes"
       }
     },
     {
@@ -411,6 +426,11 @@
         ],
         "plan": null,
         "skippedInputs": []
+      },
+      "outcome": {
+        "felt": 45,
+        "plan": "deepwork",
+        "fit": "yes"
       }
     },
     {
@@ -515,6 +535,11 @@
         ],
         "plan": null,
         "skippedInputs": []
+      },
+      "outcome": {
+        "felt": 60,
+        "plan": "recover",
+        "fit": "yes"
       }
     },
     {
@@ -619,6 +644,11 @@
         ],
         "plan": null,
         "skippedInputs": []
+      },
+      "outcome": {
+        "felt": 55,
+        "plan": "light",
+        "fit": "yes"
       }
     },
     {
@@ -724,7 +754,8 @@
         ],
         "plan": null,
         "skippedInputs": []
-      }
+      },
+      "outcome": null
     }
   ]
 }

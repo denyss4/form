@@ -8,6 +8,9 @@ export const size = {
   iconSm: 20,
   iconMaxScale: 2, // icons follow the text size, up to this multiple
   ring: 32, // the log's completion ring
+  ringLarge: 96, // the Plan Fit ring on Progress
+  ringStroke: 8,
+  marker: 16, // forecast and felt markers on the felt-vs-forecast bar
   track: 4, // slider track thickness
   thumb: 28, // slider thumb
   tick: 4, // slider step mark

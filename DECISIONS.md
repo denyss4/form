@@ -41,6 +41,13 @@ Dated 2026-09-30. Source: approval of the Step 1 plan, which accepted every reco
 - Explanation text under the plan uses only drivers the model returned. The "gets sharper as you log" line is not shipped.
 - The move suggestion is one scripted scenario from fixtures, not a general engine.
 
+## Made in P4 (design engineer, for Review 3)
+
+- Plan Fit counts the days the person answered "Yes" to "Did the plan fit?". A followed Recover day counts like a followed training day. No streak, no points. Each ring arc is one day, in the same order as the list beneath it.
+- The second screen is called "Felt vs forecast", not "Felt vs Measured": nothing on it is measured. It shows each morning's rating beside the forecast, and the likely range. It shows no accuracy number, because the ratings in the demo are scripted.
+- The Health data and Calendar changes screens start with "Preview. Nothing is connected in this demo." Allow and Not now look the same (consent rule, GDPR Art. 9). Calendar changes is separate from reading the calendar, and the consent text now says "Form only reads your calendar."
+- Screen titles stop growing at 2x text (GAPS G34).
+
 ## Still open
 
 - Demo phones (decision 7).

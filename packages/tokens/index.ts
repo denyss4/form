@@ -7,5 +7,5 @@ export { shadow } from './shadow';
 export { size } from './size';
 export type { DialSize } from './size';
 export { space } from './space';
-export { chromeMaxFontScale, font, scoreMaxFontScale, systemDisplay, tabularFigures, type } from './type';
+export { chromeMaxFontScale, font, titleMaxFontScale, scoreMaxFontScale, systemDisplay, tabularFigures, type } from './type';
 export type { TypeToken } from './type';

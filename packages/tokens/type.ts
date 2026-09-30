@@ -43,3 +43,7 @@ export const scoreMaxFontScale = 1.3;
 
 // Navigation chrome has a fixed height, so its labels stop growing here, as the platforms' own tab bars do.
 export const chromeMaxFontScale = 1.3;
+
+// A screen title is one short word on some screens ("Progress") and cannot wrap. At 3x it broke mid-word, so it stops growing at 2x.
+// [GAP G34: a proposal. The body text and everything else still scales fully.]
+export const titleMaxFontScale = 2;

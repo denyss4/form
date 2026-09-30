@@ -1,6 +1,8 @@
 // Marta's scripted week. Demo data comes only from here (MASTER_PROMPT §4). Rebuild with `npm run fixtures`.
 import type { DailyLog, FormResult, RawResult } from '@model';
 import type { CalEvent } from '@planner';
+import type { Fit } from '@planner/dailyLog';
+import type { PlanId } from '@tokens';
 
 import calendar from './marta-calendar.json';
 import data from './marta-week.json';
@@ -11,6 +13,8 @@ export interface FixtureDay {
   log: DailyLog;
   raw: RawResult;
   result: FormResult;
+  /** Once the morning has happened: what Marta felt, the plan it would have got, and her own answer to "Did the plan fit?". */
+  outcome: { felt: number | null; plan: PlanId; fit: Fit | null } | null;
 }
 
 export interface MartaWeek {

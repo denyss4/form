@@ -8,7 +8,7 @@ import { copy } from '@copy';
 import { purposes, useAppState } from '@state';
 import { answerOptions } from '@state/answers';
 import { space } from '@tokens';
-import { Button, ChoiceGroup, NavLink, ScreenHeader, Section, Text, useTheme } from '@ui';
+import { Button, ChoiceGroup, LinkRow, NavLink, ScreenHeader, Section, Text, useTheme } from '@ui';
 
 export default function SettingsScreen() {
   const { color } = useTheme();
@@ -38,6 +38,22 @@ export default function SettingsScreen() {
               />
             </View>
           ))}
+        </Section>
+
+        <Section title={copy.settings.connections}>
+          <View>
+            <LinkRow
+              label={copy.settings.healthRow.label}
+              caption={copy.settings.healthRow.status}
+              onPress={() => router.push('/health-sync')}
+            />
+            <LinkRow
+              label={copy.settings.calendarWriteRow.label}
+              caption={copy.settings.calendarWriteRow.status}
+              divider={false}
+              onPress={() => router.push('/calendar-write')}
+            />
+          </View>
         </Section>
 
         <Section title={copy.settings.licences}>
