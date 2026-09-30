@@ -38,7 +38,8 @@
     "check": "npm run typecheck && npm run lint",
     "test:model": "node --test packages/model/adapter.test.ts",
     "verify:model": "node packages/model/verify.mjs",
-    "fixtures": "node fixtures/build.mjs"
+    "fixtures": "node fixtures/build.mjs",
+    "test": "node --test packages/model/adapter.test.ts packages/planner/planner.test.ts"
   },
   "private": true
 }

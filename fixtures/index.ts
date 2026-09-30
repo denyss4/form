@@ -1,6 +1,8 @@
 // Marta's scripted week. Demo data comes only from here (MASTER_PROMPT §4). Rebuild with `npm run fixtures`.
 import type { DailyLog, FormResult, RawResult } from '@model';
+import type { CalEvent } from '@planner';
 
+import calendar from './marta-calendar.json';
 import data from './marta-week.json';
 
 export interface FixtureDay {
@@ -23,3 +25,10 @@ export interface MartaWeek {
 }
 
 export const martaWeek = data as unknown as MartaWeek;
+
+export interface MartaCalendar {
+  meta: { kind: string; persona: string; note: string; weekStart: string };
+  events: CalEvent[];
+}
+
+export const martaCalendar = calendar as unknown as MartaCalendar;

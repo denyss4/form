@@ -3,12 +3,14 @@ import { copy } from '@copy';
 import { GalleryScreen, NavLink } from '@ui';
 
 const pages = [
+  { href: '/gallery/screens', label: copy.dev.hub.screens },
   { href: '/gallery/tokens', label: copy.dev.hub.tokens },
   { href: '/gallery/type', label: copy.dev.hub.type },
   { href: '/gallery/button', label: copy.dev.hub.button },
   { href: '/gallery/plan', label: copy.dev.hub.plan },
   { href: '/gallery/dial', label: copy.dev.hub.dial },
   { href: '/gallery/drivers', label: copy.dev.hub.drivers },
+  { href: '/gallery/model', label: copy.dev.hub.model },
 ] as const;
 
 export default function GalleryHub() {

@@ -20,5 +20,11 @@ export const motion = {
     duration: 600, // the morning score reveal only, once per day
     easing: [0.42, 0, 0.58, 1], // ease-in-out
   },
+  // First-launch intro on onboarding, from the Open_10 reference: thin rings glide into one ring, then the dial appears.
+  // Transform and opacity only, once, static under reduced motion. [GAP G25: a second orchestrated moment, at the user's direction]
+  intro: {
+    duration: 1600,
+    easing: [0.42, 0, 0.58, 1], // ease-in-out
+  },
   reducedFade: 120, // ms, under the 150 ms limit, when reduce-motion is on
 } as const;

@@ -77,7 +77,7 @@ export function DevPicker<T extends string | number>({
             <Pressable
               key={String(option.value)}
               accessibilityRole="button"
-              accessibilityState={{ selected }}
+              aria-selected={selected}
               onPress={() => onChange(option.value)}
               style={[
                 styles.pill,
@@ -150,7 +150,7 @@ export function GalleryScreen({
   );
 }
 
-export function NavLink({ href, label }: { href: '/' | '/gallery' | `/gallery/${string}`; label: string }) {
+export function NavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link href={href} asChild>
       <Pressable accessibilityRole="link" accessibilityLabel={label} style={styles.link}>

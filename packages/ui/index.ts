@@ -1,10 +1,17 @@
 export { Button } from './Button';
 export type { ButtonProps, ButtonVariant } from './Button';
+export { ChoiceGroup } from './ChoiceGroup';
+export type { Choice } from './ChoiceGroup';
 export { contrastRatio } from './contrast';
 export { DriverRow } from './DriverRow';
+export { haptic } from './haptics';
+export { InlineMessage } from './InlineMessage';
+export { IntroMark } from './IntroMark';
 export { PlanGlyph, PlanLabel } from './PlanGlyph';
+export { IconButton, ScreenHeader } from './ScreenHeader';
 export { ScoreDial } from './ScoreDial';
 export type { ScoreDialProps } from './ScoreDial';
+export { Skeleton } from './Skeleton';
 export { Text } from './Text';
 export type { TextProps, TextTone } from './Text';
 export { ThemeProvider, useTheme } from './theme';

@@ -38,23 +38,28 @@ function arcPath(centre: number, radius: number, from: number, to: number) {
 const angleOf = (value: number) =>
   size.dial.startAngle + (Math.min(Math.max(value, 0), SCORE_MAX) / SCORE_MAX) * size.dial.sweep;
 
-export function ScoreDial({ score, range, plan, dial = 'app' }: ScoreDialProps) {
-  const { color } = useTheme();
+/** Radii and container height for a dial size. */
+export function dialGeometry(dial: DialSize) {
   const g = size.dial[dial];
   const centre = g.diameter / 2;
   const bandRadius = centre - g.band / 2;
   const valueRadius = centre - g.band - g.bandGap - g.stroke / 2;
-  const ink = plan ? color.plan[plan].base : color.text.primary;
-
-  const start = angleOf(0);
-  const end = angleOf(SCORE_MAX);
-
   // The arc opens at the bottom, so the container stops where the arc's round caps or the range bracket end, whichever is lower.
   // The number stays at the ring's centre.
   const lowest = Math.sin((size.dial.startAngle * Math.PI) / 180);
   const height = Math.ceil(
     centre + Math.max(valueRadius * lowest + g.stroke / 2, bandRadius * lowest + g.band / 2),
   );
+  return { g, centre, bandRadius, valueRadius, height };
+}
+
+export function ScoreDial({ score, range, plan, dial = 'app' }: ScoreDialProps) {
+  const { color } = useTheme();
+  const { g, centre, bandRadius, valueRadius, height } = dialGeometry(dial);
+  const ink = plan ? color.plan[plan].base : color.text.primary;
+
+  const start = angleOf(0);
+  const end = angleOf(SCORE_MAX);
   const hasScore = score !== null;
 
   const label = hasScore

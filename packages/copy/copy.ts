@@ -32,6 +32,121 @@ export const copy = {
       `${label}, ${direction === 'up' ? 'adds' : 'takes away'} ${Math.round(magnitude)} points, ${basis}`,
   },
 
+  nav: { back: 'Back', settings: 'Settings' },
+  tabs: { today: 'Today', week: 'Week', progress: 'Progress' },
+  tag: { work: 'Work', training: 'Training', social: 'Social', travel: 'Travel', rest: 'Rest' },
+
+  onboarding: {
+    title: "Plan your week around how you'll feel.",
+    intro: 'Form turns a short log and your calendar into one plan for each day.',
+    points: [
+      'Log tonight in three taps.',
+      'Get one plan for tomorrow, with the reasons.',
+      'See where your hard sessions fit the week.',
+    ],
+    start: 'Get started',
+    notice: "Form is for planning. It doesn't diagnose or treat anything.",
+  },
+
+  // [GAP G26: consent wording is demo text. Where the personal model runs and where data is stored are not decided. Needs legal review.]
+  consent: {
+    title: 'What Form may use',
+    intro: 'Choose for each one. You can change any of them later in Settings.',
+    allow: 'Allow',
+    decline: 'Not now',
+    purposes: {
+      scoring: {
+        name: 'Score and plan',
+        what: 'Your evening log and morning rating, such as effort, alcohol, sleep and mood. Form calculates your score on your phone.',
+      },
+      personalModel: {
+        name: 'Learn your own pattern',
+        what: 'Your logs and ratings over time. After 21 days Form checks whether your own pattern predicts you better than the typical one.',
+      },
+      calendar: {
+        name: 'Read your calendar',
+        what: 'Event titles and times, to predict day types such as work, training and travel. Form never changes your calendar.',
+      },
+      health: {
+        name: 'Read health data',
+        what: 'Steps, calories burned, active minutes and sleep from Apple Health or Health Connect.',
+      },
+    },
+    continue: 'Continue',
+    incomplete: 'Choose Allow or Not now for each one to continue.',
+    demoNote: 'Demo wording. The final text needs legal review.',
+  },
+
+  // [GAP G10: the calendar provider is a proposal.]
+  calendar: {
+    title: 'Connect your calendar',
+    body: 'Form reads event titles and times for the week and predicts each day type: work, training, social, travel or rest.',
+    provider: 'Google Calendar',
+    mockNote: 'Demo: this is a mock sign-in. No account is used.',
+    allow: 'Allow read access',
+    skip: 'Skip for now',
+    reading: 'Reading your calendar',
+    readingNote: 'This takes a moment.',
+    error: {
+      title: 'Calendar access was denied.',
+      body: 'Try again, or continue without a calendar. You can connect one later from Week.',
+      retry: 'Try again',
+      without: 'Continue without calendar',
+    },
+    off: {
+      title: 'Calendar is off.',
+      body: 'You chose Not now for your calendar. Change that in Settings to connect one.',
+      settings: 'Open Settings',
+      without: 'Continue without calendar',
+    },
+  },
+
+  week: {
+    title: 'Week',
+    coverage: (found: number, total: number) => `Events found for ${found} of ${total} days.`,
+    lowConfidence: 'Most day types are guessed from the weekday.',
+    guessed: 'guessed from the weekday',
+    noSession: 'No session',
+    session: (name: string, time: string) => `${name}, ${time}`,
+    empty: {
+      title: 'No calendar yet',
+      body: 'Connect a calendar to see day types and where your hard sessions fit.',
+      action: 'Connect calendar',
+    },
+    error: {
+      title: "Couldn't read your calendar.",
+      body: 'Check the permission, then try again.',
+      retry: 'Try again',
+    },
+  },
+
+  suggestion: {
+    reasons: (list: string) => `${list}.`,
+    ask: (session: string, day: string) => `${day} has no session. Move ${session} there?`,
+    move: (day: string) => `Move to ${day}`,
+    keep: (day: string) => `Keep ${day}`,
+    moved: (session: string, day: string) => `Moved ${session} to ${day}.`,
+    kept: (session: string, day: string) => `Kept ${session} on ${day}.`,
+  },
+
+  settings: {
+    title: 'Settings',
+    privacy: 'Privacy',
+    privacyNote: 'Change any choice at any time.',
+    licences: 'Licences',
+    fonts: 'Fonts: Manrope and Source Sans 3, under the SIL Open Font License 1.1. The full texts are in assets/licenses.',
+    model: 'The model is trained on PMData (Simula, CC BY 4.0).',
+    demo: 'Demo',
+    reset: 'Reset demo',
+    gallery: 'Open gallery',
+  },
+
+  // [GAP: these tabs are built in later phases. They show a labelled placeholder.]
+  placeholder: {
+    today: 'Today is built in the next phase.',
+    progress: 'Progress is built in a later phase.',
+  },
+
   // Model driver groups, keyed by the id the adapter derives from the group name.
   drivers: {
     'recent-readiness': 'Recent readiness',
@@ -82,6 +197,8 @@ export const copy = {
       plan: 'Plan glyphs',
       dial: 'Score dial',
       drivers: 'Drivers',
+      screens: 'Screens',
+      model: 'Model check',
     },
     picker: {
       title: 'Dev settings',
@@ -134,6 +251,20 @@ export const copy = {
       small: 'Widget and watch sizes, on the canvas',
       extremes: 'Score extremes',
       forecastFor: (date: string) => `Forecast for ${date}`,
+    },
+    screens: {
+      note: 'Every screen in every state. Dev only.',
+      groups: [
+        { title: 'Onboarding', links: [['Default', '/onboarding'], ['Intro frame at 30%', '/onboarding?intro=0.3'], ['Intro frame at 65%', '/onboarding?intro=0.65']] },
+        { title: 'Consent', links: [['Nothing answered', '/consent'], ['Partly answered', '/consent?preset=partial'], ['All answered', '/consent?preset=all']] },
+        { title: 'Connect calendar', links: [['Default', '/connect-calendar?state=default'], ['Loading', '/connect-calendar?state=loading'], ['Error', '/connect-calendar?state=error'], ['Calendar consent off', '/connect-calendar?state=off']] },
+        { title: 'Week', links: [['Default', '/week?state=default'], ['Loading', '/week?state=loading'], ['No calendar', '/week?state=empty'], ['Partial, 3 of 7 days', '/week?state=partial'], ['Low confidence, 1 of 7 days', '/week?state=lowconf'], ['Error', '/week?state=error']] },
+        { title: 'Other', links: [['Today, placeholder', '/today'], ['Progress, placeholder', '/progress'], ['Settings', '/settings']] },
+      ],
+    },
+    model: {
+      title: 'Model check',
+      note: 'The model kit example log run through predict(). The P0 check for the demo phone.',
     },
     drivers: {
       note: 'Up to three. Direction is a glyph, a sign and words, never colour.',

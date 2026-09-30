@@ -4,14 +4,50 @@
     "strict": true,
     "allowImportingTsExtensions": true,
     "paths": {
-      "@tokens": ["./packages/tokens/index.ts"],
-      "@model": ["./packages/model/index.ts"],
-      "@model/*": ["./packages/model/*"],
-      "@copy": ["./packages/copy/copy.ts"],
-      "@ui": ["./packages/ui/index.ts"],
-      "@fixtures": ["./fixtures/index.ts"]
+      "@tokens": [
+        "./packages/tokens/index.ts"
+      ],
+      "@model": [
+        "./packages/model/index.ts"
+      ],
+      "@model/*": [
+        "./packages/model/*"
+      ],
+      "@copy": [
+        "./packages/copy/copy.ts"
+      ],
+      "@ui": [
+        "./packages/ui/index.ts"
+      ],
+      "@fixtures": [
+        "./fixtures/index.ts"
+      ],
+      "@planner": [
+        "./packages/planner/week.ts"
+      ],
+      "@planner/*": [
+        "./packages/planner/*"
+      ],
+      "@state": [
+        "./packages/state/AppState.tsx"
+      ],
+      "@format": [
+        "./packages/copy/format.ts"
+      ],
+      "@state/*": [
+        "./packages/state/*"
+      ]
     }
   },
-  "include": ["app", "packages", "fixtures", "*.ts", "*.tsx"],
-  "exclude": ["node_modules", "packages/**/*.test.ts"]
+  "include": [
+    "app",
+    "packages",
+    "fixtures",
+    "*.ts",
+    "*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "packages/**/*.test.ts"
+  ]
 }

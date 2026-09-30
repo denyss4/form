@@ -16,7 +16,7 @@ Facts that are missing. Nothing here may be invented. Each gap is also marked `[
 | G10 | Calendar provider for the mocked OAuth | Onboarding | A | Ask before P2 |
 | G11 | "Once per day" reveal needs persistence, and no storage library is listed | Today reveal | A | In-memory plus a dev reset for the demo. A storage dependency needs approval |
 | G12 | Marta's scripted week (`/fixtures`) does not exist yet | All demo data | B | Built in P1 from real `predict` runs |
-| G13 | No OFL licence file in `/Fonts`. `OFL.txt` not added: downloading it from upstream needs the user's OK, and I will not write licence text from memory | Fonts | User | Approve the download, or drop the files in |
+| G13 | Font licences | Fonts | A | Resolved. You added `OFL.txt` (Source Sans 3) and `OFL2.txt` (Manrope). Copied unchanged to `assets/licenses/`; Settings names them. Showing the full text in-app is in LATER |
 | G14 | Two `.mov` inspiration files could not be viewed | Motion reference | User | Ask which motion to take |
 | G15 | 21st.dev pages gave no detail for `spotlight-card` and `course-design-cards` | Component audit | User | Rejected as unverified; check the live previews if wanted |
 | G16 | Master §7 copy example cites sleep as a reason; the model says sleep matters little | Copy | A | Explanations use returned drivers only |
@@ -28,3 +28,8 @@ Facts that are missing. Nothing here may be invented. Each gap is also marked `[
 | G22 | The reveal ("arc sweeps to the score") is naturally a stroke-dash animation, which is neither transform nor opacity (Master §6) | Today reveal, P3 | A | Decide in P3: a rotating mask driven by transform, or a one-off exception for you to approve |
 | G23 | The scripted demo clock is a proposal: logs run Mon 28 Sep to Sun 4 Oct 2026, and "today" in the demo is Mon 5 Oct | Fixtures, demo | B | Confirm, or give another week. Changing it means editing `fixtures/build.mjs` and re-running `npm run fixtures` |
 | G24 | Lucide 1.49 has no `waves` icon, so Recover uses `Moon` instead of the planned `Waves` | PlanGlyph | A | Decided. Moon may read as "sleep"; check with people at Review 2 |
+| G25 | The onboarding intro (from Open_10) is a second orchestrated moment. The Master allows one (§6) | Onboarding | User | Built at your direction: transform and opacity only, about 1.6 s, once per launch, static under reduced motion. Say the word and I remove it (`IntroMark` is used in one place) |
+| G26 | Consent wording is demo text. Where the personal model runs, where data is stored and retention are not decided | Consent | User | The screen says "Demo wording. The final text needs legal review." Needs legal review before any real use |
+| G27 | Plan labels for guessed days ("Deep-work day", "Recover" for a weekday with no events) read as confidently as calendar-based ones | Week | A | Open critique item for Review 2: mute or drop the plan label when the day is guessed |
+| G28 | The session marker's travel animation was not watched playing: this machine reports reduced motion, and the browser pane was hidden (no frame callbacks). The instant path and the final layout were verified | Week | User | Judge on the demo phone. `?motion=full` on `/week` forces the animation on web |
+| G29 | The week's plan rules (session decides, then travel, then work, then rest) and the suggestion rule (hard session with an evening social event that day or travel the next day, moved to the nearest earlier free day) are proposals | Week | B | Approve at Review 2 (GAPS G2) |

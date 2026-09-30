@@ -26,6 +26,11 @@ Dated 2026-09-30. Source: approval of the Step 1 plan, which accepted every reco
 - ScoreDial (P1): a 270° arc, opening at the bottom. The likely range is a thin flat bracket outside the arc in the plan colour, with no shading or taper, because the model's range is not a calibrated interval. The plan colour tints the field behind it, not the arc's meaning. Range text and plan label sit outside the dial so they can wrap.
 - Icons follow the text size (Dynamic Type), up to 2×. The score number caps at 1.3×.
 - Theme: light is primary. Dark tokens exist for review only; dark plan fields and hairline are placeholders (GAPS G8, G9).
+- P2 (approved by "go to phase P2"): the Review 1 recommendations stand. Range line at `type.body` on Today (P3). Dark control stroke reuses `#6B7C8D` (still to apply, P5). Palette unchanged.
+- Motion reference: `Open_10` (chosen). Its thin-circle geometry drives the onboarding intro (rings merge into the dial's empty state). Its scroll-driven feel is not used: the Master bans scroll-jacking and parallax.
+- Calendar provider for the mock: Google Calendar, as text only (no logo, no imitation of its sign-in). Proposal, GAPS G10.
+- Demo state lives in memory and resets each launch; Settings has "Reset demo".
+- Consent: Allow and Not now are equal weight, nothing preselected, Continue stays off until all four are answered. Withdrawal in Settings is the same control.
 - Gallery: deep-linkable state (`?theme=dark&scale=3&plan=recover&state=high`), so any review screenshot can be reproduced. Text-size simulation is web preview only.
 - No skills from `/Skills` are installed. Skills that conflict with the Master are not used (see the plan, section D).
 - Explanation text under the plan uses only drivers the model returned. The "gets sharper as you log" line is not shipped.

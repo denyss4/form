@@ -3,18 +3,13 @@
 // States: default, pressed, focused, disabled, loading (MASTER_PROMPT §6). Press = scale 0.97 + opacity, 100 ms, transform and opacity only.
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useReducedMotion,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
-import { motion, opacity, radius, size, space } from '@tokens';
+import { opacity, radius, size, space } from '@tokens';
 
 import { Text } from './Text';
 import { useTheme } from './theme';
+import { usePress } from './usePress';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'text';
 
@@ -41,23 +36,9 @@ export function Button({
   forceState,
 }: ButtonProps) {
   const { color } = useTheme();
-  const reduceMotion = useReducedMotion();
-  const pressed = useSharedValue(forceState === 'pressed' ? 1 : 0);
+  const press = usePress(forceState === 'pressed');
   const [focused, setFocused] = useState(false);
   const inactive = disabled || loading;
-
-  const animated = useAnimatedStyle(() => ({
-    opacity: 1 - pressed.value * (1 - motion.press.opacity),
-    transform: [{ scale: reduceMotion ? 1 : 1 - pressed.value * (1 - motion.press.scale) }],
-  }));
-
-  // Reduced motion: no scale, and the opacity change becomes a short cross-fade.
-  const animateTo = (value: number) => {
-    pressed.value = withTiming(value, {
-      duration: reduceMotion ? motion.reducedFade : motion.press.duration,
-      easing: Easing.bezier(...motion.press.easing),
-    });
-  };
 
   const labelTone = variant === 'primary' ? 'inverse' : 'primary';
   const labelColor = variant === 'primary' ? color.bg.canvas : color.text.primary;
@@ -67,11 +48,12 @@ export function Button({
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityHint={accessibilityHint}
-      accessibilityState={{ disabled: inactive, busy: loading }}
+      aria-disabled={inactive}
+      aria-busy={loading}
       disabled={inactive}
       onPress={onPress}
-      onPressIn={forceState ? undefined : () => animateTo(1)}
-      onPressOut={forceState ? undefined : () => animateTo(0)}
+      onPressIn={forceState ? undefined : press.onPressIn}
+      onPressOut={forceState ? undefined : press.onPressOut}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
       style={[
@@ -87,7 +69,7 @@ export function Button({
             ? { borderWidth: size.outline, borderColor: color.text.primary }
             : undefined,
           variant === 'text' ? styles.textOnly : undefined,
-          animated,
+          press.style,
         ]}
       >
         <Text

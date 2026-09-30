@@ -1,0 +1,23 @@
+// Date and list wording. Kept here, next to copy.ts, so every visible string has one home.
+import { addDays, weekdayOf } from '../planner/dates.ts';
+
+const shortDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const longDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+const dayNumber = (date: string) => Number(date.slice(8, 10));
+const monthOf = (date: string) => months[Number(date.slice(5, 7)) - 1];
+
+/** "Thu 8" */
+export const formatDay = (date: string) => `${shortDays[weekdayOf(date)]} ${dayNumber(date)}`;
+
+/** "Thursday" */
+export const weekdayName = (date: string) => longDays[weekdayOf(date)];
+
+/** "5–11 Oct", or "28 Sep–4 Oct" across a month end. */
+export function formatWeek(start: string): string {
+  const end = addDays(start, 6);
+  return monthOf(start) === monthOf(end)
+    ? `${dayNumber(start)}–${dayNumber(end)} ${monthOf(end)}`
+    : `${dayNumber(start)} ${monthOf(start)}–${dayNumber(end)} ${monthOf(end)}`;
+}

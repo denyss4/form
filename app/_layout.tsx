@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
 
+import { AppStateProvider } from '@state';
 import { lightColor } from '@tokens';
 import { ThemeProvider } from '@ui';
 
@@ -25,14 +26,16 @@ export default function RootLayout() {
 
   // Light is the primary theme. The gallery layers its own dev theme on top.
   return (
-    <ThemeProvider scheme="light">
-      <StatusBar style="dark" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: lightColor.bg.canvas },
-        }}
-      />
-    </ThemeProvider>
+    <AppStateProvider>
+      <ThemeProvider scheme="light">
+        <StatusBar style="dark" />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: lightColor.bg.canvas },
+          }}
+        />
+      </ThemeProvider>
+    </AppStateProvider>
   );
 }
