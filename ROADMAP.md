@@ -11,8 +11,8 @@ Feature freeze at the end of P3. P4 is screens only. At every Review, stop and w
 | P2 | Onboarding, consent (4 purposes), mocked calendar import, Week view, scripted move suggestion | Every state screenshotted; accept and decline both reflow | 3.5 / 2.5 | Screenshots | Built. Screenshots in `docs/screens/p2`. Travel animation not yet watched (GAPS G28) |
 | P3 | 3-tap evening log, Today (reveal, drivers, plan, colour field), `plan()`, adapter wiring, morning slider | Reveal honours reduced motion; explanations use only returned drivers; day-1 state | 4 / 3 | Review 2 + critique + accessibility pass | Built, audited and critiqued (see `CRITIQUE.md`). The user replied "Yes, go to P4", so P4 started. Feature freeze applies from here |
 | P4 | Plan Fit meter, Felt vs Measured, mocked Health-sync and calendar-write screens | Every state screenshotted | 2 / 2 | Screenshots, then freeze | Built. Screenshots in `docs/screens/p4` (31 files). Run on an iPhone (Expo Go, SDK 57): 9 stills reviewed in `docs/screens/device`. **Feature freeze applies now** |
-| P5 | Critique fixes, reduced-motion pass, Polish-length test, dark stroke fix | Critical and Moderate findings fixed or argued in `CRITIQUE.md` | 2 / 1.5 | Review 3 | Built. Screenshots in `docs/screens/p5`. **Waiting at Review 3** (see `CRITIQUE.md`) |
-| P6 | Demo path locked, fallback recording, PMData credit slide | Two rehearsals under 3 minutes | 1 / 0.5 | Rehearsal | Not started |
+| P5 | Critique fixes, reduced-motion pass, Polish-length test, dark stroke fix | Critical and Moderate findings fixed or argued in `CRITIQUE.md` | 2 / 1.5 | Review 3 | Built. Review 3 answered on 1 Oct; its decisions are built (plan as title, check-in nudge, estimated days). Screenshots in `docs/screens/p5` |
+| P6 | Demo path locked, fallback recording, PMData credit slide | Two rehearsals under 3 minutes | 1 / 0.5 | Rehearsal | Path locked and dry-run by script (`docs/demo/DEMO.md`); credit slide and production mode ready. **Still needs people and the phone:** the fallback recording, two timed rehearsals, the 5-second colour test |
 
 ## P0 tasks
 

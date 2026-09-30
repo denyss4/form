@@ -39,7 +39,6 @@ import {
   IconButton,
   InlineMessage,
   oneOf,
-  PlanLabel,
   ScoreDial,
   ScreenHeader,
   Skeleton,
@@ -151,13 +150,8 @@ export default function Today() {
     scroll.current?.scrollTo({ y: 0, animated: false });
   };
 
-  const header = (
-    <ScreenHeader
-      title={copy.today.title}
-      caption={formatLong(app.demoDay)}
-      right={<IconButton icon={Settings} label={copy.nav.settings} onPress={() => router.push('/settings')} />}
-    />
-  );
+  const settingsButton = <IconButton icon={Settings} label={copy.nav.settings} onPress={() => router.push('/settings')} />;
+  const header = <ScreenHeader title={copy.today.title} caption={formatLong(app.demoDay)} right={settingsButton} />;
 
   let field;
   let below = null;
@@ -203,15 +197,15 @@ export default function Today() {
     const skipped = result.skippedInputs;
     const rating = app.readiness[app.demoDay] ?? null;
 
+    // Reading order, for the eye and for VoiceOver alike: the plan (the title), the dial, range and confidence, the reason, then the drivers.
     field = (
       <>
-        {header}
-        <View style={styles.lead}>
-          <PlanLabel plan={p} />
-          <Text variant="body">
-            {explain(p, result.drivers, { band: bandOf(result.score), tags: data.day.tags, sessions: data.day.sessions })}
-          </Text>
-        </View>
+        <ScreenHeader
+          title={copy.plan[p]}
+          plan={p}
+          caption={copy.today.dateCaption(formatLong(app.demoDay))}
+          right={settingsButton}
+        />
         <View style={styles.dial}>
           <ScoreDial
             score={result.score}
@@ -220,7 +214,16 @@ export default function Today() {
             reveal={{ progress, field: color.plan[p].field }}
           />
         </View>
-        <View style={styles.annotation}>
+        <View
+          style={styles.annotation}
+          accessible
+          accessibilityLabel={[
+            copy.inputsBasis(result.confidence.used, result.confidence.total),
+            result.confidence.used <= FEW_INPUTS ? copy.today.fewInputs : null,
+          ]
+            .filter(Boolean)
+            .join('. ')}
+        >
           <Text variant="body">{copy.range(result.range[0], result.range[1])}</Text>
           <Text variant="caption" tone="secondary">
             {copy.inputsBasis(result.confidence.used, result.confidence.total)}
@@ -231,6 +234,9 @@ export default function Today() {
             </Text>
           ) : null}
         </View>
+        <Text variant="body" style={styles.reason}>
+          {explain(p, result.drivers, { band: bandOf(result.score), tags: data.day.tags, sessions: data.day.sessions })}
+        </Text>
       </>
     );
 
@@ -260,6 +266,11 @@ export default function Today() {
                   .join(', '),
                 skipped.length - 2,
               )}
+            </Text>
+          ) : null}
+          {rating === null ? (
+            <Text variant="body" tone="secondary">
+              {copy.today.checkin.nudge}
             </Text>
           ) : null}
         </View>
@@ -363,7 +374,7 @@ const styles = StyleSheet.create({
   strip: { position: 'absolute', top: 0, left: 0, right: 0 },
   field: { paddingHorizontal: space.margin, paddingBottom: space.lg, gap: space.sm },
   fieldBg: { borderBottomLeftRadius: radius.sheet, borderBottomRightRadius: radius.sheet },
-  lead: { gap: space.xs, marginTop: space.xs },
+  reason: { marginTop: space.xs },
   dial: { alignItems: 'center', marginTop: space.sm },
   annotation: { alignItems: 'center', gap: space.xxs },
   section: { paddingHorizontal: space.margin, marginTop: space.xl, gap: space.sm },

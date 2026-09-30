@@ -35,6 +35,7 @@ const base = {
 
   today: {
     title: 'Today',
+    dateCaption: (date: string) => `Today, ${date}`,
     // Why this plan. This is the plan rule (score band x day type), stated plainly. The drivers below explain the score itself.
     why: {
       hard: (session: string) => `Your score is high, so your ${session} session stays hard.`,
@@ -66,6 +67,7 @@ const base = {
       retry: 'Try again',
     },
     checkin: {
+      nudge: '2 taps to sharpen tomorrow',
       title: 'How do you feel this morning?',
       hint: "Your rating helps Form check its forecast.",
       low: 'Very low',
@@ -174,6 +176,7 @@ const base = {
     coverage: (found: number, total: number) => `Events found for ${found} of ${total} days.`,
     lowConfidence: 'Most day types are guessed from the weekday.',
     guessed: 'guessed from the weekday',
+    estimated: 'Estimated',
     noSession: 'No session',
     session: (name: string, time: string) => `${name}, ${time}`,
     empty: {
@@ -392,6 +395,7 @@ const base = {
       note: 'Each plan has a glyph and a label. Colour is never the only signal.',
       onCanvas: 'On the canvas',
       onField: 'On its own field',
+      estimated: 'Estimated day: muted glyph, dashed, and the word',
       glyphs: 'Glyph sizes',
     },
     dial: {

@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { fitSummary, insideRange, LEARNING_DAYS } from './progress.ts';
+import { checkinCompletion, fitSummary, insideRange, LEARNING_DAYS } from './progress.ts';
 import type { FitDay, Pair } from './progress.ts';
 
 const marta = JSON.parse(readFileSync(new URL('../../fixtures/marta-week.json', import.meta.url), 'utf8'));
@@ -50,4 +50,11 @@ test('the learning threshold is the kit minimum', () => {
   assert.equal(LEARNING_DAYS, 21);
   const model = JSON.parse(readFileSync(new URL('../model/model.json', import.meta.url), 'utf8'));
   assert.equal(model.minimum_pairs, LEARNING_DAYS);
+});
+
+test('check-in completion counts rated mornings out of the mornings looked at', () => {
+  const ratings: Record<string, number> = { '2026-10-05': 7, '2026-10-07': 9 };
+  const mornings = ['2026-10-05', '2026-10-06', '2026-10-07'];
+  assert.deepEqual(checkinCompletion(mornings, (d) => d in ratings), { rated: 2, days: 3 });
+  assert.deepEqual(checkinCompletion([], () => true), { rated: 0, days: 0 });
 });

@@ -38,3 +38,9 @@ Goal mode, what-if simulator, Precise food logging, partner sync, coach or B2B d
 - The unrated morning slider keeps its thumb at the "Very low" end. Try hiding the thumb until a first touch.
 - Real Polish copy, reviewed by a native speaker (GAPS G40).
 - Four distinct dark field tints (today all four equal the raised surface).
+
+## From P6
+
+- A GIF of the production web build following the demo path, as a weaker fallback than a phone recording.
+- Try the explicit VoiceOver order (`experimental_accessibilityOrder`) once VoiceOver can be tested (GAPS G41).
+- Upgrade to SDK 58 when Expo Go supports it: it adds `EXPO_NO_DEV_MENU` and the `disableFab` launch parameter for the tools button.

@@ -74,7 +74,8 @@ export default function SettingsScreen() {
               router.replace('/');
             }}
           />
-          <NavLink href="/gallery" label={copy.settings.gallery} />
+          {/* The gallery is a development tool. A production run (npm run demo) does not show the link. */}
+          {__DEV__ ? <NavLink href="/gallery" label={copy.settings.gallery} /> : null}
         </Section>
       </ScrollView>
     </SafeAreaView>

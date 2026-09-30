@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PMData credit slide</title>
+<!--
+  One 16:9 slide. Open in a browser, full screen, and screenshot or present it.
+  Colours are the project tokens (packages/tokens/color.ts): canvas "Dawn", text "Ink", secondary, hairline.
+  Fonts are the two bundled families, loaded from assets/fonts.
+  The citation was taken from search results (the dataset page's certificate would not load here): check it at
+  https://datasets.simula.no/pmdata/ before you show this slide.
+-->
+<style>
+  @font-face { font-family: "Manrope"; font-weight: 700; src: url("../../assets/fonts/Manrope-Bold.ttf") format("truetype"); }
+  @font-face { font-family: "Manrope"; font-weight: 600; src: url("../../assets/fonts/Manrope-SemiBold.ttf") format("truetype"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 400; src: url("../../assets/fonts/SourceSans3-Regular.ttf") format("truetype"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 600; src: url("../../assets/fonts/SourceSans3-SemiBold.ttf") format("truetype"); }
+  :root {
+    --canvas: #F3F6FA;      /* Dawn */
+    --ink: #13263A;         /* text primary */
+    --secondary: #4A5B6C;   /* text secondary */
+    --hairline: #C9D3DD;
+  }
+  html, body { margin: 0; height: 100%; background: var(--canvas); }
+  .slide {
+    box-sizing: border-box; width: min(100vw, 177.78vh); aspect-ratio: 16 / 9; margin: 0 auto;
+    padding: 7% 8%; display: flex; flex-direction: column; justify-content: center; gap: 2.2vmin;
+    color: var(--ink); font-family: "Source Sans 3", system-ui, sans-serif; font-size: 2.4vmin; line-height: 1.5;
+  }
+  h1 { margin: 0; font-family: "Manrope", system-ui, sans-serif; font-weight: 700; font-size: 6.4vmin; line-height: 1.15; }
+  p { margin: 0; max-width: 62ch; }
+  .lead { font-size: 3vmin; }
+  .secondary { color: var(--secondary); }
+  .rule { border: 0; border-top: 1px solid var(--hairline); margin: 1vmin 0; width: 100%; }
+  strong { font-weight: 600; }
+  a { color: var(--ink); }
+</style>
+</head>
+<body>
+<main class="slide">
+  <h1>Built on PMData</h1>
+  <p class="lead">Form's model is trained on PMData, a public dataset from Simula: 16 recreational athletes in Norway, who logged readiness, sleep, mood, stress, training and more over about five months.</p>
+  <hr class="rule">
+  <p><strong>Licence.</strong> CC BY 4.0. We built a daily table from the raw data and trained a ridge regression on it.</p>
+  <p><strong>Cite.</strong> Thambawita, V., Hicks, S. A., et al. (2020). PMData: a sports logging dataset. <em>Proceedings of the 11th ACM Multimedia Systems Conference (MMSys '20)</em>, 231&ndash;236. <a href="https://doi.org/10.1145/3339825.3394926">doi.org/10.1145/3339825.3394926</a></p>
+  <p><strong>Data.</strong> <a href="https://datasets.simula.no/pmdata/">datasets.simula.no/pmdata</a></p>
+  <hr class="rule">
+  <p class="secondary">A small, narrow sample. Form is for planning: it does not diagnose or treat anything.</p>
+</main>
+</body>
+</html>

@@ -4,8 +4,27 @@
     {
       "name": "form-web",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["node_modules/expo/bin/cli", "start", "--web", "--port", "8081"],
+      "runtimeArgs": [
+        "node_modules/expo/bin/cli",
+        "start",
+        "--web",
+        "--port",
+        "8081"
+      ],
       "port": 8081
+    },
+    {
+      "name": "form-demo",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "node_modules/expo/bin/cli",
+        "start",
+        "--no-dev",
+        "--minify",
+        "--port",
+        "8082"
+      ],
+      "port": 8082
     }
   ]
 }

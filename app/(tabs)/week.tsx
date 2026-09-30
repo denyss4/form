@@ -72,7 +72,7 @@ function Row({
     >
       <View style={styles.line}>
         <Text variant="bodyStrong">{formatDay(day.date)}</Text>
-        <PlanLabel plan={day.plan} />
+        <PlanLabel plan={day.plan} estimated={day.source === 'guessed'} />
       </View>
       <Text variant="caption" tone="secondary">
         {day.source === 'guessed' ? `${tags}, ${copy.week.guessed}` : tags}

@@ -71,6 +71,20 @@ Dated 2026-09-30. Source: approval of the Step 1 plan, which accepted every reco
 - **Review 3 fixes.** The driver heading is "What moved your score" (it was "Why 51", which promised to explain all of 51 while the rows are only the top three differences from a typical day). The screen title sits at the same height on every tab. On Progress, "Fit" is quiet and "Too hard" or "Too easy" carry weight. Week stops its scroll on a row boundary.
 - **Busy indicator.** One shared component: the native indicator, and a static icon under reduced motion (the exception decided at P4). The calendar connect screen keeps its Back button while it loads.
 
+## Decided by the user on the Review 3 questions (1 Oct 2026)
+
+1. **The plan is Today's title**, in `type.title` and the plan colour. Order: plan, ScoreDial, range and confidence, drivers. `type.score` keeps its size. VoiceOver order must match. Built: the title is the plan's glyph and label, the caption reads "Today, Monday 5 Oct", then the dial, the range and confidence, then the one-sentence reason (my placement, after the confidence line, so it does not sit between the plan and the dial), then the drivers. GAPS G41 says what is unverified.
+2. **The morning check-in stays below the fold.** When the rating is missing, one line under the drivers reads "2 taps to sharpen tomorrow" (no card), hidden once rated. "Sharpen" means the rating becomes an input for tomorrow's forecast. It is not a claim that the model learns. Check-in completion is logged as a metric to watch (`METRICS.md`, `checkinCompletion()`, tested).
+3. **Estimated days** (no calendar events) show a muted plan colour, an outlined glyph, and the text "Estimated"; screen readers say "estimated". Built: the glyph is the plan colour at 0.75 and dashed (every glyph is a line icon already, so "outlined" is a dashed outline), the label is in the secondary tone (a plan colour at reduced opacity cannot keep 4.5:1 for text: 3.7 to 4.4 at 0.8), and the word "Estimated" sits under it.
+4. **No EAS development build.** Demo in production mode: `npm run demo` (`expo start --no-dev --minify`). The result of the tools-button check is in GAPS G37 and `docs/demo/DEMO.md`: not confirmed on SDK 57. The fallback recording is prepared as a runbook; it needs the phone.
+5. **Hard-plan hue.** The user runs the 5-second test. Candidate `#A64B00` is prepared and **not applied** (`docs/hard-hue-candidate.md`, GAPS G42).
+
+## Made in P6
+
+- **The demo path is locked** (`docs/demo/DEMO.md`, path B: morning ratings 7 and 9, Moderate, No, No, Yes both evenings, Heavy legs moved to Wednesday). It ends on Wed 7 at Train hard, 65, Likely 48–82.
+- **Production mode hides the gallery link** in Settings (`__DEV__`). "Reset demo" and "Demo: jump to tomorrow morning" stay: the path needs them.
+- **A credit slide** for PMData (`docs/demo/pmdata-credit-slide.html`). GAPS G43.
+
 ## Still open
 
 - Demo phones (decision 7).

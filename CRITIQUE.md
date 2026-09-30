@@ -167,14 +167,14 @@ Today, Week and Progress now look like one product on a real phone: the plan-col
 
 | # | Finding | Severity | Recommendation and status |
 |---|---|---|---|
-| 1 | Today: the decision reads smaller than the number. On the phone the first glance lands on "51", then the dial, and only then "Train light" (Review 2 finding 5) | 🟡 Moderate | **Question for you.** Make the plan the screen title ("Train light" in `type.title`) and move "Today, Monday 5 Oct" to the caption. One header pattern changes, on one screen |
-| 2 | Today: the morning check-in is below the fold. Argued: it feeds tomorrow's forecast and Felt vs forecast, not today's score, so today's answer is not hurt. The cost is a skipped rating | 🟡 Moderate | **Question for you.** Keep it where it is (my recommendation), and rate once in the demo script |
-| 3 | Week: a day guessed from the weekday ("Sun 11, Rest, guessed") shows "Recover" as confidently as a calendar day (GAPS G27) | 🟡 Moderate | **Question for you.** Recommendation: keep the glyph, set the label in the secondary tone on guessed days, so colour means "known" |
+| 1 | Today: the decision reads smaller than the number. On the phone the first glance lands on "51", then the dial, and only then "Train light" (Review 2 finding 5) | 🟡 Moderate | **Fixed (answer 1: yes).** The plan is the screen title in `type.title` and the plan colour. Order: plan, dial, range and confidence, reason, drivers |
+| 2 | Today: the morning check-in is below the fold. Argued: it feeds tomorrow's forecast and Felt vs forecast, not today's score | 🟡 Moderate | **Decided (answer 2: keep).** Added "2 taps to sharpen tomorrow" under the drivers while the rating is missing. Completion is logged in `METRICS.md` |
+| 3 | Week: a day guessed from the weekday ("Sun 11, Rest, guessed") showed "Recover" as confidently as a calendar day (GAPS G27) | 🟡 Moderate | **Fixed (answer 3: yes).** "Estimated": muted dashed glyph, secondary-tone label, the word, and "estimated" for screen readers |
 | 4 | Week: the suggestion footer takes 29% of the screen, which hid Thursday | 🟡 Moderate | **Fixed.** Week scrolls to show both days, stopping on a row boundary. Seen on the web at 375 pt, not yet on the phone |
 | 5 | Progress: the one row to notice ("Too hard") was the same weight as "Fit", beside six coloured labels | 🟡 Moderate | **Fixed.** "Fit" is quiet, "Too hard" and "Too easy" are bold |
 | 6 | Today: "Why 51" promised to explain all of 51. The rows (+6, −4, −2) are the top three differences from a typical day | 🟡 Moderate | **Fixed.** "What moved your score" (Review 1 finding 10) |
 | 7 | The unrated morning slider keeps its thumb at the "Very low" end next to "Not rated" | 🟢 Minor | Open, LATER.md |
-| 8 | Expo Go's blue button covers our Settings gear | 🟡 Moderate for the demo | Not ours (GAPS G37). Hide it, or demo from a development build |
+| 8 | Expo Go's blue button covers our Settings gear | 🟡 Moderate for the demo | **Answer 4:** no dev build; demo in production mode. The button could not be confirmed hideable on SDK 57 (GAPS G37). Check on the phone |
 
 ### Visual hierarchy
 
@@ -220,3 +220,13 @@ Today, Week and Progress now look like one product on a real phone: the plan-col
 3. Mute the plan label on guessed days (finding 3)?
 4. Hide Expo's button, or build a development build for the demo (finding 8)?
 5. Show two or three people the Ember field for "Train hard" during a rehearsal (Review 1 finding 4)?
+
+### Answers to the Review 3 questions (1 Oct 2026)
+
+1. Plan as the title: **yes**, built. 2. Check-in below the fold: **keep**, with a one-line nudge. 3. Mute guessed days: **yes**, built as "Estimated". 4. Dev build: **no**; production mode, and the tools-button result is unconfirmed. 5. Ember test: **the user runs it**; `#A64B00` is prepared, not applied, and does not improve distinctness (`docs/hard-hue-candidate.md`).
+
+## P6 checks
+
+- The demo path ran end to end, by script, on the production web build (`--no-dev --minify`, 375 × 812): path A (ratings 7 and 7) ended on Train light, 59; path B (7 and 9) ended on Train hard, 65. Path B is the locked one. No person has rehearsed it (GAPS G44).
+- The production iOS bundle builds (6.2 MB, `__DEV__` false). The gallery link is absent in production.
+- Not checked: the Today plan title and estimated glyph on the phone; VoiceOver order (GAPS G41); the dashed glyph's legibility at 24 px.

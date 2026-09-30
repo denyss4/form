@@ -7,7 +7,7 @@ import Footprints from 'lucide-react-native/icons/footprints';
 import Moon from 'lucide-react-native/icons/moon';
 
 import { copy } from '@copy';
-import { size, space, type PlanId } from '@tokens';
+import { opacity, size, space, type PlanId } from '@tokens';
 
 import { Text } from './Text';
 import { useTheme } from './theme';
@@ -15,7 +15,7 @@ import { useIconSize } from './useIconSize';
 
 const icons = { hard: Dumbbell, light: Footprints, recover: Moon, deepwork: Focus };
 
-export function PlanGlyph({ plan, small = false }: { plan: PlanId; small?: boolean }) {
+export function PlanGlyph({ plan, small = false, estimated = false }: { plan: PlanId; small?: boolean; estimated?: boolean }) {
   const { color } = useTheme();
   const Icon = icons[plan];
   const px = useIconSize(small ? size.iconSm : size.icon);
@@ -24,11 +24,28 @@ export function PlanGlyph({ plan, small = false }: { plan: PlanId; small?: boole
       color={color.plan[plan].base}
       size={px}
       strokeWidth={size.outline}
+      {...(estimated ? { opacity: opacity.estimated, strokeDasharray: '3 2', strokeLinecap: 'butt' } : null)}
     />
   );
 }
 
-export function PlanLabel({ plan }: { plan: PlanId }) {
+export function PlanLabel({ plan, estimated = false }: { plan: PlanId; estimated?: boolean }) {
+  if (estimated) {
+    // Not sure of this day (no events, so the weekday decided): muted colour, a dashed glyph, and the word, never colour alone.
+    return (
+      <View style={styles.row} accessible accessibilityLabel={`${copy.plan[plan]}, ${copy.week.estimated.toLowerCase()}`}>
+        <PlanGlyph plan={plan} estimated />
+        <View style={styles.shrink}>
+          <Text variant="plan" tone="secondary">
+            {copy.plan[plan]}
+          </Text>
+          <Text variant="caption" tone="secondary">
+            {copy.week.estimated}
+          </Text>
+        </View>
+      </View>
+    );
+  }
   return (
     <View style={styles.row} accessible accessibilityLabel={copy.plan[plan]}>
       <PlanGlyph plan={plan} />

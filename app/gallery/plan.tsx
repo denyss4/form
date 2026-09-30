@@ -25,6 +25,12 @@ export default function PlanGallery() {
         ))}
       </Section>
 
+      <Section title={p.estimated}>
+        {planIds.map((plan) => (
+          <PlanLabel key={plan} plan={plan} estimated />
+        ))}
+      </Section>
+
       <Section title={p.glyphs}>
         {planIds.map((plan) => (
           <View key={plan} style={styles.row}>

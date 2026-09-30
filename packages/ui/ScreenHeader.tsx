@@ -6,9 +6,10 @@ import Animated from 'react-native-reanimated';
 import ArrowLeft from 'lucide-react-native/icons/arrow-left';
 
 import { copy } from '@copy';
-import { size, space, titleMaxFontScale } from '@tokens';
+import { size, space, titleMaxFontScale, type PlanId } from '@tokens';
 
 import { FocusRing, useFocus } from './focus';
+import { PlanGlyph } from './PlanGlyph';
 import { Text } from './Text';
 import { useTheme } from './theme';
 import { useIconSize } from './useIconSize';
@@ -42,11 +43,14 @@ export function ScreenHeader({
   caption,
   onBack,
   right,
+  plan,
 }: {
   title: string;
   caption?: string;
   onBack?: () => void;
   right?: ReactNode;
+  /** When set, the title is this plan: its glyph, and the text in the plan colour. Today uses it. */
+  plan?: PlanId;
 }) {
   const { color } = useTheme();
   const iconPx = useIconSize(size.icon);
@@ -66,9 +70,27 @@ export function ScreenHeader({
       ) : null}
       <View style={styles.titleRow}>
         <View style={styles.grow}>
-          <Text variant="title" accessibilityRole="header" level={1} maxFontSizeMultiplier={titleMaxFontScale}>
-            {title}
-          </Text>
+          {plan ? (
+            <View style={styles.planTitle}>
+              <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                <PlanGlyph plan={plan} />
+              </View>
+              <Text
+                variant="title"
+                tone={plan}
+                accessibilityRole="header"
+                level={1}
+                maxFontSizeMultiplier={titleMaxFontScale}
+                style={styles.shrink}
+              >
+                {title}
+              </Text>
+            </View>
+          ) : (
+            <Text variant="title" accessibilityRole="header" level={1} maxFontSizeMultiplier={titleMaxFontScale}>
+              {title}
+            </Text>
+          )}
           {caption ? (
             <Text variant="caption" tone="secondary">
               {caption}
@@ -86,5 +108,7 @@ const styles = StyleSheet.create({
   back: { minHeight: size.touch, flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: space.xs },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   grow: { flex: 1 },
+  planTitle: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
+  shrink: { flexShrink: 1 },
   icon: { width: size.touch, height: size.touch, alignItems: 'center', justifyContent: 'center' },
 });
