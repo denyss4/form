@@ -68,6 +68,7 @@ Dated 2026-09-30. Source: approval of the Step 1 plan, which accepted every reco
 - **Session names are named as sessions.** "Your Push session is kept light", not "Push is kept light". "Answer 3 more to save."
 - **Dark control stroke** reuses `#6B7C8D`. No new colour.
 - **Polish-length test** is `?pseudo=1` on the web or `EXPO_PUBLIC_PSEUDO=1` on the phone. Review only, no library.
+- **Review 3 fixes.** The driver heading is "What moved your score" (it was "Why 51", which promised to explain all of 51 while the rows are only the top three differences from a typical day). The screen title sits at the same height on every tab. On Progress, "Fit" is quiet and "Too hard" or "Too easy" carry weight. Week stops its scroll on a row boundary.
 - **Busy indicator.** One shared component: the native indicator, and a static icon under reduced motion (the exception decided at P4). The calendar connect screen keeps its Back button while it loads.
 
 ## Still open

@@ -142,7 +142,10 @@ export default function Week() {
     shown.current = true;
     // The least scroll that puts both rows fully above the footer, so the header stays in view as long as it can.
     const lowest = Math.max(to.y + to.h, from.y + from.h);
-    list.current?.scrollTo({ y: Math.max(0, listTop.current + lowest - viewHeight.current + space.sm), animated: false });
+    const least = listTop.current + lowest - viewHeight.current + space.sm;
+    const tops = Object.values(layouts.current).map((slot) => listTop.current! + slot.y).sort((a, b) => a - b);
+    const snapped = tops.find((top) => top >= least) ?? least; // the next row top, so no row or title is half cut
+    list.current?.scrollTo({ y: Math.max(0, least <= 0 ? 0 : snapped), animated: false });
   };
   const [moving, setMoving] = useState(false);
   const [startY, setStartY] = useState(0);

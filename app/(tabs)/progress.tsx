@@ -33,6 +33,7 @@ const FEW_DAYS = 3; // fewer answered days than this are flagged as too few to r
 function FitRow({ day, divider, compact }: { day: FitDay; divider: boolean; compact: boolean }) {
   const { color } = useTheme();
   const status = copy.progress.fit.status[day.fit ?? 'none'];
+  const statusVariant = day.fit === 'yes' ? 'body' : 'bodyStrong'; // the exception is what to notice
   return (
     <View
       accessible
@@ -50,7 +51,7 @@ function FitRow({ day, divider, compact }: { day: FitDay; divider: boolean; comp
           <View style={styles.planColumn}>
             <PlanLabel plan={day.plan} />
           </View>
-          <Text variant="body" style={styles.noShrink}>
+          <Text variant={statusVariant} tone={day.fit === 'yes' ? 'secondary' : 'primary'} style={styles.noShrink}>
             {status}
           </Text>
         </View>
@@ -60,7 +61,9 @@ function FitRow({ day, divider, compact }: { day: FitDay; divider: boolean; comp
             <Text variant="bodyStrong" style={styles.noShrink}>
               {formatDay(day.date)}
             </Text>
-            <Text variant="body">{status}</Text>
+            <Text variant={statusVariant} tone={day.fit === 'yes' ? 'secondary' : 'primary'}>
+              {status}
+            </Text>
           </View>
           <PlanLabel plan={day.plan} />
         </>

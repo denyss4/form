@@ -11,7 +11,7 @@ const base = {
     personal: 'vs. your usual',
   },
   noDrivers: 'Your usual level',
-  whyHeading: (score: number) => `Why ${score}`,
+  whyHeading: 'What moved your score',
 
   plan: {
     hard: 'Train hard',

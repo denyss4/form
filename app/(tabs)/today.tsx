@@ -238,7 +238,7 @@ export default function Today() {
       <>
         <View style={styles.section}>
           <Text variant="heading" accessibilityRole="header" level={2}>
-            {copy.whyHeading(result.score)}
+            {copy.whyHeading}
           </Text>
           <View>
             {result.drivers.length === 0 ? (
@@ -319,7 +319,7 @@ export default function Today() {
       <Animated.ScrollView ref={scroll} onScroll={onScroll} scrollEventThrottle={16} contentContainerStyle={styles.content}>
         <View
           onLayout={(e) => fieldHeight.set(e.nativeEvent.layout.height)}
-          style={[styles.field, { paddingTop: insets.top + space.xs }]}
+          style={[styles.field, { paddingTop: insets.top + space.md }]}
         >
           <Animated.View
             pointerEvents="none"

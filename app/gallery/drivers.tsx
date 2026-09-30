@@ -45,7 +45,7 @@ export default function DriversGallery() {
         onChange={setSet}
       />
 
-      <Section title={copy.whyHeading(day.result.score)}>
+      <Section title={copy.whyHeading}>
         {drivers.length === 0 ? (
           <Text variant="body" tone="secondary">
             {copy.noDrivers}

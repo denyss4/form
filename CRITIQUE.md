@@ -154,3 +154,69 @@ Screenshots: `docs/screens/p5/`. Web preview at 375 × 812, the iPhone's size.
 - **Polish-length test.** `?pseudo=1` grows every string in `copy.ts` by 32% in total (382 strings, with Polish letters; a test checks it, and that numbers are untouched). Viewed at 375 pt: Today, the evening log, Week, Consent, Connect calendar, Progress, Felt vs forecast. No clipped, truncated or overlapping text. The tightest spot is Progress: "Deep-work day" and the status share one line, and the plan label wraps inside its own column when it has to. Not viewed: Settings, Health data, Calendar changes, onboarding (same components). Driver labels baked into the fixture JSON are not grown (GAPS G40).
 - **Dark contrast.** The gallery, recomputed: the control stroke passes 3:1 on canvas, raised and all four fields (lowest 3.40:1). GAPS G9 closed.
 - **Builds.** `npm run check`, 26 tests, and `expo export` for both iOS and Android exit 0.
+
+## Review 3: P5 (stage: final polish before the demo)
+
+Run with `/design:design-critique` ("Form, mobile readiness planner, stage: final polish before the demo, persona Marta"). Screens: the 9 iPhone stills (`docs/screens/device`), `docs/screens/p4`, `docs/screens/p5`. Not seen on the phone: Felt vs forecast, Health data, Calendar changes, onboarding, the reveal and the move animation at speed, haptics, Reduce Motion, VoiceOver, Dynamic Type.
+
+### Overall impression
+
+Today, Week and Progress now look like one product on a real phone: the plan-coloured field, the dial with its separate range bracket, and hairline rows with no boxes inside boxes. The biggest remaining opportunity is order of attention on Today. The eye goes to "51" first, and the decision Marta came for ("what kind of day?") is a 17 pt label above it. The second is that the two flagship moments, the reveal and the move, have still never been watched at speed.
+
+### Usability
+
+| # | Finding | Severity | Recommendation and status |
+|---|---|---|---|
+| 1 | Today: the decision reads smaller than the number. On the phone the first glance lands on "51", then the dial, and only then "Train light" (Review 2 finding 5) | 🟡 Moderate | **Question for you.** Make the plan the screen title ("Train light" in `type.title`) and move "Today, Monday 5 Oct" to the caption. One header pattern changes, on one screen |
+| 2 | Today: the morning check-in is below the fold. Argued: it feeds tomorrow's forecast and Felt vs forecast, not today's score, so today's answer is not hurt. The cost is a skipped rating | 🟡 Moderate | **Question for you.** Keep it where it is (my recommendation), and rate once in the demo script |
+| 3 | Week: a day guessed from the weekday ("Sun 11, Rest, guessed") shows "Recover" as confidently as a calendar day (GAPS G27) | 🟡 Moderate | **Question for you.** Recommendation: keep the glyph, set the label in the secondary tone on guessed days, so colour means "known" |
+| 4 | Week: the suggestion footer takes 29% of the screen, which hid Thursday | 🟡 Moderate | **Fixed.** Week scrolls to show both days, stopping on a row boundary. Seen on the web at 375 pt, not yet on the phone |
+| 5 | Progress: the one row to notice ("Too hard") was the same weight as "Fit", beside six coloured labels | 🟡 Moderate | **Fixed.** "Fit" is quiet, "Too hard" and "Too easy" are bold |
+| 6 | Today: "Why 51" promised to explain all of 51. The rows (+6, −4, −2) are the top three differences from a typical day | 🟡 Moderate | **Fixed.** "What moved your score" (Review 1 finding 10) |
+| 7 | The unrated morning slider keeps its thumb at the "Very low" end next to "Not rated" | 🟢 Minor | Open, LATER.md |
+| 8 | Expo Go's blue button covers our Settings gear | 🟡 Moderate for the demo | Not ours (GAPS G37). Hide it, or demo from a development build |
+
+### Visual hierarchy
+
+- **What draws the eye first:** on Today the number "51"; on Week the column of coloured plan labels; on Progress the ring, then the coloured plan column. Week and Progress are right, since the week's rhythm is the point. Today is half right: the number first is fine, but the plan should be second and is third (finding 1).
+- **Reading flow:** Today runs field, dial, drivers, check-in, button, which is the order of the morning question. Week reads as a list with the ask pinned at the bottom, in the thumb zone.
+- **Emphasis:** the primary action is always one Ink button, and there is never more than one. The plan colour appears only for plan state.
+
+### Consistency
+
+| Element | Issue | Status |
+|---|---|---|
+| Screen title height | Today sat 8 pt higher than Week and Progress (measured: 8 vs 16), so the title jumped between tabs | **Fixed.** 16 on all three |
+| Week vs Today plan | Two rules gave one day two plans | **Fixed** (device finding 1) |
+| Session names | "Push is kept light" read as a verb | **Fixed.** "your Push session" |
+| Choice controls | Settings shows the chosen Allow as solid Ink with a check; the Health and Calendar previews use two outlined buttons | Intended: one is a selection, the other an action. Both keep equal weight |
+| Dark theme | The four plan fields are the same placeholder colour | Open, dark is secondary (LATER.md) |
+
+### Accessibility
+
+- **Colour contrast:** every light pair passes (lowest 3.59:1). Dark now passes too (stroke 3.40:1 on raised, on every field) after reusing `#6B7C8D`.
+- **Touch targets:** every control measured is at least 44 px. The Settings gear (48 px) is covered by Expo Go's button on the phone (G37).
+- **Text:** body 16/24; captions 13/18 carry the demo note and source lines, all at 6:1 or better.
+- **Not verified:** VoiceOver, Dynamic Type and Reduce Motion on the phone (GAPS G31).
+
+### What works well
+
+- The plan field is the one bold move, and nothing else is coloured for decoration.
+- Honest numbers: "Likely 34–68", "Based on 11 of 11 inputs", "Demo data" on every scripted screen, a count not a score on Felt vs forecast.
+- The Polish-length test passes at 375 pt: nothing clipped at +30%.
+- Consent keeps equal weight everywhere, with a check for the chosen option.
+- The evening log fits four groups on one screen and says what is left ("Answer 3 more to save.").
+
+### Priority recommendations
+
+1. **Decide finding 1** (plan as the title). It is the single change most likely to improve the first two seconds of the demo.
+2. **Watch the motion on the phone** with Low Power Mode off and Expo's button hidden: the reveal, the move, the haptics, and Reduce Motion on. They are the demo's two signature moments and have never been seen at speed (GAPS G28).
+3. **Decide the guessed-day label and the check-in position** (findings 2 and 3), then rehearse the three-minute path.
+
+### Questions for Review 3
+
+1. Plan as the screen title on Today (finding 1)?
+2. Keep the check-in where it is (finding 2)?
+3. Mute the plan label on guessed days (finding 3)?
+4. Hide Expo's button, or build a development build for the demo (finding 8)?
+5. Show two or three people the Ember field for "Train hard" during a rehearsal (Review 1 finding 4)?
