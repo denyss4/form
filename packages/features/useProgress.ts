@@ -56,7 +56,8 @@ export function useProgress(scenario: ProgressScenario): ProgressData {
         app.forecasts[date]?.plan ?? (result && day(date) ? planForDay(result.score, day(date)!.tags, day(date)!.sessions) : null);
       if (answers.fit && plan) fit.push({ date, plan, fit: answers.fit });
     }
-    for (const [date, rating] of Object.entries(app.readiness)) {
+    // Only ratings given before the reveal exist (spec R2), so every pair compares an unanchored feeling with the forecast.
+    for (const [date, { rating }] of Object.entries(app.readiness)) {
       const result = resultFor(date);
       if (result) pairs.push({ date, forecast: result.score, range: result.range, felt: rating * 10 });
     }

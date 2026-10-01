@@ -1,7 +1,4 @@
-# Gaps
-
-Facts that are missing. Nothing here may be invented. Each gap is also marked `[GAP: ...]` in code comments where it applies.
-
+Closed 1 Oct by spec R2: the slider is gone from Today. The step has no default value; screen and VoiceOver both say nothing is rated
 | # | Gap | Where it bites | Owner | Status |
 |---|---|---|---|---|
 | G1 | `confidence` has no source in `predict.mjs`. `error_band` is a constant 17.2 | Data contract, Today | B | Show the range plus "Based on N of 9 inputs". No label |

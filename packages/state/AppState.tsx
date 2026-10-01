@@ -15,6 +15,16 @@ export type SuggestionStatus = 'open' | 'moved' | 'kept';
 /** The demo clock's time of day. Used only when the demo build turns the demo clock on (see clock.ts). */
 export type DemoPhase = 'morning' | 'evening';
 
+/**
+ * This morning's 0-10 rating (spec R2). It is the model's training label, so it is only ever collected before the score is seen:
+ * beforeReveal is always true, and a day with no rating has no entry. Missing data beats anchored data.
+ */
+export interface MorningRating {
+  rating: number;
+  timestamp: string; // ISO time of the tap
+  beforeReveal: true;
+}
+
 /** A forecast for one morning, with the plan the engine gave it. */
 export interface Forecast {
   result: FormResult;
@@ -30,7 +40,8 @@ interface State {
   demoPhase: DemoPhase; // the demo clock: the demo build starts every launch on the scripted morning
   revealedFor: string | null; // the last day whose morning reveal has played
   planAccepted: Record<string, boolean>;
-  readiness: Record<string, number>; // this morning's 0-10 rating, by day
+  readiness: Record<string, MorningRating>; // by day
+  morningStep: Record<string, 'rated' | 'skipped'>; // the pre-reveal step was answered or skipped; it is never asked again that day
   logs: Record<string, EveningAnswers>;
   dailyLogs: Record<string, DailyLog>; // the model's view of each saved log, so tomorrow's forecast can build on it
   forecasts: Record<string, Forecast>; // by the morning the forecast is for
@@ -42,7 +53,9 @@ interface AppState extends State {
   completeOnboarding: () => void;
   connectCalendar: () => void;
   setSuggestion: (status: SuggestionStatus) => void;
-  setReadiness: (day: string, value: number) => void;
+  /** The pre-reveal step: a tap stores the rating, Skip stores nothing. Either way the step is done for the day. */
+  rateMorning: (day: string, rating: number) => void;
+  skipMorning: (day: string) => void;
   setDemoPhase: (phase: DemoPhase) => void;
   acceptPlan: (day: string) => void;
   markRevealed: (day: string) => void;
@@ -63,6 +76,7 @@ const empty: State = {
   revealedFor: null,
   planAccepted: {},
   readiness: {},
+  morningStep: {},
   logs: {},
   dailyLogs: {},
   forecasts: {},
@@ -91,7 +105,13 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       connectCalendar: () => setState((s) => ({ ...s, calendar: 'connected' })),
       setSuggestion: (suggestion) => setState((s) => ({ ...s, suggestion })),
       setDemoPhase: (demoPhase) => setState((s) => ({ ...s, demoPhase })),
-      setReadiness: (day, rating) => setState((s) => ({ ...s, readiness: { ...s.readiness, [day]: rating } })),
+      rateMorning: (day, rating) =>
+        setState((s) => ({
+          ...s,
+          readiness: { ...s.readiness, [day]: { rating, timestamp: new Date().toISOString(), beforeReveal: true } },
+          morningStep: { ...s.morningStep, [day]: 'rated' },
+        })),
+      skipMorning: (day) => setState((s) => ({ ...s, morningStep: { ...s.morningStep, [day]: 'skipped' } })),
       acceptPlan: (day) => setState((s) => ({ ...s, planAccepted: { ...s.planAccepted, [day]: true } })),
       markRevealed: (day) => setState((s) => (s.revealedFor === day ? s : { ...s, revealedFor: day })),
       saveLog: (day, answers, log, tomorrow) =>

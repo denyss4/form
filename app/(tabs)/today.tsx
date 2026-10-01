@@ -1,4 +1,5 @@
-// Layout plan. Job: decide today's session. Focal element: the ScoreDial on the plan-coloured field. Quiet: the drivers and the check-in.
+// Layout plan. Job: decide today's session. Focal element: the ScoreDial on the plan-coloured field. Quiet: the drivers.
+// Spec R2: on the first open of a morning, a full-screen 0-10 rating comes first (MorningRating), with nothing of the forecast behind it.
 // The plan label leads the field, then the reason, then the dial (Review 1 finding 3). The range line is body size, not caption (finding 1).
 // The field: in light, the plan's field colour fills the area behind the dial (5.1). In dark, the app theme since 1 Oct 2026, the field
 // equals the canvas (user decision: minimalist, no field), so the plan shows in the title, its glyph and the dial arc.
@@ -23,6 +24,7 @@ import Settings from 'lucide-react-native/icons/settings';
 import { copy } from '@copy';
 import { explain } from '@copy/explain';
 import { EveningLog } from '@features/EveningLog';
+import { MorningRating } from '@features/MorningRating';
 import { todayScenarios, useHistory, useToday } from '@features/useToday';
 import { formatLong } from '@format';
 import { model } from '@model';
@@ -44,7 +46,6 @@ import {
   ScoreDial,
   ScreenHeader,
   Skeleton,
-  Slider,
   Text,
   useTheme,
 } from '@ui';
@@ -56,9 +57,9 @@ export default function Today() {
   const router = useRouter();
   const app = useAppState();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ state?: string; reveal?: string; log?: string; motion?: string }>();
+  const params = useLocalSearchParams<{ state?: string; reveal?: string; log?: string; motion?: string; step?: string }>();
   // The phone's clock, or the demo clock in the demo build (packages/state/clock.ts). ?evening=1|0 overrides it for review.
-  const { evening } = useDayPhase();
+  const { morning, evening } = useDayPhase();
   // Review only: ?motion=full plays the reveal even when the device asks for reduced motion.
   const reduceMotion = useReducedMotion() && params.motion !== 'full';
 
@@ -75,11 +76,16 @@ export default function Today() {
     : Math.min(Math.max(Number(params.reveal), 0), 1);
   const ready = data.kind === 'ready';
   const revealed = app.revealedFor === app.demoDay;
+  // Spec R2: on the first open of a morning, the rating step comes before the reveal. Answered or skipped, it is never shown again that
+  // day. Review only: ?step=1 forces it, ?step=0 hides it.
+  const stepDone = app.morningStep[app.demoDay] !== undefined;
+  const showStep =
+    ready && held === undefined && !stepDone && (params.step === '1' || (params.step !== '0' && morning && !revealed));
   const progress = useSharedValue(held ?? (ready && !revealed && !reduceMotion ? 0 : 1));
   const started = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || showStep) return; // the reveal waits for the rating step
     if (held !== undefined) {
       progress.set(held);
       return;
@@ -110,7 +116,7 @@ export default function Today() {
       ),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, held, app.demoDay, revealed, reduceMotion]);
+  }, [ready, held, app.demoDay, revealed, reduceMotion, showStep]);
 
   const plan = data.kind === 'ready' ? data.forecast.plan : undefined;
   const fieldColor = plan ? color.plan[plan].field : color.bg.canvas;
@@ -138,7 +144,7 @@ export default function Today() {
 
   const save = (answers: EveningAnswers) => {
     if (!day) return;
-    const log = buildLog({ today: day, tomorrow, answers, readiness10: app.readiness[app.demoDay] });
+    const log = buildLog({ today: day, tomorrow, answers, readiness10: app.readiness[app.demoDay]?.rating });
     let next;
     if (tomorrow) {
       const result = forecast(model, history, log); // throws if the model rejects the log
@@ -221,7 +227,8 @@ export default function Today() {
   } else {
     const { result, plan: p } = data.forecast;
     const skipped = result.skippedInputs;
-    const rating = app.readiness[app.demoDay] ?? null;
+    // Scope item 5 (critique): the inputs line appears only when inputs are missing. A full picture needs no caveat.
+    const missing = result.confidence.used < result.confidence.total;
 
     // Reading order, for the eye and for VoiceOver alike: the plan (the title), the dial, range and confidence, the reason, then the drivers.
     field = (
@@ -241,20 +248,29 @@ export default function Today() {
             reveal={{ progress, field: color.plan[p].field }}
           />
         </View>
+        {/* The range is already spoken with the dial, so this block only speaks when inputs are missing. */}
         <View
           style={styles.annotation}
-          accessible
-          accessibilityLabel={[
-            copy.inputsBasis(result.confidence.used, result.confidence.total),
-            result.confidence.used <= FEW_INPUTS ? copy.today.fewInputs : null,
-          ]
-            .filter(Boolean)
-            .join('. ')}
+          accessible={missing}
+          accessibilityLabel={
+            missing
+              ? [
+                  copy.inputsBasis(result.confidence.used, result.confidence.total),
+                  result.confidence.used <= FEW_INPUTS ? copy.today.fewInputs : null,
+                ]
+                  .filter(Boolean)
+                  .join('. ')
+              : undefined
+          }
+          accessibilityElementsHidden={!missing}
+          importantForAccessibility={missing ? 'auto' : 'no-hide-descendants'}
         >
           <Text variant="body">{copy.range(result.range[0], result.range[1])}</Text>
-          <Text variant="caption" tone="secondary">
-            {copy.inputsBasis(result.confidence.used, result.confidence.total)}
-          </Text>
+          {missing ? (
+            <Text variant="caption" tone="secondary">
+              {copy.inputsBasis(result.confidence.used, result.confidence.total)}
+            </Text>
+          ) : null}
           {result.confidence.used <= FEW_INPUTS ? (
             <Text variant="caption" tone="secondary">
               {copy.today.fewInputs}
@@ -295,29 +311,6 @@ export default function Today() {
               )}
             </Text>
           ) : null}
-          {rating === null ? (
-            <Text variant="body" tone="secondary">
-              {copy.today.checkin.nudge}
-            </Text>
-          ) : null}
-        </View>
-
-        <View style={styles.section}>
-          <Text variant="heading" accessibilityRole="header" level={2}>
-            {copy.today.checkin.title}
-          </Text>
-          <Slider
-            label={copy.today.checkin.title}
-            value={rating}
-            onChange={(v) => app.setReadiness(app.demoDay, v)}
-            valueText={copy.today.checkin.value(rating ?? 0)}
-            spokenText={rating === null ? copy.today.checkin.unset : undefined}
-            lowLabel={copy.today.checkin.low}
-            highLabel={copy.today.checkin.high}
-          />
-          <Text variant="caption" tone="secondary">
-            {copy.today.checkin.hint}
-          </Text>
         </View>
 
         {!logged && !accepted ? (
@@ -351,6 +344,19 @@ export default function Today() {
           announce(copy.today.accepted);
         }}
       />
+    );
+  }
+
+  if (showStep) {
+    return (
+      <View style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
+        <MorningRating
+          dateCaption={copy.today.dateCaption(formatLong(app.demoDay))}
+          topInset={insets.top}
+          onRate={(rating) => app.rateMorning(app.demoDay, rating)}
+          onSkip={() => app.skipMorning(app.demoDay)}
+        />
+      </View>
     );
   }
 

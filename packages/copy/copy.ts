@@ -65,14 +65,12 @@ const base = {
       body: 'Try again in a moment.',
       retry: 'Try again',
     },
-    checkin: {
-      nudge: 'One tap to sharpen tomorrow.',
+    // The pre-reveal step (spec R2). Asked once, before the score is seen; never asked again that day.
+    rating: {
       title: 'How do you feel this morning?',
-      hint: "Your rating helps Form check its forecast.",
-      low: 'Very low',
-      high: 'Very high',
-      value: (n: number) => `${n} of 10`,
-      unset: 'Not rated',
+      scale: '0 is very low, 10 is very high.',
+      skip: 'Skip to my plan',
+      spoken: 'How do you feel this morning? Rating from 0 to 10, not rated',
     },
   },
 
