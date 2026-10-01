@@ -12,6 +12,8 @@ export const purposes: Purpose[] = ['scoring', 'personalModel', 'calendar', 'hea
 
 export type Answer = 'allow' | 'decline';
 export type SuggestionStatus = 'open' | 'moved' | 'kept';
+/** The demo clock's time of day. Used only when the demo build turns the demo clock on (see clock.ts). */
+export type DemoPhase = 'morning' | 'evening';
 
 /** A forecast for one morning, with the plan the engine gave it. */
 export interface Forecast {
@@ -25,6 +27,7 @@ interface State {
   calendar: 'none' | 'connected';
   suggestion: SuggestionStatus;
   demoDay: string; // the scripted "today"
+  demoPhase: DemoPhase; // the demo clock: the demo build starts every launch on the scripted morning
   revealedFor: string | null; // the last day whose morning reveal has played
   planAccepted: Record<string, boolean>;
   readiness: Record<string, number>; // this morning's 0-10 rating, by day
@@ -40,6 +43,7 @@ interface AppState extends State {
   connectCalendar: () => void;
   setSuggestion: (status: SuggestionStatus) => void;
   setReadiness: (day: string, value: number) => void;
+  setDemoPhase: (phase: DemoPhase) => void;
   acceptPlan: (day: string) => void;
   markRevealed: (day: string) => void;
   /** Saves tonight's log, and the forecast it produced for tomorrow morning. */
@@ -55,6 +59,7 @@ const empty: State = {
   calendar: 'none',
   suggestion: 'open',
   demoDay: martaWeek.meta.demoToday,
+  demoPhase: 'morning',
   revealedFor: null,
   planAccepted: {},
   readiness: {},
@@ -85,6 +90,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       completeOnboarding: () => setState((s) => ({ ...s, onboarded: true })),
       connectCalendar: () => setState((s) => ({ ...s, calendar: 'connected' })),
       setSuggestion: (suggestion) => setState((s) => ({ ...s, suggestion })),
+      setDemoPhase: (demoPhase) => setState((s) => ({ ...s, demoPhase })),
       setReadiness: (day, rating) => setState((s) => ({ ...s, readiness: { ...s.readiness, [day]: rating } })),
       acceptPlan: (day) => setState((s) => ({ ...s, planAccepted: { ...s.planAccepted, [day]: true } })),
       markRevealed: (day) => setState((s) => (s.revealedFor === day ? s : { ...s, revealedFor: day })),
@@ -95,7 +101,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
           dailyLogs: { ...s.dailyLogs, [day]: log },
           forecasts: tomorrow ? { ...s.forecasts, [tomorrow.day]: tomorrow.forecast } : s.forecasts,
         })),
-      advanceTo: (day) => setState((s) => ({ ...s, demoDay: day })),
+      // The next morning: the demo clock goes back to morning with it.
+      advanceTo: (day) => setState((s) => ({ ...s, demoDay: day, demoPhase: 'morning' })),
       resetDemo: () => setState(empty),
     }),
     [state, setConsent],

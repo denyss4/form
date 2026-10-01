@@ -5,13 +5,15 @@ import { useEffect } from 'react';
 import { Platform, View } from 'react-native';
 
 import { AppStateProvider } from '@state';
-import { darkColor, size } from '@tokens';
+import { darkColor, lightColor, size } from '@tokens';
 import { oneOf, TextScaleContext, ThemeProvider } from '@ui';
 
 export default function RootLayout() {
-  // Review only, web preview: ?scale=2 imitates a larger system text size on any screen.
-  const { scale } = useGlobalSearchParams<{ scale?: string }>();
+  // Review only, web preview: ?scale=2 imitates a larger system text size on any screen; ?theme=light shows the light theme.
+  const { scale, theme } = useGlobalSearchParams<{ scale?: string; theme?: string }>();
   const textScale = oneOf(scale, [1, 1.5, 2, 3], 1);
+  const scheme = oneOf(theme, ['light', 'dark'] as const, 'dark');
+  const palette = scheme === 'light' ? lightColor : darkColor;
 
   // Five static files, one family name per weight (see packages/tokens `font`).
   const [loaded, error] = useFonts({
@@ -28,29 +30,29 @@ export default function RootLayout() {
     if (Platform.OS !== 'web') return;
     const style = document.createElement('style');
     style.textContent =
-      `[role="tab"]:focus-visible { outline: ${size.outline}px solid ${darkColor.text.primary}; outline-offset: -${size.outline}px; }` +
+      `[role="tab"]:focus-visible { outline: ${size.outline}px solid ${palette.text.primary}; outline-offset: -${size.outline}px; }` +
       `[role="button"]:focus-visible, [role="radio"]:focus-visible, [role="link"]:focus-visible, [role="slider"]:focus-visible { outline: none; }`;
     document.head.appendChild(style);
     return () => style.remove();
-  }, []);
+  }, [palette]);
 
   if (error) console.warn('Font load failed, falling back to system fonts:', error);
 
   // Hold on the canvas colour until the fonts are ready, so text never flashes in a fallback face.
   if (!loaded && !error) {
-    return <View style={{ flex: 1, backgroundColor: darkColor.bg.canvas }} />;
+    return <View style={{ flex: 1, backgroundColor: palette.bg.canvas }} />;
   }
 
   // Dark is the app theme (user decision, 1 Oct 2026). The gallery layers its own dev theme on top.
   return (
     <AppStateProvider>
-      <ThemeProvider scheme="dark">
+      <ThemeProvider scheme={scheme}>
         <TextScaleContext.Provider value={textScale}>
-          <StatusBar style="light" />
+          <StatusBar style={scheme === 'light' ? 'dark' : 'light'} />
           <Stack
             screenOptions={{
               headerShown: false,
-              contentStyle: { backgroundColor: darkColor.bg.canvas },
+              contentStyle: { backgroundColor: palette.bg.canvas },
             }}
           />
         </TextScaleContext.Provider>

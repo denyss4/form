@@ -31,6 +31,7 @@ import { buildLog } from '@planner/dailyLog';
 import type { EveningAnswers } from '@planner/dailyLog';
 import { bandOf, planForDay } from '@planner/plan';
 import { useAppState } from '@state';
+import { demoClockOn, useDayPhase } from '@state/clock';
 import { motion, radius, size, space } from '@tokens';
 import {
   announce,
@@ -49,16 +50,15 @@ import {
 } from '@ui';
 
 const FEW_INPUTS = 3; // this many inputs used, or fewer, is a thin picture
-const EVENING_HOUR = 17; // from this hour on the phone's clock, "Log tonight" is the primary action [GAP G46: a proposal]
 
 export default function Today() {
   const { color } = useTheme();
   const router = useRouter();
   const app = useAppState();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ state?: string; reveal?: string; log?: string; motion?: string; evening?: string }>();
-  // Review and demo: ?evening=1 or ?evening=0 overrides the phone's clock.
-  const evening = params.evening === '1' ? true : params.evening === '0' ? false : new Date().getHours() >= EVENING_HOUR;
+  const params = useLocalSearchParams<{ state?: string; reveal?: string; log?: string; motion?: string }>();
+  // The phone's clock, or the demo clock in the demo build (packages/state/clock.ts). ?evening=1|0 overrides it for review.
+  const { evening } = useDayPhase();
   // Review only: ?motion=full plays the reveal even when the device asks for reduced motion.
   const reduceMotion = useReducedMotion() && params.motion !== 'full';
 
@@ -154,8 +154,30 @@ export default function Today() {
     scroll.current?.scrollTo({ y: 0, animated: false });
   };
 
+  // Demo build only: a long-press on the date steps the demo clock. Morning goes to evening; evening goes to the next morning, but only once
+  // tonight's log has produced tomorrow's forecast. A blocked step gives a warning haptic and changes nothing. No visible UI.
+  const stepDemoClock = () => {
+    if (app.demoPhase === 'morning') {
+      app.setDemoPhase('evening');
+      haptic.light();
+    } else if (tomorrow && app.forecasts[tomorrow.date]) {
+      jump();
+      haptic.light();
+    } else {
+      haptic.warning();
+    }
+  };
+  const onCaptionLongPress = demoClockOn ? stepDemoClock : undefined;
+
   const settingsButton = <IconButton icon={Settings} label={copy.nav.settings} onPress={() => router.push('/settings')} />;
-  const header = <ScreenHeader title={copy.today.title} caption={formatLong(app.demoDay)} right={settingsButton} />;
+  const header = (
+    <ScreenHeader
+      title={copy.today.title}
+      caption={formatLong(app.demoDay)}
+      right={settingsButton}
+      onCaptionLongPress={onCaptionLongPress}
+    />
+  );
 
   let field;
   let below = null;
@@ -209,6 +231,7 @@ export default function Today() {
           plan={p}
           caption={copy.today.dateCaption(formatLong(app.demoDay))}
           right={settingsButton}
+          onCaptionLongPress={onCaptionLongPress}
         />
         <View style={styles.dial}>
           <ScoreDial
@@ -308,9 +331,6 @@ export default function Today() {
     footer = logged ? (
       <>
         <Text variant="body">{copy.today.logged}</Text>
-        {tomorrow && app.forecasts[tomorrow.date] ? (
-          <Button variant="text" label={copy.today.jump} onPress={jump} />
-        ) : null}
       </>
     ) : accepted ? (
       <>

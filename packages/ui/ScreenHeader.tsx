@@ -15,6 +15,8 @@ import { useTheme } from './theme';
 import { useIconSize } from './useIconSize';
 import { usePress } from './usePress';
 
+const LONG_PRESS_MS = 500; // the platform default; long enough not to fire on a scroll or a tap
+
 export function IconButton({ icon: Icon, label, onPress }: { icon: LucideIcon; label: string; onPress: () => void }) {
   const { color } = useTheme();
   const iconPx = useIconSize(size.icon);
@@ -44,6 +46,7 @@ export function ScreenHeader({
   onBack,
   right,
   plan,
+  onCaptionLongPress,
 }: {
   title: string;
   caption?: string;
@@ -51,6 +54,8 @@ export function ScreenHeader({
   right?: ReactNode;
   /** When set, the title is this plan: its glyph, and the text in the plan colour. Today uses it. */
   plan?: PlanId;
+  /** Demo build only: Today passes the demo clock here. No visible affordance (user decision, 1 Oct 2026). */
+  onCaptionLongPress?: () => void;
 }) {
   const { color } = useTheme();
   const iconPx = useIconSize(size.icon);
@@ -91,7 +96,15 @@ export function ScreenHeader({
               {title}
             </Text>
           )}
-          {caption ? (
+          {caption && onCaptionLongPress ? (
+            // A Pressable, not Text.onLongPress: react-native-web's Text ignores long-press, and the demo is rehearsed on web too.
+            // Not a focus stop and not announced: the demo clock is a presenter gesture, not a feature.
+            <Pressable onLongPress={onCaptionLongPress} delayLongPress={LONG_PRESS_MS} accessible={false} focusable={false}>
+              <Text variant="caption" tone="secondary">
+                {caption}
+              </Text>
+            </Pressable>
+          ) : caption ? (
             <Text variant="caption" tone="secondary">
               {caption}
             </Text>

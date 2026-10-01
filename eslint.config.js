@@ -23,6 +23,7 @@ module.exports = defineConfig([
       'Fonts/**',
       'Components/**',
       'Skills/**',
+      '.claude/**', // installed agent skills and their bundled scripts, not app code
       'packages/model/predict.mjs',
       'packages/model/verify.mjs',
     ],

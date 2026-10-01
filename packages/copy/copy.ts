@@ -56,7 +56,6 @@ const base = {
     accepted: 'Plan accepted.',
     logTonight: 'Log tonight',
     logged: "Logged. Tomorrow's plan arrives in the morning.",
-    jump: 'Demo: jump to tomorrow morning',
     day1: {
       title: 'No score yet',
       body: 'Log tonight and Form will forecast tomorrow morning.',

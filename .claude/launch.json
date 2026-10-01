@@ -17,14 +17,9 @@
       "name": "form-demo",
       "runtimeExecutable": "node",
       "runtimeArgs": [
-        "node_modules/expo/bin/cli",
-        "start",
-        "--no-dev",
-        "--minify",
-        "--port",
-        "8082"
+        "scripts/demo.mjs"
       ],
-      "port": 8082
+      "port": 8090
     }
   ]
 }
