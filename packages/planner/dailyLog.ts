@@ -9,7 +9,8 @@ import type { DailyLog } from '../model/predict.mjs';
 import type { WeekDay } from './week.ts';
 
 export type Effort = 'skipped' | 'easy' | 'moderate' | 'hard';
-export type Fit = 'yes' | 'tooHard' | 'tooEasy';
+// 'other' = "Did something else" (spec R1): the plan was not tried, so the day is left out of the Plan Fit counts.
+export type Fit = 'yes' | 'tooHard' | 'tooEasy' | 'other';
 
 // [GAP G30: how the four effort words map to the model's 1-10 effort scale is a proposal.]
 export const EFFORT_POINTS = { easy: 4, moderate: 6, hard: 8 } as const;

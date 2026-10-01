@@ -1,4 +1,4 @@
-// In-memory app state for the demo: consent choices, the calendar link, the day's loop (rating, plan, log, forecast) and the scripted clock.
+// In-memory app state for the demo: consent choices, the calendar link, the day's loop (rating, log, forecast) and the scripted clock.
 // [GAP G11: no storage library is approved, so this resets on every launch. That suits the scripted demo. "Reset demo" in Settings does the same.]
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 
@@ -39,7 +39,6 @@ interface State {
   demoDay: string; // the scripted "today"
   demoPhase: DemoPhase; // the demo clock: the demo build starts every launch on the scripted morning
   revealedFor: string | null; // the last day whose morning reveal has played
-  planAccepted: Record<string, boolean>;
   readiness: Record<string, MorningRating>; // by day
   morningStep: Record<string, 'rated' | 'skipped'>; // the pre-reveal step was answered or skipped; it is never asked again that day
   logs: Record<string, EveningAnswers>;
@@ -57,7 +56,6 @@ interface AppState extends State {
   rateMorning: (day: string, rating: number) => void;
   skipMorning: (day: string) => void;
   setDemoPhase: (phase: DemoPhase) => void;
-  acceptPlan: (day: string) => void;
   markRevealed: (day: string) => void;
   /** Saves tonight's log, and the forecast it produced for tomorrow morning. */
   saveLog: (day: string, answers: EveningAnswers, log: DailyLog, tomorrow?: { day: string; forecast: Forecast }) => void;
@@ -74,7 +72,6 @@ const empty: State = {
   demoDay: martaWeek.meta.demoToday,
   demoPhase: 'morning',
   revealedFor: null,
-  planAccepted: {},
   readiness: {},
   morningStep: {},
   logs: {},
@@ -112,7 +109,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
           morningStep: { ...s.morningStep, [day]: 'rated' },
         })),
       skipMorning: (day) => setState((s) => ({ ...s, morningStep: { ...s.morningStep, [day]: 'skipped' } })),
-      acceptPlan: (day) => setState((s) => ({ ...s, planAccepted: { ...s.planAccepted, [day]: true } })),
       markRevealed: (day) => setState((s) => (s.revealedFor === day ? s : { ...s, revealedFor: day })),
       saveLog: (day, answers, log, tomorrow) =>
         setState((s) => ({

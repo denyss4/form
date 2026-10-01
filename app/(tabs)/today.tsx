@@ -140,7 +140,6 @@ export default function Today() {
   const day = data.kind === 'loading' ? undefined : data.day;
   const tomorrow = data.kind === 'loading' ? undefined : data.tomorrow;
   const logged = app.logs[app.demoDay] !== undefined;
-  const accepted = app.planAccepted[app.demoDay] === true;
 
   const save = (answers: EveningAnswers) => {
     if (!day) return;
@@ -223,7 +222,8 @@ export default function Today() {
         </Text>
       </>
     );
-    footer = <Button label={copy.today.logTonight} fullWidth onPress={() => setLogOpen(true)} />;
+    // Spec R1: no primary in the morning. From 17:00 (or the demo clock's evening) "Log tonight" is the primary.
+    footer = evening ? <Button label={copy.today.logTonight} fullWidth onPress={() => setLogOpen(true)} /> : null;
   } else {
     const { result, plan: p } = data.forecast;
     const skipped = result.skippedInputs;
@@ -313,38 +313,15 @@ export default function Today() {
           ) : null}
         </View>
 
-        {!logged && !accepted ? (
-          <View style={styles.section}>
-            <Button variant="text" label={copy.today.logTonight} onPress={() => setLogOpen(true)} />
-          </View>
-        ) : null}
       </>
     );
 
+    // Spec R1: the old confirm-the-plan step is gone (it changed nothing). No primary in the morning; from 17:00 "Log tonight" is the primary.
     footer = logged ? (
-      <>
-        <Text variant="body">{copy.today.logged}</Text>
-      </>
-    ) : accepted ? (
-      <>
-        <Text variant="body">{copy.today.accepted}</Text>
-        {evening ? (
-          <Button label={copy.today.logTonight} fullWidth onPress={() => setLogOpen(true)} />
-        ) : (
-          <Button variant="text" label={copy.today.logTonight} onPress={() => setLogOpen(true)} />
-        )}
-      </>
-    ) : (
-      <Button
-        label={copy.today.accept}
-        fullWidth
-        onPress={() => {
-          haptic.light();
-          app.acceptPlan(app.demoDay);
-          announce(copy.today.accepted);
-        }}
-      />
-    );
+      <Text variant="body">{copy.today.logged}</Text>
+    ) : evening ? (
+      <Button label={copy.today.logTonight} fullWidth onPress={() => setLogOpen(true)} />
+    ) : null;
   }
 
   if (showStep) {
@@ -394,7 +371,7 @@ export default function Today() {
           key={day.date}
           visible={logOpen}
           day={day}
-          planAccepted={accepted}
+          hasPlan={data.kind === 'ready'}
           onClose={() => setLogOpen(false)}
           onSave={save}
         />

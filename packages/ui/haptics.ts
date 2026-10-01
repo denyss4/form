@@ -14,7 +14,7 @@ export const haptic = {
   success: () => run(() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)),
   /** An error message appears. */
   warning: () => run(() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)),
-  /** Accepting a plan or a "move session" suggestion. */
+  /** Accepting a "move session" suggestion, and each step of the demo clock. */
   light: () => run(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)),
   /** The morning reveal settling. */
   soft: () => run(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft)),

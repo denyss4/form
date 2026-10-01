@@ -1,6 +1,7 @@
 // Layout plan. Job: show whether the plans fit, in the person's own words. Focal element: the Plan Fit sentence and its segments.
 // Quiet: the day list (one line a day, plan glyph in colour, plan word in body text) and the logging line. The link to Felt vs forecast sits directly under the summary. No score, no streak, no reward: a process measure (MASTER_PROMPT §2).
-// A Recover day that fit counts the same as a training day that fit. The ring shows answered days only, never more than was answered.
+// A Recover day that fit counts the same as a training day that fit. The meter shows followed days only, never more than was answered;
+// a 'Did something else' day is listed as "Not followed" and left out of the counts (spec R1).
 // States: default, loading, no feedback yet, partial, low confidence, error. `?state=` holds one for review.
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -12,6 +13,7 @@ import { formatDay } from '@format';
 import { FitStrip } from '@features/FitStrip';
 import { progressScenarios, useProgress } from '@features/useProgress';
 import { fitSummary, type FitDay } from '@planner/progress';
+import { buildStamp, showBuildStamp } from '@state/build';
 import { size, space } from '@tokens';
 import {
   Button,
@@ -133,7 +135,7 @@ export default function Progress() {
         <>
           <View style={styles.group}>
             <View style={styles.summary} aria-live="polite">
-              <Text variant="heading">{copy.progress.fit.headline(summary.fit, summary.answered)}</Text>
+              <Text variant="heading">{copy.progress.fit.headline(summary.fit, summary.answered, summary.notFollowed)}</Text>
               <Text variant="caption" tone="secondary">
                 {copy.progress.fit.source}
               </Text>
@@ -143,7 +145,12 @@ export default function Progress() {
                 </Text>
               ) : null}
               <View style={styles.strip}>
-                <FitStrip days={shown.filter((d) => d.fit !== null)} label={copy.progress.fit.ring(summary.fit, summary.answered)} />
+                {/* Followed days only: a 'Did something else' day has no segment. The meter speaks the headline's exact text. */}
+                <FitStrip
+                  days={shown.filter((d) => d.fit !== null && d.fit !== 'other')}
+                  fit={summary.fit}
+                  label={copy.progress.fit.headline(summary.fit, summary.answered, summary.notFollowed)}
+                />
                 <Text variant="caption" tone="secondary">
                   {copy.progress.fit.legend}
                 </Text>
@@ -164,6 +171,11 @@ export default function Progress() {
               ))}
             </View>
             <Text variant="body">{copy.progress.logging(data.logged.days, data.logged.of)}</Text>
+            {showBuildStamp ? (
+              <Text variant="caption" tone="secondary" selectable>
+                {buildStamp}
+              </Text>
+            ) : null}
           </View>
         </>
       );

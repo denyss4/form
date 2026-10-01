@@ -52,8 +52,6 @@ const base = {
     usual: 'Your score is at your usual level.',
     notUsed: (list: string, more: number) => `Left out of this forecast: ${list}${more > 0 ? ` and ${more} more` : ''}.`,
     fewInputs: 'Few inputs today. Add more for a fuller picture.',
-    accept: 'Accept plan',
-    accepted: 'Plan accepted.',
     logTonight: 'Log tonight',
     logged: "Logged. Tomorrow's plan arrives in the morning.",
     day1: {
@@ -93,6 +91,7 @@ const base = {
       yes: 'Yes',
       tooHard: 'Too hard',
       tooEasy: 'Too easy',
+      other: 'Did something else', // spec R1: keeps Plan Fit to plans that were tried
     },
     remaining: (n: number) => (n === 1 ? 'Answer one more to save.' : `Answer ${n} more to save.`),
     ring: (done: number, total: number) => `${done} of ${total} answered`,
@@ -217,19 +216,21 @@ const base = {
     demoNote: 'Demo data: a scripted week for Marta. Not real user data.',
     fit: {
       title: 'Plan fit',
-      headline: (fit: number, answered: number) => `The plan fit on ${fit} of ${answered} ${answered === 1 ? 'day' : 'days'}.`,
+      // One text for the headline and the meter's VoiceOver value. 'Did something else' days are left out of both counts (spec R1, OQ3).
+      headline: (fit: number, answered: number, notFollowed: number) =>
+        `${fit} of ${answered} ${answered === 1 ? 'day' : 'days'} fit.` +
+        (notFollowed > 0 ? ` ${notFollowed} ${notFollowed === 1 ? 'day' : 'days'} not followed.` : ''),
       source: 'From your own answers to "Did the plan fit?".',
       legend: 'Filled: the plan fit. Outlined: it was too hard or too easy.',
       tooFew: (n: number) => (n === 1 ? 'One day so far. Too few to read much.' : `${n} days so far. Too few to read much.`),
-      status: { yes: 'Fit', tooHard: 'Too hard', tooEasy: 'Too easy', none: 'No answer' },
-      ring: (fit: number, answered: number) => `Plan fit: ${fit} of ${answered} ${answered === 1 ? 'day' : 'days'}`,
+      status: { yes: 'Fit', tooHard: 'Too hard', tooEasy: 'Too easy', other: 'Not followed', none: 'No answer' },
       day: (day: string, plan: string, status: string) => `${day}, ${plan}, ${status}`,
     },
     logging: (days: number, of: number) => `You logged on ${days} of the last ${of} days.`,
     felt: { title: 'Felt vs forecast', note: 'Your morning rating next to what Form forecast.' },
     empty: {
       title: 'No plan feedback yet',
-      body: 'Accept a plan, then answer "Did the plan fit?" in your evening log. It shows up here.',
+      body: 'Answer "Did the plan fit?" in your evening log. It shows up here.',
       action: 'Go to Today',
     },
     error: { title: "Couldn't load your history.", body: 'Try again in a moment.', retry: 'Try again' },
@@ -281,7 +282,7 @@ const base = {
   calendarWrite: {
     title: 'Calendar changes',
     preview: 'Preview. Nothing is connected in this demo.',
-    body: 'Form would add the sessions you accept to your calendar, for example a session you moved to another day. This is separate from reading your calendar, and it stays off unless you allow it.',
+    body: 'Form would add the sessions you plan or move to your calendar, for example a session you moved to another day. This is separate from reading your calendar, and it stays off unless you allow it.',
     allow: 'Allow changes (preview)',
     notNow: 'Not now',
     reading: 'Connecting to your calendar',

@@ -13,9 +13,15 @@ export interface FitDay {
   fit: Fit | null; // null = not answered
 }
 
+/** 'other' ("Did something else") counts in neither the fit nor the answered total: the plan was not tried (spec R1, OQ3 default). */
 export function fitSummary(days: FitDay[]) {
-  const answered = days.filter((d) => d.fit !== null);
-  return { fit: answered.filter((d) => d.fit === 'yes').length, answered: answered.length, days: days.length };
+  const followed = days.filter((d) => d.fit !== null && d.fit !== 'other');
+  return {
+    fit: followed.filter((d) => d.fit === 'yes').length,
+    answered: followed.length,
+    notFollowed: days.filter((d) => d.fit === 'other').length,
+    days: days.length,
+  };
 }
 
 /** One morning: what Form forecast the evening before, and what the person said they felt. Both on the 0-100 scale. */

@@ -68,25 +68,17 @@ Cut first if over time: Progress. Both evening logs are needed to reach Wednesda
 ### Before you go on
 
 1. Put the PC and the iPhone on the same Wi-Fi. Allow Node.js through the Windows firewall for that network (you did this once; "Public" networks block it by default).
-2. On the PC, from the project root: `npm run demo`. This is `expo start --no-dev --minify`. It runs the app in production mode: `__DEV__` is false, the gallery link is hidden, and Reanimated's development warnings are gone. Verified: the manifest asks for `dev=false&minify=true`, the iOS bundle is 6.2 MB.
+2. On the PC, from the project root: `npm run demo` (`scripts/demo.mjs`). It runs the app in production mode on **port 8090** with a cleared Metro cache and the demo clock on (`__DEV__` is false, the gallery link is hidden). The terminal prints a build stamp first, for example `Build stamp: 08344a9+changes, started 2026-10-01 23:16`; the same text shows at the bottom of Progress, so you can see which build the phone runs.
 3. **Warm the bundle.** The first iOS build took 133 s on this PC (cold cache). Open the app on the phone once, at least 10 minutes before you present, so the demo load is instant.
 4. On the iPhone: Low Power Mode **off** (it can lower the frame rate; GAPS G38), Do Not Disturb on, auto-lock off, brightness up.
-5. In Expo Go, enter `exp://<PC address>:8081` (the PC address was 192.168.0.228 on 30 Sep; it can change). Expo prints it.
+5. In Expo Go, enter **`exp://192.168.0.228:8090?disableFab=1`** (the PC address can change; Expo prints it). `disableFab=1` hides Expo Go's tools button and keeps it hidden on later launches (verified on the iPhone, 1 Oct).
+   Before every run, close Expo Go fully (swipe it away) and open the URL again. Check that **"App opened"** at the bottom of Progress shows the new time: if it does not, the old run is still in memory with its answers.
 6. Walk to Today once: Get started, four Allow choices, Continue, Allow read access. The state is in memory, so **do not close the app or reload** before the demo. There is no Reset demo button (removed on the user's request): to start again, close Expo Go and open the app again, or shake and choose Reload.
-7. Expo Go's tools button: see below. Check it before you present.
+7. Expo Go's tools button: hidden by `?disableFab=1` (step 5).
 
-### Expo Go's tools button (GAPS G37): result of the check
+### Expo Go's tools button (GAPS G37): resolved 1 Oct
 
-It floats at the top right and sits over our Settings gear. I looked for a way to hide it on SDK 57 and **could not confirm one**:
-
-- Expo documents `EXPO_NO_DEV_MENU=1` ("keeps the developer menu closed, hides the tools button, and skips onboarding"), marked **SDK 58+**. This project's Expo CLI (57.0.27) contains no such switch (searched its build).
-- A `disableFab=1` launch parameter is reported for SDK 58 and later.
-- A web search summary said the developer menu has a Tools-button switch on SDK 57. The official pages I could open do not say so, and a GitHub issue for the dev menu asks for a way to hide it, so I do not rely on it.
-- Nothing I found says whether production mode hides it.
-
-**You can settle it in 30 seconds on the phone:** with the app open, shake the phone (or three-finger long press) to open the developer menu, and look for a switch for the tools button. Then reload in production mode and see whether the button is still there. Tell me the result.
-
-If it cannot be hidden: present with it on the screen and do not tap the top-right corner. The Settings gear is not part of the path.
+The legacy launch parameter `disableFab=1` is supported in SDK 57 on Expo Go URLs (Expo docs, Tools, workflows and extensions). It hides the floating tools button and saves the setting, so it stays hidden on later launches. Verified on the iPhone on 1 Oct with `exp://192.168.0.228:8090?disableFab=1`. To bring it back, shake the phone to open the developer menu.
 
 ### If something goes wrong
 

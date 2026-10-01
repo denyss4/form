@@ -43,7 +43,7 @@ Goal mode, what-if simulator, Precise food logging, partner sync, coach or B2B d
 
 - A GIF of the production web build following the demo path, as a weaker fallback than a phone recording.
 - Try the explicit VoiceOver order (`experimental_accessibilityOrder`) once VoiceOver can be tested (GAPS G41).
-- Upgrade to SDK 58 when Expo Go supports it: it adds `EXPO_NO_DEV_MENU` and the `disableFab` launch parameter for the tools button.
+- Upgrade to SDK 58 when Expo Go supports it: it adds `EXPO_NO_DEV_MENU` and the per-launch `__expo_disable_fab` parameter. (Corrected 1 Oct: the legacy `disableFab=1` already works on SDK 57, see GAPS G37.)
 
 ## From the taste pass (1 Oct 2026)
 

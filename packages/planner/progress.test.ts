@@ -15,7 +15,17 @@ test('plan fit counts only the days the person said it fit', () => {
     { date: 'd', plan: 'deepwork', fit: null }, // not answered: not counted as a miss
     { date: 'e', plan: 'light', fit: 'yes' },
   ];
-  assert.deepEqual(fitSummary(days), { fit: 2, answered: 4, days: 5 });
+  assert.deepEqual(fitSummary(days), { fit: 2, answered: 4, notFollowed: 0, days: 5 });
+});
+
+test('"Did something else" days are left out of both Plan Fit counts (spec R1, OQ3 default)', () => {
+  const days: FitDay[] = [
+    { date: 'a', plan: 'light', fit: 'yes' },
+    { date: 'b', plan: 'hard', fit: 'other' }, // the plan was not tried, so it neither fits nor fails
+    { date: 'c', plan: 'deepwork', fit: 'tooEasy' },
+    { date: 'd', plan: 'recover', fit: null },
+  ];
+  assert.deepEqual(fitSummary(days), { fit: 1, answered: 2, notFollowed: 1, days: 4 });
 });
 
 test('felt inside or outside the likely range', () => {
@@ -43,7 +53,7 @@ test("Marta's scripted week: outcomes come from real forecasts", () => {
     plan: d.outcome.plan,
     fit: d.outcome.fit,
   }));
-  assert.deepEqual(fitSummary(fits), { fit: 5, answered: 6, days: 6 });
+  assert.deepEqual(fitSummary(fits), { fit: 5, answered: 6, notFollowed: 0, days: 6 });
 });
 
 test('the learning threshold is the kit minimum', () => {

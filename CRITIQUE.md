@@ -307,3 +307,15 @@ Rejected after a check: a ledger layout for Week (day, session, plan in three al
 Kept, by the user's choice: fonts (tracking) and spacing only. The hug-width "Move to Wednesday" button was tried and reverted.
 
 Checks: `npm run check` passes; Today screenshot at 390 × 844 (`today-tracking.jpg`). Not verified on the phone.
+
+## v2 Item 2 (1 Oct 2026): spec R1, Plan Fit "Did something else", choice pill fix
+
+| Check | Result |
+|---|---|
+| No "Accept plan", no morning "Log tonight"; "Log tonight" primary from 17:00 or the demo clock's evening | Pass (web, iPhone) |
+| "Did something else" in the evening log; left out of both Plan Fit counts; Progress "5 of 6 days fit. 1 day not followed." and "Not followed" on the row; the meter's VoiceOver value uses the same text | Pass (web, iPhone); unit test added |
+| "Moderate" on one line (it broke "Moderat / e" on the iPhone): 20 pt checkmark room on both sides, about 107 pt for the label, wrapped labels centred | Pass (web, iPhone). Consent at 3× text stacks one per row with no overflow |
+| Consent "Allow" preselected (reported from the phone) | **Not a bug.** A fresh launch shows nothing selected (web and iPhone). The earlier run had kept its answers in memory because Expo Go had not restarted. The Progress build stamp now ends with "App opened HH:MM:SS" to show a real restart |
+| Expo Go tools button over content (G37) | Closed: `?disableFab=1` on the Expo Go URL hides it (SDK 57), verified on the iPhone; in DEMO.md |
+
+A build stamp (commit, "+changes", server start, app start) shows at the bottom of Progress in demo and dev builds only.

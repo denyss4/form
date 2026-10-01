@@ -76,10 +76,12 @@ function Option({
         </Animated.View>
         <View style={styles.label}>
           <Animated.View style={hidden}>
-            <Text variant="bodyStrong">{label}</Text>
+            <Text variant="bodyStrong" style={styles.labelText}>
+              {label}
+            </Text>
           </Animated.View>
           <Animated.View pointerEvents="none" style={[styles.overlay, shown]}>
-            <Text variant="bodyStrong" tone="inverse">
+            <Text variant="bodyStrong" tone="inverse" style={styles.labelText}>
               {label}
             </Text>
           </Animated.View>
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
   group: { flexDirection: 'row', flexWrap: 'wrap', gap: space.xs },
   option: {
     minHeight: size.touch,
-    paddingHorizontal: space.md,
+    paddingHorizontal: space.sm,
     borderRadius: radius.full,
     borderWidth: size.outline,
     alignItems: 'center',
@@ -143,8 +145,11 @@ const styles = StyleSheet.create({
     bottom: -size.outline,
     borderRadius: radius.full,
   },
-  check: { position: 'absolute', left: space.md },
-  // Room for the checkmark on both sides, so a long label wraps instead of running under it (found on the iPhone: "Too hard").
-  label: { paddingHorizontal: size.iconSm + space.xs },
+  check: { position: 'absolute', left: space.sm },
+  // Room for the checkmark on both sides keeps the label optically centred, and only the icon width (no extra gap) is reserved, so a
+  // 2-column pill keeps about 107 pt for its label. Found on the iPhone, 1 Oct: "Moderat / e" broke mid-word with about 82 pt.
+  // A long label still wraps at a word break, centred ("Did something else").
+  label: { paddingHorizontal: size.iconSm },
+  labelText: { textAlign: 'center' },
   overlay: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
 });

@@ -20,14 +20,14 @@ const yesNo = [
 export function EveningLog({
   visible,
   day,
-  planAccepted,
+  hasPlan,
   onClose,
   onSave,
 }: {
   visible: boolean;
   day: WeekDay;
-  /** "Did the plan fit?" is only asked when there was an accepted plan to judge. */
-  planAccepted: boolean;
+  /** "Did the plan fit?" is asked whenever the day had a plan to judge (spec R1: there is no accept step any more). */
+  hasPlan: boolean;
   onClose: () => void;
   /** Throws if the forecast cannot be worked out. The sheet then says so and stays open. */
   onSave: (answers: EveningAnswers) => void;
@@ -116,7 +116,7 @@ export function EveningLog({
         <ChoiceGroup label={copy.log.unusual.question} options={[...yesNo]} value={unusual} onChange={setUnusual} />
       </View>
 
-      {planAccepted ? (
+      {hasPlan ? (
       <View style={styles.question}>
         <Text variant="bodyStrong">{copy.log.fit.question}</Text>
         <Text variant="caption" tone="secondary">
@@ -129,6 +129,7 @@ export function EveningLog({
             { value: 'yes', label: copy.log.fit.yes },
             { value: 'tooHard', label: copy.log.fit.tooHard },
             { value: 'tooEasy', label: copy.log.fit.tooEasy },
+            { value: 'other', label: copy.log.fit.other },
           ]}
           value={fit}
           onChange={setFit}
