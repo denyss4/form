@@ -233,7 +233,7 @@ Today, Week and Progress now look like one product on a real phone: the plan-col
 
 ## Pre-recording fixes (1 Oct 2026, from the user)
 
-Screenshots: `docs/screens/p7/`, production mode (`npm run demo`, `--no-dev --minify`), web at 375 × 812. Not on the phone.
+Screenshots: `docs/screens/p6-prerecording/`, production mode (`npm run demo`, `--no-dev --minify`), web at 375 × 812. Not on the phone.
 
 | # | Fix | Check |
 |---|---|---|
