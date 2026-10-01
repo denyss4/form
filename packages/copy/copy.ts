@@ -208,7 +208,7 @@ const base = {
     privacy: 'Privacy',
     privacyNote: 'Change any choice at any time.',
     licences: 'Licences',
-    fonts: 'Fonts: Manrope and Source Sans 3, under the SIL Open Font License 1.1. The full texts are in assets/licenses.',
+    fonts: 'Fonts: Manrope and Source Sans 3, under the SIL Open Font License 1.1.',
     model: 'The model is trained on PMData (Simula, CC BY 4.0).',
     connections: 'Connections',
     healthRow: { label: 'Health data', status: 'Preview, not connected' },

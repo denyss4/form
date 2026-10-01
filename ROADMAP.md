@@ -13,6 +13,7 @@ Feature freeze at the end of P3. P4 is screens only. At every Review, stop and w
 | P4 | Plan Fit meter, Felt vs Measured, mocked Health-sync and calendar-write screens | Every state screenshotted | 2 / 2 | Screenshots, then freeze | Built. Screenshots in `docs/screens/p4` (31 files). Run on an iPhone (Expo Go, SDK 57): 9 stills reviewed in `docs/screens/device`. **Feature freeze applies now** |
 | P5 | Critique fixes, reduced-motion pass, Polish-length test, dark stroke fix | Critical and Moderate findings fixed or argued in `CRITIQUE.md` | 2 / 1.5 | Review 3 | Built. Review 3 answered on 1 Oct; its decisions are built (plan as title, check-in nudge, estimated days). Screenshots in `docs/screens/p5` |
 | P6 | Demo path locked, fallback recording, PMData credit slide | Two rehearsals under 3 minutes | 1 / 0.5 | Rehearsal | Pre-recording fixes built 1 Oct (CRITIQUE.md). Path locked and dry-run by script (`docs/demo/DEMO.md`); credit slide and production mode ready. **Still needs people and the phone:** the fallback recording, two timed rehearsals, the 5-second colour test |
+| P7 | Final polish before the demo: no new features | Audit clean in production mode; nothing left that the code can fix | n/a | Demo | Done 1 Oct: every screen has named controls, no target under 44 px, no horizontal overflow, no console errors; the slider holds at 2x text; dead token and a repository path removed. **Build frozen.** Still needs the phone: tools button, VoiceOver, colour test, recording, rehearsals |
 
 ## P0 tasks
 

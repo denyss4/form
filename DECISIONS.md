@@ -104,6 +104,10 @@ Dated 2026-09-30. Source: approval of the Step 1 plan, which accepted every reco
 3. **Settings: no Demo section.** "Reset demo" and "Open gallery" are gone. To start again, close Expo Go and open the app again, or shake and choose Reload. The gallery routes still exist for development, reached by link only.
 4. **Check-in slider:** the thumb starts on 0 and the readout shows "0 of 10", as an outline in the secondary tone. **Nothing is recorded until it is touched**, even a tap on 0. Every dot has its number under it (0 to 10; at very large text only 0, 5 and 10). Tapping a dot or its number sets the value. Screen readers hear "Not rated" until then (GAPS G47). This replaces the earlier "no thumb until the first tap".
 
+## P7: final polish (1 Oct 2026)
+
+A pass, not a phase of features. Checked in production mode at 375 × 812: every interactive element has a name, none is under 44 px, nothing scrolls sideways, there are no console errors, and the new slider holds at 2x text (numbers 0, 5 and 10, 12 px clear of the end labels). Removed the repository path from the licence line (GAPS G39) and one unused size token. The build is frozen: from here only fixes for what the phone, VoiceOver or the rehearsals show.
+
 ## Still open
 
 - Demo phones (decision 7).

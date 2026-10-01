@@ -78,6 +78,7 @@ export function Slider({
   const shownValue = value ?? min; // the thumb rests on 0 until it is touched
   const filled = value === null ? 0 : at(value) + size.thumb / 2;
   // Every number under its dot. At very large text they would touch, so only the ends and the middle stay.
+  const numbersHeight = size.iconSm * Math.min(Math.max(scale, 1), 2); // the number row grows with the text, so it never touches the end labels
   const numbered = (i: number) => scale < 2 || i === 0 || i === steps || i === steps / 2;
 
   return (
@@ -111,7 +112,7 @@ export function Slider({
         onResponderTerminationRequest={() => false}
         onResponderGrant={fromTouch}
         onResponderMove={fromTouch}
-        style={styles.touch}
+        style={[styles.touch, { height: size.touch + numbersHeight }]}
       >
         {/* The focus ring wraps the track and the numbers together, so it never cuts through them. */}
         <FocusRing visible={focus.focused} />
@@ -138,7 +139,7 @@ export function Slider({
             ]}
           />
         </View>
-        <View pointerEvents="none" style={styles.numbers}>
+        <View pointerEvents="none" style={[styles.numbers, { height: numbersHeight }]}>
           {Array.from({ length: steps + 1 }, (_, i) =>
             numbered(i) ? (
               <View key={i} style={[styles.number, { left: at(min + i) }]}>
