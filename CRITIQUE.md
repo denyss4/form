@@ -280,3 +280,15 @@ Screenshots: `docs/screens/taste-pass/`, web at 390 × 844, dev mode.
 Checks: `npm run check` passes. The move still works (Wednesday becomes Train hard with Heavy legs, Thursday Deep-work day) and the week still opens scrolled to the suggestion. Progress and Week checked at 3× text.
 
 Not verified: anything on the phone; the move animation at speed with the new row order; VoiceOver for the onboarding icons (lucide SVGs, not labelled); dark mode.
+
+## Dark, minimalist restyle (1 Oct 2026)
+
+Decisions in `DECISIONS.md`. Screenshots: `docs/screens/dark-minimal/`, web at 390 × 844, dev mode.
+
+Checks: `npm run check` passes. Seen in dark: onboarding, consent, connect calendar, Today (default, reveal held at 40%, evening log sheet), Week (default, low confidence, 3× text), Progress, Felt vs forecast, Settings, Health data, Calendar changes. The move still ends with Wednesday Train hard and Thursday a Deep-work day.
+
+Found and fixed during the pass:
+- The sheet scrim was `text.primary`, near-white in dark, so opening the evening log washed the screen grey.
+- A quiet plan label on an estimated day dropped its "Estimated" marker (branch order). The estimated glyph at 20 px was nearly invisible in dark; quiet labels keep the 24 px glyph.
+
+Open: the estimated glyph (dashed, 0.75 opacity) is still faint in dark. Primary buttons are now a light fill with dark text, the brightest thing on each screen; that is the intent but has not been seen on the phone. Not verified: the phone, OLED contrast, the reveal at speed, VoiceOver. The fallback recording `docs/demo/fallback-production.MP4` shows the light design and no longer matches.

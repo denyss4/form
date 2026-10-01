@@ -35,8 +35,10 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: color.text.secondary,
         tabBarStyle: {
           backgroundColor: color.bg.canvas,
-          borderTopColor: color.stroke.hairline,
-          borderTopWidth: size.hairline,
+          // Minimalist: no rule above the bar; the bar sits on the same canvas as the screen.
+          borderTopWidth: 0,
+          elevation: 0,
+          shadowOpacity: 0,
         },
         sceneStyle: { backgroundColor: color.bg.canvas },
       }}

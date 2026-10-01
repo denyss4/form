@@ -1,4 +1,4 @@
-// Layout plan. Job: fit hard sessions into this week. Focal element: the column of plan labels, the week's rhythm.
+// Layout plan. Job: fit hard sessions into this week. Focal element: the column of plan glyphs, the week's rhythm (colour only in the glyphs).
 // Quiet: the day-type tags. The one action is the suggestion, inline under the day it moves from, with what the two days become:
 // one primary plus a text-only action.
 // Day types are tags, not plan state, so they carry no colour (5.1). Rows are separated by space and hairlines, never boxed (5.5 #1).
@@ -75,7 +75,7 @@ function Row({
         <Text variant="bodyStrong">{formatDay(day.date)}</Text>
         {/* Shrinks and wraps at large text sizes instead of running off the screen. */}
         <View style={styles.planCell}>
-          <PlanLabel plan={day.plan} estimated={day.source === 'guessed'} />
+          <PlanLabel plan={day.plan} estimated={day.source === 'guessed'} quiet />
         </View>
       </View>
       {/* What happens that day first, then the tags that explain the day type. */}

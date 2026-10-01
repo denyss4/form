@@ -1,6 +1,7 @@
 // Layout plan. Job: decide today's session. Focal element: the ScoreDial on the plan-coloured field. Quiet: the drivers and the check-in.
 // The plan label leads the field, then the reason, then the dial (Review 1 finding 3). The range line is body size, not caption (finding 1).
-// The one bold move: the plan's field colour fills the area behind the dial, and only here (5.1). Everything below sits on the canvas.
+// The field: in light, the plan's field colour fills the area behind the dial (5.1). In dark, the app theme since 1 Oct 2026, the field
+// equals the canvas (user decision: minimalist, no field), so the plan shows in the title, its glyph and the dial arc.
 // Morning, first open of the day: the reveal plays once (600 ms, transform and opacity only). Reduced motion: an instant, static result.
 // States: default, loading, day 1, partial input, low confidence, error. `?state=` holds one for review.
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -356,7 +357,7 @@ export default function Today() {
       {footer ? (
         <View
           aria-live="polite"
-          style={[styles.footer, { borderTopWidth: size.hairline, borderTopColor: color.stroke.hairline }]}
+          style={styles.footer}
         >
           {footer}
         </View>

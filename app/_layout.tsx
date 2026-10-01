@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { Platform, View } from 'react-native';
 
 import { AppStateProvider } from '@state';
-import { lightColor, size } from '@tokens';
+import { darkColor, size } from '@tokens';
 import { oneOf, TextScaleContext, ThemeProvider } from '@ui';
 
 export default function RootLayout() {
@@ -28,7 +28,7 @@ export default function RootLayout() {
     if (Platform.OS !== 'web') return;
     const style = document.createElement('style');
     style.textContent =
-      `[role="tab"]:focus-visible { outline: ${size.outline}px solid ${lightColor.text.primary}; outline-offset: -${size.outline}px; }` +
+      `[role="tab"]:focus-visible { outline: ${size.outline}px solid ${darkColor.text.primary}; outline-offset: -${size.outline}px; }` +
       `[role="button"]:focus-visible, [role="radio"]:focus-visible, [role="link"]:focus-visible, [role="slider"]:focus-visible { outline: none; }`;
     document.head.appendChild(style);
     return () => style.remove();
@@ -38,19 +38,19 @@ export default function RootLayout() {
 
   // Hold on the canvas colour until the fonts are ready, so text never flashes in a fallback face.
   if (!loaded && !error) {
-    return <View style={{ flex: 1, backgroundColor: lightColor.bg.canvas }} />;
+    return <View style={{ flex: 1, backgroundColor: darkColor.bg.canvas }} />;
   }
 
-  // Light is the primary theme. The gallery layers its own dev theme on top.
+  // Dark is the app theme (user decision, 1 Oct 2026). The gallery layers its own dev theme on top.
   return (
     <AppStateProvider>
-      <ThemeProvider scheme="light">
+      <ThemeProvider scheme="dark">
         <TextScaleContext.Provider value={textScale}>
-          <StatusBar style="dark" />
+          <StatusBar style="light" />
           <Stack
             screenOptions={{
               headerShown: false,
-              contentStyle: { backgroundColor: lightColor.bg.canvas },
+              contentStyle: { backgroundColor: darkColor.bg.canvas },
             }}
           />
         </TextScaleContext.Provider>

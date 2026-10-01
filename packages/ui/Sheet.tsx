@@ -39,7 +39,7 @@ export function Sheet({
   children: ReactNode;
   footer?: ReactNode;
 }) {
-  const { color } = useTheme();
+  const { color, scheme } = useTheme();
   const reduceMotion = useReducedMotion();
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -84,7 +84,8 @@ export function Sheet({
     }
   }, [visible, reduceMotion, open]);
 
-  const scrim = useAnimatedStyle(() => ({ opacity: open.value * opacity.scrim }));
+  const cover = scheme === 'dark' ? opacity.scrimDark : opacity.scrim;
+  const scrim = useAnimatedStyle(() => ({ opacity: open.value * cover }));
   const sheet = useAnimatedStyle(() =>
     reduceMotion
       ? { opacity: open.value }
@@ -94,7 +95,7 @@ export function Sheet({
   return (
     <Modal visible={mounted} transparent animationType="none" statusBarTranslucent onRequestClose={onClose}>
       <View style={styles.root}>
-        <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: color.text.primary }, scrim]}>
+        <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: color.bg.scrim }, scrim]}>
           {/* Tapping the scrim closes the sheet. It is not a tab stop: the header has the real Close button. */}
           <Pressable
             accessible={false}

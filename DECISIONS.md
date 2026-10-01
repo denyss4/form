@@ -115,3 +115,12 @@ A pass, not a phase of features. Checked in production mode at 375 × 812: every
 - Calendar provider name for the mocked OAuth.
 - Definition of "fit" for Plan Fit Rate (proposal: the user's own yes / too hard / too easy answer).
 - Plan thresholds (score band × day type). Person B proposes; approve at Review 2.
+
+## Dark, minimalist restyle (1 Oct 2026, from the user)
+
+User instruction: "Restyle everything right before the demo. Don't change the fonts; it must be in minimalistic style; switch to dark mode." This supersedes "Theme: light is primary" above and the "one bold move" rule in `CLAUDE.md` and MASTER_PROMPT §5.1.
+- Dark is the app theme (root `ThemeProvider`, status bar, `app.json` `userInterfaceStyle`). Light stays defined and in the gallery.
+- No colour field on Today (user's choice of three options). Dark plan fields equal the dark canvas, so the plan shows in the title, its glyph and the dial arc. The dial's reveal cover is drawn in the field colour, so this keeps the reveal correct. No new colour.
+- Minimalist rules: one flat canvas; no rule above the tab bar or the Today footer; in lists (Week, Progress) the plan colour is only in the glyph, at full size, and the word is plain text.
+- Sheet scrim per theme: Ink at 0.4 in light, the dark canvas at 0.72 in dark (`bg.scrim`, `opacity.scrimDark`). Ink lightened a dark screen. No new hex value.
+- Fonts unchanged.

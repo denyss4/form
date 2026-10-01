@@ -36,32 +36,32 @@ export function PlanLabel({
 }: {
   plan: PlanId;
   estimated?: boolean;
-  /** For lists where the plan is context, not the focal element (Progress): the glyph keeps the plan colour, the word is body text. */
+  /** Lists (Week, Progress): the glyph keeps the plan colour, the word is plain text. Minimalist: colour sits in one mark per row, at full glyph size because it is the only colour. */
   quiet?: boolean;
 }) {
-  if (quiet) {
-    return (
-      <View style={styles.row} accessible accessibilityLabel={copy.plan[plan]}>
-        <PlanGlyph plan={plan} small />
-        <Text variant="body" style={styles.shrink}>
-          {copy.plan[plan]}
-        </Text>
-      </View>
-    );
-  }
   if (estimated) {
     // Not sure of this day (no events, so the weekday decided): muted colour, a dashed glyph, and the word, never colour alone.
     return (
       <View style={styles.row} accessible accessibilityLabel={`${copy.plan[plan]}, ${copy.week.estimated.toLowerCase()}`}>
         <PlanGlyph plan={plan} estimated />
         <View style={styles.shrink}>
-          <Text variant="plan" tone="secondary">
+          <Text variant={quiet ? 'body' : 'plan'} tone="secondary">
             {copy.plan[plan]}
           </Text>
           <Text variant="caption" tone="secondary">
             {copy.week.estimated}
           </Text>
         </View>
+      </View>
+    );
+  }
+  if (quiet) {
+    return (
+      <View style={styles.row} accessible accessibilityLabel={copy.plan[plan]}>
+        <PlanGlyph plan={plan} />
+        <Text variant="body" style={styles.shrink}>
+          {copy.plan[plan]}
+        </Text>
       </View>
     );
   }
