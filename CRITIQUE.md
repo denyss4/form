@@ -292,3 +292,18 @@ Found and fixed during the pass:
 - A quiet plan label on an estimated day dropped its "Estimated" marker (branch order). The estimated glyph at 20 px was nearly invisible in dark; quiet labels keep the 24 px glyph.
 
 Open: the estimated glyph (dashed, 0.75 opacity) is still faint in dark. Primary buttons are now a light fill with dark text, the brightest thing on each screen; that is the intent but has not been seen on the phone. Not verified: the phone, OLED contrast, the reveal at speed, VoiceOver. The fallback recording `docs/demo/fallback-production.MP4` shows the light design and no longer matches.
+
+### Premium pass (1 Oct 2026, `/premium-web-design`)
+
+The skill targets marketing websites (Spline 3D, photography, parallax, grain, custom cursors, staggered entrances, uppercase mono labels) and excludes functional UI. Those moves are banned by `CLAUDE.md` 5.5 and §6, or need a new dependency, so they were not used. What transferred:
+
+| Change | Skill principle | Rule check |
+|---|---|---|
+| Negative tracking: title −0.6, heading −0.3, plan −0.2. Sizes and line heights unchanged | Large headlines set tight | 5.3 sizes kept; the score keeps its −1.5 |
+| Today: 48 before each new section, 24 between the dial's annotation and the reason | Whitespace as a luxury signal | 5.2 "48 before a new section" (was 32) |
+
+Rejected after a check: a ledger layout for Week (day, session, plan in three aligned columns). At 390 pt the middle column is about 110 pt, so sessions and tags wrap, and the move animation would need its offsets reworked two days before the demo.
+
+Kept, by the user's choice: fonts (tracking) and spacing only. The hug-width "Move to Wednesday" button was tried and reverted.
+
+Checks: `npm run check` passes; Today screenshot at 390 × 844 (`today-tracking.jpg`). Not verified on the phone.

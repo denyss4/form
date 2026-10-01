@@ -20,9 +20,10 @@ export const type: Record<TypeToken, TextStyle> = {
     letterSpacing: -1.5,
     fontVariant: ['tabular-nums'],
   },
-  title: { fontFamily: font.display700, fontSize: 28, lineHeight: 34 },
-  heading: { fontFamily: font.display600, fontSize: 20, lineHeight: 26 },
-  plan: { fontFamily: font.display700, fontSize: 17, lineHeight: 22 },
+  // Display sizes are set tight, as large Manrope reads loose at default tracking (1 Oct 2026). Sizes and line heights are unchanged.
+  title: { fontFamily: font.display700, fontSize: 28, lineHeight: 34, letterSpacing: -0.6 },
+  heading: { fontFamily: font.display600, fontSize: 20, lineHeight: 26, letterSpacing: -0.3 },
+  plan: { fontFamily: font.display700, fontSize: 17, lineHeight: 22, letterSpacing: -0.2 },
   body: { fontFamily: font.body400, fontSize: 16, lineHeight: 24 },
   bodyStrong: { fontFamily: font.body600, fontSize: 16, lineHeight: 24 },
   caption: { fontFamily: font.body400, fontSize: 13, lineHeight: 18 },

@@ -383,9 +383,9 @@ const styles = StyleSheet.create({
   strip: { position: 'absolute', top: 0, left: 0, right: 0 },
   field: { paddingHorizontal: space.margin, paddingBottom: space.lg, gap: space.sm },
   fieldBg: { borderBottomLeftRadius: radius.sheet, borderBottomRightRadius: radius.sheet },
-  reason: { marginTop: space.xs },
+  reason: { marginTop: space.sm }, // 24 from the dial's annotation, with the field gap
   dial: { alignItems: 'center', marginTop: space.sm },
   annotation: { alignItems: 'center', gap: space.xxs },
-  section: { paddingHorizontal: space.margin, marginTop: space.xl, gap: space.sm },
+  section: { paddingHorizontal: space.margin, marginTop: space.xxl, gap: space.sm }, // 48 before a new section (5.2)
   footer: { paddingHorizontal: space.margin, paddingTop: space.md, paddingBottom: space.md, gap: space.xs },
 });
