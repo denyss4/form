@@ -97,6 +97,13 @@ Dated 2026-09-30. Source: approval of the Step 1 plan, which accepted every reco
 8. **Onboarding dial** shows a filled example day, labelled "Example", instead of the empty arc. The numbers are the demo's first morning from the fixtures (51, likely 34–68). It is read to screen readers as "Example: Form score 51. Likely 34 to 68."
 9. **GAPS G45** records that the rating sits below the score and is anchored by it.
 
+## Fixes from the iPhone screenshots (1 Oct 2026)
+
+1. **Consent: Not now first, Allow second.** Settings shares the same options, so the two screens stay the same control. The calendar connect and Health and Calendar-changes preview screens still stack Allow above Not now or Skip: say if you want those swapped too.
+2. **Gallery dial page** lays out its app-size example like Today: the plan as the title, the dial, the range at body size, then the inputs line. (My reading of "make the progress bar like on the third screen": that screenshot was the gallery's Score dial page. Say if you meant something else.)
+3. **Settings: no Demo section.** "Reset demo" and "Open gallery" are gone. To start again, close Expo Go and open the app again, or shake and choose Reload. The gallery routes still exist for development, reached by link only.
+4. **Check-in slider:** the thumb starts on 0 and the readout shows "0 of 10", as an outline in the secondary tone. **Nothing is recorded until it is touched**, even a tap on 0. Every dot has its number under it (0 to 10; at very large text only 0, 5 and 10). Tapping a dot or its number sets the value. Screen readers hear "Not rated" until then (GAPS G47). This replaces the earlier "no thumb until the first tap".
+
 ## Still open
 
 - Demo phones (decision 7).

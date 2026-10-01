@@ -286,7 +286,8 @@ export default function Today() {
             label={copy.today.checkin.title}
             value={rating}
             onChange={(v) => app.setReadiness(app.demoDay, v)}
-            valueText={rating === null ? copy.today.checkin.unset : copy.today.checkin.value(rating)}
+            valueText={copy.today.checkin.value(rating ?? 0)}
+            spokenText={rating === null ? copy.today.checkin.unset : undefined}
             lowLabel={copy.today.checkin.low}
             highLabel={copy.today.checkin.high}
           />

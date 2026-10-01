@@ -7,7 +7,7 @@ import { StyleSheet, View } from 'react-native';
 import { copy } from '@copy';
 import { martaWeek } from '@fixtures';
 import { planIds, radius, space, type PlanId } from '@tokens';
-import { DevPicker, GalleryScreen, oneOf, PlanLabel, ScoreDial, Section, Text, useTheme } from '@ui';
+import { DevPicker, GalleryScreen, oneOf, ScoreDial, ScreenHeader, Section, Text, useTheme } from '@ui';
 
 type StateKey = 'today' | 'low' | 'high' | 'day1';
 const stateKeys: StateKey[] = ['today', 'low', 'high', 'day1'];
@@ -47,12 +47,20 @@ export default function DialGallery() {
       />
 
       <Section title={d.app} note={day ? d.forecastFor(day.forecastFor) : undefined}>
+        {/* The same order as Today: the plan is the title, then the dial, the range at body size, then how many inputs it used. */}
         <View style={[styles.field, { backgroundColor: color.plan[plan].field }]}>
+          <View style={styles.title}>
+            <ScreenHeader title={copy.plan[plan]} plan={plan} />
+          </View>
           <ScoreDial score={score} range={range} plan={plan} />
-          <Text variant="caption" tone="secondary">
-            {range ? copy.range(range[0], range[1]) : copy.dial.empty}
-          </Text>
-          <PlanLabel plan={plan} />
+          <View style={styles.annotation}>
+            <Text variant="body">{range ? copy.range(range[0], range[1]) : copy.dial.empty}</Text>
+            {day ? (
+              <Text variant="caption" tone="secondary">
+                {copy.inputsBasis(day.result.confidence.used, day.result.confidence.total)}
+              </Text>
+            ) : null}
+          </View>
         </View>
       </Section>
 
@@ -81,5 +89,7 @@ const styles = StyleSheet.create({
     padding: space.lg,
     borderRadius: radius.sheet,
   },
+  title: { alignSelf: 'stretch' },
+  annotation: { alignItems: 'center', gap: space.xxs },
   row: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.lg },
 });

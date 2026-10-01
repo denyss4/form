@@ -247,3 +247,16 @@ Screenshots: `docs/screens/p6-prerecording/`, production mode (`npm run demo`, `
 | 8 | Onboarding example dial | 51, likely 34–68, "Example" |
 
 Not verified: all of it on the phone; VoiceOver for the slider and the example dial; the ring's fade and the move animation at speed.
+
+### Fixes from the iPhone screenshots (1 Oct 2026)
+
+Screenshots: `docs/screens/p6-prerecording/` (the last five files), production mode, web at 375 × 812.
+
+| # | Fix | Check |
+|---|---|---|
+| 1 | Consent: Not now first | Order Not now, Allow on all four purposes and in Settings. Nothing selected, Continue disabled |
+| 2 | Gallery dial like Today | Plan title, dial, "Likely 34–68" at body size, "Based on 11 of 11 inputs" |
+| 3 | Settings: no Reset demo, no gallery link | The page ends at Licences |
+| 4 | Slider: 0 by default, numbers under the dots | Outline thumb on 0, "0 of 10", numbers 0 to 10. A click on 0 records 0, a click on the 4 and the 6 set "4 of 10" and "6 of 10". The focus ring wraps the track and the numbers |
+
+Not verified on the phone: the numbers at large text, and what VoiceOver says for "Not rated" then the first increment.

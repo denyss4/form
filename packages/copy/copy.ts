@@ -213,9 +213,6 @@ const base = {
     connections: 'Connections',
     healthRow: { label: 'Health data', status: 'Preview, not connected' },
     calendarWriteRow: { label: 'Calendar changes', status: 'Preview, off' },
-    demo: 'Demo',
-    reset: 'Reset demo',
-    gallery: 'Open gallery',
   },
 
   progress: {

@@ -16,9 +16,9 @@ Inputs are fixed so the numbers repeat. The clock is the demo clock: Monday 5 Oc
 
 | Day | What you do | What the screen shows |
 |---|---|---|
-| Mon 5, morning | Open Today. The reveal plays. Set the morning rating to **7**. Tap **Accept plan**. | **Train light**, 51, Likely 34–68, Based on 11 of 11 inputs. "Your score is near a typical day, so your Push session is kept light." Drivers: Recent readiness +6, Training load −4, Alcohol −2. The line "One tap to sharpen tomorrow." disappears once you rate. After Accept plan the footer reads "Plan accepted." with no primary button. |
+| Mon 5, morning | Open Today. The reveal plays. Tap **7** on the morning check-in (the thumb starts on 0 and nothing is recorded until you tap). Tap **Accept plan**. | **Train light**, 51, Likely 34–68, Based on 11 of 11 inputs. "Your score is near a typical day, so your Push session is kept light." Drivers: Recent readiness +6, Training load −4, Alcohol −2. The line "One tap to sharpen tomorrow." disappears once you rate. After Accept plan the footer reads "Plan accepted." with no primary button. |
 | Mon 5, evening | **Log tonight** (a text link beside "Plan accepted." before 17:00, the primary button after; open Today with `?evening=1` to show the primary at any hour): Moderate, alcohol No, unusual No, plan fit Yes. **Save log**. Tap **Demo: jump to tomorrow morning**. | "Logged. Tomorrow's plan arrives in the morning." |
-| Tue 6, morning | Open **Week**. The suggestion sits under the Thursday row: "Thursday dinner, Friday flight. Wednesday has no session. Move Heavy legs there? Wednesday becomes Train hard. Thursday becomes Deep-work day." Tap **Move to Wednesday**; both rows update. Back on Today, set the rating to **9**. Accept. | **Train light**, 58, Likely 41–75, Based on 2 of 11 inputs ("Few inputs today"). Recent readiness +10, Training load −4. On Week: Wednesday is now Train hard (Heavy legs), Thursday is a Deep-work day. |
+| Tue 6, morning | Open **Week**. The suggestion sits under the Thursday row: "Thursday dinner, Friday flight. Wednesday has no session. Move Heavy legs there? Wednesday becomes Train hard. Thursday becomes Deep-work day." Tap **Move to Wednesday**; both rows update. Back on Today, tap **9** on the check-in. Accept. | **Train light**, 58, Likely 41–75, Based on 2 of 11 inputs ("Few inputs today"). Recent readiness +10, Training load −4. On Week: Wednesday is now Train hard (Heavy legs), Thursday is a Deep-work day. |
 | Tue 6, evening | **Log tonight**: Moderate, No, No, Yes. Save. Tap **Demo: jump to tomorrow morning**. | |
 | Wed 7, morning | Read the screen. | **Train hard** (Ember field), 65, Likely 48–82, Based on 2 of 11 inputs. "Your score is high, so your Heavy legs session stays hard." Recent readiness +17, Training load −3. |
 
@@ -72,7 +72,7 @@ Cut first if over time: Progress. Both evening logs are needed to reach Wednesda
 3. **Warm the bundle.** The first iOS build took 133 s on this PC (cold cache). Open the app on the phone once, at least 10 minutes before you present, so the demo load is instant.
 4. On the iPhone: Low Power Mode **off** (it can lower the frame rate; GAPS G38), Do Not Disturb on, auto-lock off, brightness up.
 5. In Expo Go, enter `exp://<PC address>:8081` (the PC address was 192.168.0.228 on 30 Sep; it can change). Expo prints it.
-6. Walk to Today once: Get started, four Allow choices, Continue, Allow read access. The state is in memory, so **do not close the app or reload** before the demo. "Reset demo" in Settings returns to the first screen.
+6. Walk to Today once: Get started, four Allow choices, Continue, Allow read access. The state is in memory, so **do not close the app or reload** before the demo. There is no Reset demo button (removed on the user's request): to start again, close Expo Go and open the app again, or shake and choose Reload.
 7. Expo Go's tools button: see below. Check it before you present.
 
 ### Expo Go's tools button (GAPS G37): result of the check
@@ -102,7 +102,7 @@ If it cannot be hidden: present with it on the screen and do not tap the top-rig
 I cannot record your phone. To make it (5 minutes):
 
 1. iPhone: Settings, Control Center, add Screen Recording.
-2. Set up exactly as in "Before you go on". Start from the first screen (Reset demo).
+2. Set up exactly as in "Before you go on". Start from the first screen (close Expo Go and open the app again).
 3. Start recording, run the locked path at talking pace, stop. Do not narrate; you will narrate live over it.
 4. Save as `docs/demo/fallback-production.mp4`. Record it in **production mode**, with the same Low Power Mode and tools-button state you will present with, because both show in the video.
 5. A second, shorter copy (Wed 7 reveal and the Week move only, 30 s) is useful if time is cut.

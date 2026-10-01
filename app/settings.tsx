@@ -8,7 +8,7 @@ import { copy } from '@copy';
 import { purposes, useAppState } from '@state';
 import { answerOptions } from '@state/answers';
 import { space } from '@tokens';
-import { Button, ChoiceGroup, LinkRow, NavLink, ScreenHeader, Section, Text, useTheme } from '@ui';
+import { ChoiceGroup, LinkRow, ScreenHeader, Section, Text, useTheme } from '@ui';
 
 export default function SettingsScreen() {
   const { color } = useTheme();
@@ -63,19 +63,6 @@ export default function SettingsScreen() {
           <Text variant="caption" tone="secondary">
             {copy.settings.model}
           </Text>
-        </Section>
-
-        <Section title={copy.settings.demo}>
-          <Button
-            variant="secondary"
-            label={copy.settings.reset}
-            onPress={() => {
-              app.resetDemo();
-              router.replace('/');
-            }}
-          />
-          {/* The gallery is a development tool. A production run (npm run demo) does not show the link. */}
-          {__DEV__ ? <NavLink href="/gallery" label={copy.settings.gallery} /> : null}
         </Section>
       </ScrollView>
     </SafeAreaView>
