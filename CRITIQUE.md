@@ -260,3 +260,23 @@ Screenshots: `docs/screens/p6-prerecording/` (the last five files), production m
 | 4 | Slider: 0 by default, numbers under the dots | Outline thumb on 0, "0 of 10", numbers 0 to 10. A click on 0 records 0, a click on the 4 and the 6 set "4 of 10" and "6 of 10". The focus ring wraps the track and the numbers |
 
 Not verified on the phone: the numbers at large text, and what VoiceOver says for "Not rated" then the first increment.
+
+## Taste pass (1 Oct 2026, from the user: "the design looks bad")
+
+Skills: `design-taste-frontend` and `redesign-existing-projects` (Leonxlnx/taste-skill, installed in `.claude/skills`). The first says it is not for native mobile or product UI (its §13), so only its audit and anti-template checks were used, in "redesign, preserve" mode. Where it conflicts with `CLAUDE.md`, `CLAUDE.md` wins: no font swap (Manrope and Source Sans 3 stay), lucide only, no photos, no grain, no staggered entrances, and "Likely 34–68" keeps its en dash.
+
+Screenshots: `docs/screens/taste-pass/`, web at 390 × 844, dev mode.
+
+| # | Finding | Fix | Rule |
+|---|---|---|---|
+| 1 | Progress: six coloured, bold plan labels outshout the fit status, though its own layout plan says the day list is quiet | `PlanLabel quiet`: the glyph keeps the plan colour, the word is body text. "Too hard" is now the one thing that stands out | 5.1 colour for meaning, Progress layout plan |
+| 2 | Progress: the fit segments are 24 high with the control radius, so they read as six buttons | 12-high full-radius pills (`size.segment`) | 5.4 full radius for segmented pills |
+| 3 | Week: day types come before the session, so the line that matters is in the middle | Session first (body), tags under it (caption). "No session" is body secondary, so the slot line keeps one height | Layout plan: tags stay quiet |
+| 4 | Week and Progress: 12 or 24 between the header and the content, the same as inside the list | 32 between groups | 5.2 |
+| 5 | Onboarding: three plain lines with no structure | Each point leads with the icon of where it happens (log, Today tab, Week tab) | 5.5 #7: functional, not decorative |
+| 6 | Week suggestion: three paragraphs at one weight | The preview line is secondary | Hierarchy |
+| 7 | Week at 3× text: the plan label ran off the screen ("Train ligh"). Existed before this pass | The label cell shrinks and wraps | 5.3 wraps, never truncates |
+
+Checks: `npm run check` passes. The move still works (Wednesday becomes Train hard with Heavy legs, Thursday Deep-work day) and the week still opens scrolled to the suggestion. Progress and Week checked at 3× text.
+
+Not verified: anything on the phone; the move animation at speed with the new row order; VoiceOver for the onboarding icons (lucide SVGs, not labelled); dark mode.

@@ -1,13 +1,19 @@
 // Layout plan. Job: say what Form does and start. Focal element: the intro mark that becomes the dial. Quiet: the notice.
 // One primary action in the thumb zone. No hero copy, no illustration beyond the product's own dial (5.5 #7, #10).
+// Each point leads with the icon of the place it happens (the log, the Today tab, the Week tab): functional, and it previews the tabs.
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import CalendarDays from 'lucide-react-native/icons/calendar-days';
+import NotebookPen from 'lucide-react-native/icons/notebook-pen';
+import Sun from 'lucide-react-native/icons/sun';
 
 import { copy } from '@copy';
 import { martaWeek } from '@fixtures';
-import { space } from '@tokens';
-import { Button, IntroMark, Text, useTheme } from '@ui';
+import { size, space } from '@tokens';
+import { Button, IntroMark, Text, useIconSize, useTheme } from '@ui';
+
+const pointIcons = [NotebookPen, Sun, CalendarDays];
 
 // The example day is real model output from the fixtures (the demo's first morning), never an invented number.
 const example = martaWeek.days.find((d) => d.forecastFor === martaWeek.meta.demoToday) ?? martaWeek.days[martaWeek.days.length - 1];
@@ -15,6 +21,7 @@ const example = martaWeek.days.find((d) => d.forecastFor === martaWeek.meta.demo
 export default function Onboarding() {
   const { color } = useTheme();
   const router = useRouter();
+  const iconPx = useIconSize(size.icon);
   const params = useLocalSearchParams<{ intro?: string }>();
 
   // ?intro=0.3 holds the intro at 30% for review.
@@ -40,11 +47,17 @@ export default function Onboarding() {
           {copy.onboarding.intro}
         </Text>
         <View style={styles.points}>
-          {copy.onboarding.points.map((point) => (
-            <Text key={point} variant="body">
-              {point}
-            </Text>
-          ))}
+          {copy.onboarding.points.map((point, i) => {
+            const Icon = pointIcons[i];
+            return (
+              <View key={point} style={styles.point}>
+                {Icon ? <Icon color={color.text.primary} size={iconPx} strokeWidth={size.outline} /> : null}
+                <Text variant="body" style={styles.pointText}>
+                  {point}
+                </Text>
+              </View>
+            );
+          })}
         </View>
       </ScrollView>
       <View style={styles.actions}>
@@ -66,7 +79,9 @@ const styles = StyleSheet.create({
     gap: space.md,
   },
   mark: { alignItems: 'center', marginBottom: space.lg },
-  points: { marginTop: space.md, gap: space.sm },
+  points: { marginTop: space.md, gap: space.md },
+  point: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm },
+  pointText: { flex: 1 },
   actions: {
     paddingHorizontal: space.margin,
     paddingBottom: space.md,

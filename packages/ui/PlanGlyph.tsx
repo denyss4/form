@@ -29,7 +29,26 @@ export function PlanGlyph({ plan, small = false, estimated = false }: { plan: Pl
   );
 }
 
-export function PlanLabel({ plan, estimated = false }: { plan: PlanId; estimated?: boolean }) {
+export function PlanLabel({
+  plan,
+  estimated = false,
+  quiet = false,
+}: {
+  plan: PlanId;
+  estimated?: boolean;
+  /** For lists where the plan is context, not the focal element (Progress): the glyph keeps the plan colour, the word is body text. */
+  quiet?: boolean;
+}) {
+  if (quiet) {
+    return (
+      <View style={styles.row} accessible accessibilityLabel={copy.plan[plan]}>
+        <PlanGlyph plan={plan} small />
+        <Text variant="body" style={styles.shrink}>
+          {copy.plan[plan]}
+        </Text>
+      </View>
+    );
+  }
   if (estimated) {
     // Not sure of this day (no events, so the weekday decided): muted colour, a dashed glyph, and the word, never colour alone.
     return (

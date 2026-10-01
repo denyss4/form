@@ -73,20 +73,24 @@ function Row({
     >
       <View style={styles.line}>
         <Text variant="bodyStrong">{formatDay(day.date)}</Text>
-        <PlanLabel plan={day.plan} estimated={day.source === 'guessed'} />
+        {/* Shrinks and wraps at large text sizes instead of running off the screen. */}
+        <View style={styles.planCell}>
+          <PlanLabel plan={day.plan} estimated={day.source === 'guessed'} />
+        </View>
       </View>
-      <Text variant="caption" tone="secondary">
-        {day.source === 'guessed' ? `${tags}, ${copy.week.guessed}` : tags}
-      </Text>
+      {/* What happens that day first, then the tags that explain the day type. */}
       <View onLayout={onSlot} style={hideSlot ? styles.hidden : undefined}>
         {session ? (
           <Text variant="body">{copy.week.session(session.name, session.start)}</Text>
         ) : (
-          <Text variant="caption" tone="secondary">
+          <Text variant="body" tone="secondary">
             {copy.week.noSession}
           </Text>
         )}
       </View>
+      <Text variant="caption" tone="secondary">
+        {day.source === 'guessed' ? `${tags}, ${copy.week.guessed}` : tags}
+      </Text>
     </View>
   );
 }
@@ -100,8 +104,8 @@ function SkeletonRows() {
             <Skeleton width="28%" height={size.icon} />
             <Skeleton width="38%" height={size.icon} />
           </View>
-          <Skeleton width="44%" />
           <Skeleton width="34%" />
+          <Skeleton width="44%" />
         </View>
       ))}
     </View>
@@ -198,7 +202,7 @@ export default function Week() {
         <Text variant="bodyStrong">{copy.suggestion.reasons(reasons)}</Text>
         <Text variant="body">{copy.suggestion.ask(suggestion.session, weekdayName(suggestion.toDate))}</Text>
         {preview ? (
-          <Text variant="body">
+          <Text variant="body" tone="secondary">
             {copy.suggestion.preview(
               weekdayName(suggestion.toDate),
               copy.plan[preview.to],
@@ -259,19 +263,17 @@ export default function Week() {
           <Text variant="caption" tone="secondary">
             {copy.week.planNote}
           </Text>
-        </View>
-        {cov.eventDays < cov.total ? (
-          <View style={styles.notes}>
+          {cov.eventDays < cov.total ? (
             <Text variant="caption" tone="secondary">
               {copy.week.coverage(cov.eventDays, cov.total)}
             </Text>
-            {cov.eventDays <= LOW_CONFIDENCE_DAYS ? (
-              <Text variant="caption" tone="secondary">
-                {copy.week.lowConfidence}
-              </Text>
-            ) : null}
-          </View>
-        ) : null}
+          ) : null}
+          {cov.eventDays < cov.total && cov.eventDays <= LOW_CONFIDENCE_DAYS ? (
+            <Text variant="caption" tone="secondary">
+              {copy.week.lowConfidence}
+            </Text>
+          ) : null}
+        </View>
         <View
           onLayout={(e) => {
             listTop.current = e.nativeEvent.layout.y;
@@ -327,7 +329,7 @@ export default function Week() {
         }}
         contentContainerStyle={styles.content}
       >
-        {header}
+        <View style={styles.header}>{header}</View>
         {body}
       </ScrollView>
     </SafeAreaView>
@@ -336,13 +338,16 @@ export default function Week() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  content: { paddingHorizontal: space.margin, paddingTop: space.md, paddingBottom: space.lg, gap: space.sm },
-  notes: { gap: space.xxs },
+  content: { paddingHorizontal: space.margin, paddingTop: space.md, paddingBottom: space.lg },
+  // The header is its own group: 32 to what follows (5.2), not the 12 used inside the list.
+  header: { marginBottom: space.xl },
+  notes: { gap: space.xxs, marginBottom: space.sm },
   row: { paddingVertical: space.sm, gap: space.xxs },
   line: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm },
+  planCell: { flexShrink: 1 },
   hidden: { opacity: 0 },
   marker: { position: 'absolute', left: 0, right: 0 },
-  state: { marginTop: space.lg, gap: space.sm, alignItems: 'flex-start' },
+  state: { gap: space.sm, alignItems: 'flex-start' },
   // The suggestion belongs to the day above it: space and a hairline, no card (5.5 #1).
   inline: { paddingTop: space.xs, paddingBottom: space.md, gap: space.xs },
 });

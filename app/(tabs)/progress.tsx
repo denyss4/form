@@ -1,5 +1,5 @@
 // Layout plan. Job: show whether the plans fit, in the person's own words. Focal element: the Plan Fit sentence and its segments.
-// Quiet: the day list (one line a day) and the logging line. The link to Felt vs forecast sits directly under the summary. No score, no streak, no reward: a process measure (MASTER_PROMPT §2).
+// Quiet: the day list (one line a day, plan glyph in colour, plan word in body text) and the logging line. The link to Felt vs forecast sits directly under the summary. No score, no streak, no reward: a process measure (MASTER_PROMPT §2).
 // A Recover day that fit counts the same as a training day that fit. The ring shows answered days only, never more than was answered.
 // States: default, loading, no feedback yet, partial, low confidence, error. `?state=` holds one for review.
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -49,7 +49,7 @@ function FitRow({ day, divider, compact }: { day: FitDay; divider: boolean; comp
             {formatDay(day.date)}
           </Text>
           <View style={styles.planColumn}>
-            <PlanLabel plan={day.plan} />
+            <PlanLabel plan={day.plan} quiet />
           </View>
           <Text variant={statusVariant} tone={day.fit === 'yes' ? 'secondary' : 'primary'} style={styles.noShrink}>
             {status}
@@ -65,7 +65,7 @@ function FitRow({ day, divider, compact }: { day: FitDay; divider: boolean; comp
               {status}
             </Text>
           </View>
-          <PlanLabel plan={day.plan} />
+          <PlanLabel plan={day.plan} quiet />
         </>
       )}
     </View>
@@ -182,7 +182,7 @@ export default function Progress() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  content: { paddingHorizontal: space.margin, paddingTop: space.md, paddingBottom: space.lg, gap: space.lg },
+  content: { paddingHorizontal: space.margin, paddingTop: space.md, paddingBottom: space.lg, gap: space.xl },
   group: { gap: space.md },
   summary: { gap: space.xxs },
   strip: { marginTop: space.sm, gap: space.xs },

@@ -1,6 +1,7 @@
 // Layout plan. Job: show the answered days at a glance. Focal element: the segments. Quiet: nothing else.
 // One solid segment per answered day, up to a week, oldest on the left. Filled = the plan fit. Outlined = it did not (too hard or too easy).
 // Shape carries it, never colour: a fill against an outline. Dashes are never used here: a dashed outline means "Estimated" and only that.
+// Segments are thin full-radius pills (5.4: full for segmented pills). At the control radius and icon height they read as buttons.
 import { StyleSheet, View } from 'react-native';
 
 import type { FitDay } from '@planner/progress';
@@ -31,5 +32,5 @@ export function FitStrip({ days, label }: { days: FitDay[]; label: string }) {
 
 const styles = StyleSheet.create({
   strip: { flexDirection: 'row', gap: space.xxs },
-  segment: { flex: 1, height: size.icon, borderRadius: radius.control, borderWidth: size.outline },
+  segment: { flex: 1, height: size.segment, borderRadius: radius.full, borderWidth: size.outline },
 });

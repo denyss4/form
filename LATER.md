@@ -44,3 +44,11 @@ Goal mode, what-if simulator, Precise food logging, partner sync, coach or B2B d
 - A GIF of the production web build following the demo path, as a weaker fallback than a phone recording.
 - Try the explicit VoiceOver order (`experimental_accessibilityOrder`) once VoiceOver can be tested (GAPS G41).
 - Upgrade to SDK 58 when Expo Go supports it: it adds `EXPO_NO_DEV_MENU` and the `disableFab` launch parameter for the tools button.
+
+## From the taste pass (1 Oct 2026)
+
+These need a decision because they change the design system or the demo path:
+- Week as a compact 7-day strip (glyph per day) above the list, so the week's rhythm is visible without scrolling. Today only 3 to 4 days fit on screen.
+- The Week suggestion as one clearly anchored block (for example, a 2 px Ink rule on the left) instead of plain paragraphs between rows.
+- An empty-state glyph (calendar) on Week and Progress, centred, as 5.2 allows.
+- Day types on Week as tags with a glyph, as `CLAUDE.md` says; today they are plain comma-separated text.

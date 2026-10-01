@@ -14,6 +14,7 @@ export const size = {
   track: 4, // slider track thickness
   thumb: 28, // slider thumb
   tick: 8, // slider step mark: with no thumb yet, the dots are what you tap
+  segment: 12, // Plan Fit segment height: a meter, not a row of buttons
 
   // ScoreDial: a 270-degree arc that opens at the bottom, and a thin bracket outside it for the likely range.
   // [GAP G21: dial sizes are not in the Master. These are proposals; revisit at Review 1.]
