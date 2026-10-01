@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5-second colour test</title>
+<!-- Open on a laptop or phone. Pick a plan, show it for 5 seconds, then ask the person what kind of day it is. Tap their answer.
+     Colours are the project tokens (packages/tokens/color.ts). Nothing is stored or sent; the tally lives in this page only. -->
+<style>
+  :root { --canvas:#F3F6FA; --ink:#13263A; --secondary:#4A5B6C; --hairline:#C9D3DD;
+    --hard:#B83A1B; --hard-f:#FBE8E1; --light:#8A5A10; --light-f:#FAF0DA; --recover:#1F6280; --recover-f:#E1EEF4; --deep:#51479E; --deep-f:#ECE9F7; }
+  body { margin:0; background:var(--canvas); color:var(--ink); font:18px/1.5 system-ui, sans-serif; min-height:100vh; display:flex; flex-direction:column; }
+  main { max-width:520px; width:100%; margin:0 auto; padding:24px 20px; box-sizing:border-box; }
+  h1 { font-size:24px; margin:0 0 4px; } p { margin:8px 0; color:var(--secondary); }
+  button { font:inherit; min-height:48px; padding:0 18px; border-radius:999px; border:2px solid var(--ink); background:transparent; color:var(--ink); margin:4px 6px 4px 0; cursor:pointer; }
+  button.primary { background:var(--ink); color:var(--canvas); }
+  #stage { display:none; position:fixed; inset:0; align-items:center; justify-content:center; flex-direction:column; gap:12px; z-index:2; }
+  #stage svg { width:min(70vw,60vh); height:auto; }
+  #label { font-weight:700; font-size:28px; display:flex; gap:10px; align-items:center; }
+  #timer { position:fixed; top:12px; right:16px; font-size:14px; opacity:.6; }
+  table { border-collapse:collapse; width:100%; margin-top:8px; } td, th { border-bottom:1px solid var(--hairline); padding:8px 4px; text-align:left; }
+  .hide { display:none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>5-second colour test</h1>
+  <p>Show a plan for 5 seconds, then ask: "What kind of day is that?" Tap what they said. The label is hidden on purpose, so this tests colour alone.</p>
+  <div id="pick">
+    <button class="primary" data-plan="hard">Show Train hard</button>
+    <button class="primary" data-plan="recover">Show Recover</button>
+    <button data-plan="light">Show Train light</button>
+    <button data-plan="deep">Show Deep-work day</button>
+  </div>
+  <div id="ask" class="hide">
+    <p><strong>What kind of day is that?</strong> Tap their answer, or the word they used.</p>
+    <div id="answers"></div>
+  </div>
+  <h2>Tally</h2>
+  <table id="tally"><thead><tr><th>Shown</th><th>They said</th><th>Count</th></tr></thead><tbody></tbody></table>
+  <p>Count a red field read as "warning" or "bad" separately: use the last two buttons.</p>
+</main>
+<div id="stage"><div id="timer"></div>
+  <svg viewBox="0 0 200 200" aria-hidden="true"><path d="M 38 160 A 80 80 0 1 1 162 160" fill="none" stroke="currentColor" stroke-opacity=".16" stroke-width="16" stroke-linecap="round"/><path d="M 38 160 A 80 80 0 0 1 104 22" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg>
+  <div id="label" aria-hidden="true">&nbsp;</div>
+</div>
+<script>
+  const plans = { hard:['Train hard','--hard','--hard-f'], recover:['Recover','--recover','--recover-f'], light:['Train light','--light','--light-f'], deep:['Deep-work day','--deep','--deep-f'] };
+  const words = ['Hard training','Easy training','Rest or recover','Focus or work','Warning or bad','Not sure'];
+  const tally = {}; let shown = null;
+  const $ = (s) => document.querySelector(s);
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v);
+  document.querySelectorAll('#pick button').forEach((b) => b.onclick = () => run(b.dataset.plan));
+  function run(key) {
+    shown = key; const [name, c, f] = plans[key]; const st = $('#stage');
+    st.style.display = 'flex'; st.style.background = css(f); st.style.color = css(c); $('#label').textContent = '';
+    let left = 5; $('#timer').textContent = left;
+    const t = setInterval(() => { left--; $('#timer').textContent = left; if (left <= 0) { clearInterval(t); st.style.display = 'none'; $('#ask').classList.remove('hide'); } }, 1000);
+  }
+  $('#answers').innerHTML = words.map((w) => `<button>${w}</button>`).join('');
+  document.querySelectorAll('#answers button').forEach((b) => b.onclick = () => {
+    if (!shown) return; const k = plans[shown][0] + '|' + b.textContent; tally[k] = (tally[k] || 0) + 1; shown = null; $('#ask').classList.add('hide');
+    $('#tally tbody').innerHTML = Object.entries(tally).map(([k, n]) => { const [a, s] = k.split('|'); return `<tr><td>${a}</td><td>${s}</td><td>${n}</td></tr>`; }).join('');
+  });
+</script>
+</body>
+</html>

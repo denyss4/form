@@ -112,3 +112,9 @@ An alternative I can make if you want it: a GIF of the production web build foll
 ## Credits
 
 `docs/demo/pmdata-credit-slide.html` is a one-slide credit page (16:9). The citation was taken from search results, not from the dataset page (its certificate would not load here), so **check it against https://datasets.simula.no/pmdata/ before you show it**.
+
+## Helper pages (open in any browser)
+
+- `colour-test.html`: the 5-second colour test. Shows a plan's field for 5 seconds with no label, then asks what kind of day it is and tallies the answers.
+- `rehearsal-timer.html`: a stopwatch for the rehearsals. Press Start, then Next at each step, and it shows the total against 3:00.
+- VoiceOver is checked on the phone and has no helper page. See the steps in the chat of 1 Oct, or turn it on in Settings, Accessibility, VoiceOver, and read the slider and the top of Today.

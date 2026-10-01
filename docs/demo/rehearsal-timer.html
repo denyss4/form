@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rehearsal timer</title>
+<!-- A stopwatch for the demo path in DEMO.md. Press Start, then Next at each step. It shows the time against the 3:00 target and the total.
+     The step list is the "Script" table in DEMO.md; edit STEPS if you change the script. Nothing is stored. -->
+<style>
+  :root { --canvas:#F3F6FA; --ink:#13263A; --secondary:#4A5B6C; --hairline:#C9D3DD; --over:#B83A1B; }
+  body { margin:0; background:var(--canvas); color:var(--ink); font:18px/1.5 system-ui, sans-serif; }
+  main { max-width:520px; margin:0 auto; padding:24px 20px; }
+  #clock { font-size:72px; font-weight:800; font-variant-numeric:tabular-nums; line-height:1.1; }
+  #clock.over { color:var(--over); }
+  button { font:inherit; min-height:48px; padding:0 20px; border-radius:999px; border:2px solid var(--ink); background:transparent; color:var(--ink); margin:4px 8px 4px 0; cursor:pointer; }
+  button.primary { background:var(--ink); color:var(--canvas); }
+  ol { padding-left:22px; } li { padding:6px 0; border-bottom:1px solid var(--hairline); } li.now { font-weight:700; } li.done { color:var(--secondary); }
+  .t { float:right; font-variant-numeric:tabular-nums; }
+  p { color:var(--secondary); }
+</style>
+</head>
+<body>
+<main>
+  <div id="clock">0:00</div>
+  <p>Target: under 3:00. <span id="state">Press Start.</span></p>
+  <button class="primary" id="go">Start</button><button id="next" disabled>Next step</button><button id="reset">Reset</button>
+  <ol id="steps"></ol>
+  <p id="result"></p>
+</main>
+<script>
+  const STEPS = ['Today, Mon 5: score, range, drivers','Rate and accept the plan','Log tonight, jump to Tue 6','Week: move Heavy legs to Wednesday','Tue evening log, jump to Wed 7','Wed 7: Train hard','Progress (optional)','Credit slide'];
+  const $ = (s) => document.querySelector(s); const fmt = (ms) => { const s = Math.floor(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  let t0 = 0, i = -1, marks = [], timer = null;
+  const draw = () => { $('#steps').innerHTML = STEPS.map((s, k) => `<li class="${k === i ? 'now' : k < i ? 'done' : ''}">${s}<span class="t">${marks[k] !== undefined ? fmt(marks[k]) : ''}</span></li>`).join(''); };
+  const tick = () => { const ms = Date.now() - t0; $('#clock').textContent = fmt(ms); $('#clock').classList.toggle('over', ms > 180000); };
+  $('#go').onclick = () => { clearInterval(timer); t0 = Date.now(); i = 0; marks = []; $('#next').disabled = false; $('#state').textContent = 'Running.'; $('#result').textContent = ''; draw(); timer = setInterval(tick, 200); };
+  $('#next').onclick = () => { marks[i] = Date.now() - t0; i++; if (i >= STEPS.length) { clearInterval(timer); tick(); $('#next').disabled = true; const ms = marks[marks.length - 1]; $('#result').textContent = 'Total ' + fmt(ms) + (ms <= 180000 ? ': under 3:00.' : ': over 3:00. Cut Progress first.'); $('#state').textContent = 'Done.'; i = STEPS.length; } draw(); };
+  $('#reset').onclick = () => { clearInterval(timer); i = -1; marks = []; $('#clock').textContent = '0:00'; $('#clock').classList.remove('over'); $('#next').disabled = true; $('#state').textContent = 'Press Start.'; $('#result').textContent = ''; draw(); };
+  draw();
+</script>
+</body>
+</html>
