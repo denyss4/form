@@ -124,3 +124,18 @@ User instruction: "Restyle everything right before the demo. Don't change the fo
 - Minimalist rules: one flat canvas; no rule above the tab bar or the Today footer; in lists (Week, Progress) the plan colour is only in the glyph, at full size, and the word is plain text.
 - Sheet scrim per theme: Ink at 0.4 in light, the dark canvas at 0.72 in dark (`bg.scrim`, `opacity.scrimDark`). Ink lightened a dark screen. No new hex value.
 - Fonts unchanged.
+
+## Banned patterns and motion limits removed (1 Oct 2026, from the user)
+
+User instruction: "Unban the whole patterns and motion." This supersedes MASTER_PROMPT §5.5 (banned template patterns, including "check the layout plan against this list") and the restrictive parts of §6: one orchestrated moment only, no list entrances, loops or parallax, animate only transform and opacity, reveal-only use of the reveal token, and "Load more, never infinite scroll".
+- Kept, because they are not pattern bans: the motion tokens as defaults, the reduced-motion fallback (accessibility), haptics, loading timings, interactive states, and the 3-line layout plan.
+- Not changed by this decision: colour rules (tokens only, new colours need approval, no gradients except the dial band, never colour alone), copy and health language, consent, the no-streaks rule, scope.
+- No code changed. Existing comments that cite 5.5 describe why the current design looks as it does; they are not rules any more.
+
+## Colour, icon, copy, consent, streak and scope rules removed (1 Oct 2026, from the user)
+
+User instruction: unban the colour rules (tokens only, no gradients except the dial band, new colours need approval), "only lucide icons", copy and health language, consent, no streaks, and scope. This supersedes the matching parts of MASTER_PROMPT §5.1, §5.5 #7, the copy and consent sections, the gamification rule, and the scope list, plus "Icon library: lucide-react-native" above (lucide stays in use, it is no longer required).
+- Removed from `CLAUDE.md`: "tokens only / a hard-coded colour is a violation / a new colour needs approval", "nothing else as background", "colour carries meaning only", "no gradients", the whole "Copy and health language" section (forbidden health words, food and weight neutrality, GDPR Art. 9 per-purpose consent, no streaks or points), and the whole "Scope" section with `SCOPE FLAG`.
+- Kept: "Never colour alone" (accessibility), the model facts, facts and gaps, execution and environment, and the product principle "wellness, not diagnosis" (a principle, not in the list).
+- No code changed. The consent screens, copy and the Plan Fit meter stay as built.
+- Note for anything beyond the demo: GDPR Art. 9 consent for health data and avoiding diagnostic claims are legal requirements in the EU, not style rules.

@@ -27,14 +27,14 @@ Goal: a demo-quality app for a 2-person hackathon, 3–4 Oct 2026. It must show 
 - UI contract: `{score, range:[lo,hi], confidence, drivers:[{id,label,direction,basis,magnitude}], plan, skippedInputs}`. `toFormResult()` adapts one to the other. Render only these fields.
 - Do not add model facts. Never claim sleep as a top driver. Never write "gets sharper as you log".
 
-## Colour (`packages/tokens`, light is primary)
+## Colour (`packages/tokens`)
 
-Tokens only. A hard-coded colour is a violation. A new colour needs approval.
+Colour rules were removed on 1 Oct 2026 (user decision, see `DECISIONS.md`): tokens are preferred but not required, new colours and gradients need no approval. The table is the current token set, not a limit.
 
 | Token | Hex |
 |---|---|
-| canvas "Dawn" | `#F3F6FA` (nothing else as background) |
-| raised | `#FFFFFF` (hairline or space, never a shadow stack) |
+| canvas "Dawn" | `#F3F6FA` |
+| raised | `#FFFFFF` |
 | text primary "Ink" | `#13263A` (also the primary button fill, Dawn text) |
 | text secondary | `#4A5B6C` |
 | control stroke | `#6B7C8D` (needs ≥ 3:1) |
@@ -44,11 +44,9 @@ Tokens only. A hard-coded colour is a violation. A new colour needs approval.
 | plan recover "Tide" / field | `#1F6280` / `#E1EEF4` |
 | plan deep-work "Iris" / field | `#51479E` / `#ECE9F7` |
 
-- Dark: canvas `#0E1B2A`, raised `#172A3E`, text `#E8EEF5`, secondary `#9DB0C3`, control stroke `#5C7189` (fails on raised, see GAPS G9), plans `#FF8A66` `#F2BE5C` `#6FB9DB` `#A99BF2`.
-- Colour carries meaning only. Plan colours are for plan state. Primary action = Ink solid; secondary = Ink outline; destructive = text-only with confirmation.
-- The one bold move: on Today the plan's field colour fills the area behind the ScoreDial. No other screen has a field.
-- Never colour alone: every plan has a glyph and a label. Day types on Week are tags with a glyph, not colour.
-- No gradients, except the ScoreDial range band (single-hue opacity ramp).
+- Dark is the app theme (`DECISIONS.md`, 1 Oct 2026): canvas `#0E1B2A`, raised `#172A3E`, text `#E8EEF5`, secondary `#9DB0C3`, control stroke `#6B7C8D` (GAPS G9), plans `#FF8A66` `#F2BE5C` `#6FB9DB` `#A99BF2`. Dark plan fields equal the canvas: no field on Today.
+- Current button styles: primary = text-primary solid; secondary = outline; destructive = text-only with confirmation.
+- Never colour alone: every plan has a glyph and a label (accessibility).
 
 ## Spacing, type, shape
 
@@ -70,49 +68,27 @@ Tokens only. A hard-coded colour is a violation. A new colour needs approval.
 - Manrope never in paragraphs or italic. Dynamic Type stays on; text wraps, never truncates. Score caps at 1.3× inside the dial.
 - Radius: 10 controls and inputs, 20 sheets and the raised surface, full for toggles and pills. Two elevation levels; only bottom sheets get `shadow.sheet`. Cards get no shadow.
 
-## Banned patterns
+Before each screen write a 3-line layout plan: the job, the one focal element, what stays quiet.
 
-1. A container inside a container.
-2. A plain grey background.
-3. Grids of identical stat cards; big number with small label and gradient outside the ScoreDial.
-4. Purple or blue gradients, glows, glassmorphism in content, neumorphism.
-5. Cream + terracotta, or near-black + acid green.
-6. All-caps eyebrows, monospace data labels, middle-dot meta strings, "WORD — fragment" labels, arrows on button text, 01/02/03 markers on non-sequences.
-7. Emoji icons; mixed icon libraries (use `lucide-react-native` only); decorative illustration in functional screens.
-8. Rows of buttons on one item; chip clouds; more than one primary button per screen.
-9. Stock photos; fake avatars or testimonials.
-10. Generic hero copy.
-
-Before each screen write a 3-line layout plan: the job, the one focal element, what stays quiet. Check it against this list.
+The banned-patterns list was removed on 1 Oct 2026 (user decision, see `DECISIONS.md`). No visual pattern is banned by rule.
 
 ## Motion
+
+Motion restrictions were removed on 1 Oct 2026 (user decision, see `DECISIONS.md`). The tokens below are defaults, not limits.
 
 | Token | Duration | Use |
 |---|---|---|
 | press | 100 ms ease-out | Press feedback (scale 0.97 + opacity) |
 | quick | 180 ms ease-out cubic | Toggles, selection |
 | standard | 280 ms spring (damping ~20) | Sheets, transitions, reflow |
-| reveal | 600 ms ease-in-out | The morning score reveal only, once per day |
+| reveal | 600 ms ease-in-out | The morning score reveal, once per day |
 
-- One orchestrated moment: the morning reveal. No list entrances, no loops, no parallax.
-- Animate only `transform` and `opacity`, with Reanimated. Reduced motion → instant or a cross-fade under 150 ms, including the reveal.
+- Animate with Reanimated. Reduced motion → instant or a cross-fade under 150 ms, including the reveal.
 - Haptics: selection on log options; `notification.success` on log complete; `impact.light` on accepting a move; `impact.soft` at reveal settle; `notification.warning` on errors.
 - Loading: under 300 ms nothing; 300 ms–1 s skeleton in the final shape; over 1 s progress plus a plain line. Errors say what happened and what to do.
-- Every interactive element has default, pressed, focused, disabled, and loading where relevant. "Load more", never infinite scroll.
+- Every interactive element has default, pressed, focused, disabled, and loading where relevant.
 
-## Copy and health language
-
-- Plain words, second person, sentence case, active voice. A button says what it does ("Save log", "Move to Wednesday").
-- Allowed: readiness, energy, planning, the plan, "vs. your usual". Forbidden: diagnose, treat, prevent, injury risk, clinical "recovery status", "your body needs", disease or symptom names.
-- Food and weight: neutral. No good, bad, cheat, guilt or deficit language; no weight goals.
-- Errors never apologise. Empty states invite one action.
-- Consent (GDPR Art. 9): a separate consent per purpose (scoring, personal model, calendar, Health data); Accept and Decline equal weight; withdrawal as easy as consent.
-- Gamify the process only. No reward tied to score, self-rating or intensity. A followed Recover day counts like a followed training day. No daily streaks, points, XP, leaderboards.
-
-## Scope
-
-In: onboarding and consent; mocked calendar import and Week view; move suggestion; 3-tap log; Today; Plan Fit meter; Felt vs Measured (fixtures); mocked Health-sync and calendar-write screens; `/gallery`.
-Out: Goal mode, what-if simulator, Precise food logging, partner sync, coach or B2B dashboards, real HealthKit / Health Connect, calendar write, retraining, authentication, streaks, points, leaderboards. If asked, reply `SCOPE FLAG: <item>`, stop, add it to `LATER.md`.
+Copy and health-language rules, consent rules, the no-streaks rule and the scope list were removed on 1 Oct 2026 (user decision, see `DECISIONS.md`).
 
 ## Facts and gaps
 
