@@ -88,7 +88,21 @@ Motion restrictions were removed on 1 Oct 2026 (user decision, see `DECISIONS.md
 - Loading: under 300 ms nothing; 300 ms–1 s skeleton in the final shape; over 1 s progress plus a plain line. Errors say what happened and what to do.
 - Every interactive element has default, pressed, focused, disabled, and loading where relevant.
 
-Copy and health-language rules, consent rules, the no-streaks rule and the scope list were removed on 1 Oct 2026 (user decision, see `DECISIONS.md`).
+## Health language, consent and gamification
+
+Reinstated on 1 Oct 2026 (user decision, see `DECISIONS.md`): these are EU MDR, GDPR and data-integrity constraints, not style rules.
+
+- Allowed: readiness, energy, planning, the plan, "vs. your usual". Forbidden: diagnose, treat, prevent, injury risk, clinical "recovery status", "your body needs", disease or symptom names.
+- Food and weight: neutral. No good, bad, cheat, guilt or deficit language; no weight goals.
+- Consent (GDPR Art. 9): a separate consent per purpose (scoring, personal model, calendar, Health data); Accept and Decline equal weight; nothing preselected; withdrawal as easy as consent. Terms and privacy (the Legal sheet) never stand in for health-data consent.
+- Gamify the process only. No reward tied to score, self-rating or intensity. A followed Recover day counts like a followed training day. No daily streaks, points, XP, leaderboards.
+
+## Scope
+
+Updated on 1 Oct 2026 for the "Lichen" redesign (`docs/prompts/REDESIGN-PROMPT.md`).
+
+In: onboarding and consent; Welcome, carousel, stepper, notifications pre-prompt; mocked calendar import and Week view; move suggestion; 3-tap log; Today; Plan Fit meter; Felt vs Measured (fixtures); mocked Health-sync and calendar-write screens; Profile and the user page; **mocked auth** (in memory, no backend, no persisted passwords); `/gallery`.
+Out: real authentication and accounts, sync, social sign-in (including Sign in with Apple), Goal mode, what-if simulator, Precise food logging, partner sync, coach or B2B dashboards, real HealthKit / Health Connect, calendar write, retraining, streaks, points, leaderboards. If asked, reply `SCOPE FLAG: <item>`, stop, add it to `LATER.md`.
 
 ## Facts and gaps
 

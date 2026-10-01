@@ -139,3 +139,16 @@ User instruction: unban the colour rules (tokens only, no gradients except the d
 - Kept: "Never colour alone" (accessibility), the model facts, facts and gaps, execution and environment, and the product principle "wellness, not diagnosis" (a principle, not in the list).
 - No code changed. The consent screens, copy and the Plan Fit meter stay as built.
 - Note for anything beyond the demo: GDPR Art. 9 consent for health data and avoiding diagnostic claims are legal requirements in the EU, not style rules.
+
+## "Lichen" redesign: Step 1 approved (1 Oct 2026, from the user)
+
+Source: `docs/prompts/REDESIGN-PROMPT.md`. Plan: Step 1 sections A–H, approved with these changes.
+- Health-language, consent and no-streaks rules are reinstated in `CLAUDE.md` (MDR, GDPR and data integrity). The scope list is updated, not deleted: mocked auth is in; real auth, sync and social sign-in stay out. This supersedes the 1 Oct removal of those rules. The banned-pattern and motion removals still stand.
+- No demo freeze. After v2 Item 2 passes on the phone, the git tag `demo-v2` marks the fallback build.
+- Radius tiers 12 (control), 16 (surface), 24 (sheet), full (pill). The Today plan glow (a radial falloff behind the dial) replaces "no field on Today in dark". The old light tokens stay for the gallery only, unmaintained.
+- Phases: v2-1, v2-2, `demo-v2` tag, section E rerun against the white-space guideline's 2.4 checklist, D0a (tokens, radius, glass tab bar, Today glow, dial fix, dividers), D0b (Day 1, R3 Week strip with inline detail), D1 Welcome and onboarding, D2 Profile and mocked auth, D3 component upgrades, D4 critique and demo. A phone check after each.
+- Wireframes and fixtures: "Marta", initial "M", no invented surname; `marta@example.com` is a fixture value; no middle-dot meta strings.
+- Liquid metal (Welcome "Create account" only): a sage fill with a one-time metallic sheen that settles. No chrome look, no second accent.
+- Dependencies: expo-blur, expo-image-picker and expo-notifications approved; expo-linear-gradient skipped (react-native-svg draws the gradients); Skia rejected. The notifications pre-prompt stays mocked whenever the demo clock is on; the real OS prompt appears only in normal builds.
+- Q1: Marigold #faab3f and Butter #eada78 are shown at D0a. If rejected, Data Muted changes and is re-tested, not the plan colours. Q2 guest mode: yes. Q3 inline Week detail now; the morph modal in D3 behind its own check. Q4: header profile button, no fourth tab. Q5: Welcome A, "Dawn over the week". Q7: profile training and work fields are stored, with a GAP for the engine; a display-name map for sessions.
+- Rejected components: rainbow button (decoration with no job, and a second accent), radar chart (angle and area are read inaccurately, and no data fits it), checkbox todo list (no real use).

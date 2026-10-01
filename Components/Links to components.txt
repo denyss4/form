@@ -1,12 +1,15 @@
-https://21st.dev/@ruixen.ui/components/progressive-flux-loader
+https://21st.dev/@johuniq/components/liquid-metal-button
+https://21st.dev/@radiumcoders/components/highlight-button
 https://21st.dev/@jahed/components/spotlight-card
-https://21st.dev/@dillionverma/components/rainbow-button
-https://21st.dev/@johuniq/components/liquid-metal-button
-https://21st.dev/@johuniq/components/liquid-metal-button
-https://21st.dev/@elements-/components/upstash-ratelimit
-https://21st.dev/@kristen17/components/course-design-cards
-https://21st.dev/ - that the whole library of detail components
-https://detail.design/detail/smarter-word-break
-https://detail.design/detail/2-in-1-log-in-field
-https://detail.design/detail/time-based-cta
-https://detail.design/ - that the whole library of detail components
+https://21st.dev/@ravikatiyar162/components/card-10
+https://21st.dev/@ruixen.ui/components/progressive-flux-loader
+https://21st.dev/@LegionWebDev/components/bar-chart
+https://21st.dev/@cnippet-dev/components/v-checkbox-6
+https://21st.dev/@starc007/components/center-morph-modal
+https://21st.dev/@ruixen.ui/components/dropdown-range-date-picker
+https://21st.dev/@dhileepkumargm/components/premium-auth
+https://21st.dev/@cnippet-dev/components/v-label-12
+https://21st.dev/@shadcnspace/components/textarea-08
+https://21st.dev/@corr/components/stepper
+https://21st.dev/@ghcpuman902/components/snappy-slider
+https://21st.dev/@minhxthanh/components/slide-tabs
