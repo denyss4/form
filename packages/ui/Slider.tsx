@@ -1,6 +1,7 @@
 // Layout plan. Job: one 0-10 rating in one gesture. Focal element: the thumb. Quiet: the step marks and the end labels.
 // Built on React Native's responder events (no slider library is approved). A tap sets the value; a drag changes it.
-// Nothing is preselected: until it is touched the thumb is an outline and the value reads "Not rated". A selection haptic on each step.
+// Nothing is preselected: until it is touched there is no thumb, only the dots, and the value reads "Not rated" (to VoiceOver as well).
+// Tapping a dot sets that value and the thumb appears there. A selection haptic on each step.
 // Screen readers get the adjustable role with increment and decrement.
 import { StyleSheet, View, type GestureResponderEvent } from 'react-native';
 import { useState } from 'react';
@@ -87,6 +88,7 @@ export function Slider({
         aria-valuemax={max}
         aria-valuenow={value ?? undefined}
         aria-valuetext={valueText}
+        accessibilityValue={{ text: valueText }}
         accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
         onAccessibilityAction={(e) => {
           const from = value ?? min - 1;
@@ -116,16 +118,14 @@ export function Slider({
               ]}
             />
           ))}
-          <View
-            style={[
-              styles.thumb,
-              {
-                left: value === null ? 0 : at(value),
-                backgroundColor: value === null ? color.bg.canvas : color.text.primary,
-                borderColor: color.text.primary,
-              },
-            ]}
-          />
+          {value === null ? null : (
+            <View
+              style={[
+                styles.thumb,
+                { left: at(value), backgroundColor: color.text.primary, borderColor: color.text.primary },
+              ]}
+            />
+          )}
         </View>
       </View>
 

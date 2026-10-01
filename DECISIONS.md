@@ -85,6 +85,18 @@ Dated 2026-09-30. Source: approval of the Step 1 plan, which accepted every reco
 - **Production mode hides the gallery link** in Settings (`__DEV__`). "Reset demo" and "Demo: jump to tomorrow morning" stay: the path needs them.
 - **A credit slide** for PMData (`docs/demo/pmdata-credit-slide.html`). GAPS G43.
 
+## Decided by the user before recording (1 Oct 2026)
+
+1. **Consent: no pre-selected answers.** Allow and Not now look identical until tapped, and Continue enables once every purpose is answered. Already true in the app (checked: all 8 options start unchecked with one style, Continue starts disabled). Nothing needed changing there. I also made the calendar connect screen's Allow and Skip equal weight: it had a solid Allow beside a text link, the same miss as the Health preview in P4.
+2. **Week: the suggestion previews its result and sits inline.** It now reads "Wednesday becomes Train hard. Thursday becomes Deep-work day." and sits directly under the Thursday row (no pinned bottom block). The preview comes from the same week the move produces, so the two cannot disagree. After accepting, both rows update.
+3. **Progress: solid segments, not a dashed ring.** One segment per answered day, up to a week: filled = the plan fit, outlined = it did not. A short legend says so. **Dashes mean "Estimated" only.**
+4. **Evening log:** the three-way "Did today's plan fit?" is a 2 + 1 layout, and every option now reserves room for its checkmark, so no label can run under it. The header ring is thicker (4 px against 2) and each arc fades from the grey track to the answered colour as its question is answered.
+5. **Check-in slider:** no thumb until the first tap. The dots are the targets; tapping one sets the value and the thumb appears there. Screen readers read "Not rated" until then.
+6. **Today after "Accept plan":** "Plan accepted." and no primary button. "Log tonight" is the primary only from 17:00 (GAPS G46); before that it is a text-only action beside it.
+7. **Copy:** "One tap to sharpen tomorrow." (replaces "2 taps to sharpen tomorrow").
+8. **Onboarding dial** shows a filled example day, labelled "Example", instead of the empty arc. The numbers are the demo's first morning from the fixtures (51, likely 34–68). It is read to screen readers as "Example: Form score 51. Likely 34 to 68."
+9. **GAPS G45** records that the rating sits below the score and is anchored by it.
+
 ## Still open
 
 - Demo phones (decision 7).

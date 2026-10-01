@@ -3,7 +3,8 @@
 //
 // From the Open_10 reference: thin line circles laid out as a flower glide together while everything eases in and out.
 // Here six rings and a centre ring, each half the dial's radius, slide to the centre and grow to exactly the dial's track radius,
-// so they merge into one ring. That ring then fades into the dial's empty state, which is the truth on day 1: no score yet.
+// so they merge into one ring. That ring then fades into the dial showing a sample day, labelled "Example" so it is never taken for the
+// person's own score. The sample comes from the fixtures (real model output), passed in by the screen.
 // Transform and opacity only. This is a second orchestrated moment beyond the Master's one (§6), added at the user's direction (GAPS G25).
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -18,9 +19,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
 
-import { motion, size } from '@tokens';
+import { motion, size, space } from '@tokens';
 
 import { dialGeometry, ScoreDial } from './ScoreDial';
+import { Text } from './Text';
 import { useTheme } from './theme';
 
 const OUTER = 6;
@@ -60,8 +62,19 @@ function Ring({
   );
 }
 
-/** `progress` (0 to 1) holds the animation at a frame, for review. */
-export function IntroMark({ progress: held }: { progress?: number }) {
+/** `progress` (0 to 1) holds the animation at a frame, for review. `sample` is the day the dial ends on; `caption` is the word under it. */
+export function IntroMark({
+  progress: held,
+  sample,
+  caption,
+  description,
+}: {
+  progress?: number;
+  sample?: { score: number; range: [number, number] };
+  caption?: string;
+  /** Spoken description of the sample. Without it the mark is decorative and hidden from screen readers. */
+  description?: string;
+}) {
   const { color } = useTheme();
   const reduceMotion = useReducedMotion();
   const { g, valueRadius, height } = dialGeometry('app');
@@ -87,10 +100,12 @@ export function IntroMark({ progress: held }: { progress?: number }) {
 
   return (
     <View
-      accessibilityElementsHidden
-      importantForAccessibility="no-hide-descendants"
-      style={{ width: g.diameter, height }}
+      {...(description
+        ? { accessible: true, accessibilityLabel: description }
+        : { accessibilityElementsHidden: true, importantForAccessibility: 'no-hide-descendants' as const })}
+      style={styles.column}
     >
+      <View style={{ width: g.diameter, height }}>
       <Ring progress={p} dx={0} dy={0} radius={start} grow={grow} diameter={g.diameter} stroke={color.text.primary} />
       {Array.from({ length: OUTER }, (_, i) => {
         const angle = (i * 2 * Math.PI) / OUTER;
@@ -108,12 +123,21 @@ export function IntroMark({ progress: held }: { progress?: number }) {
         );
       })}
       <Animated.View style={[styles.layer, dial]}>
-        <ScoreDial score={null} />
+        <ScoreDial score={sample?.score ?? null} range={sample?.range} />
       </Animated.View>
+      </View>
+      {caption ? (
+        <Animated.View style={dial}>
+          <Text variant="caption" tone="secondary">
+            {caption}
+          </Text>
+        </Animated.View>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  column: { alignItems: 'center', gap: space.xs },
   layer: { position: 'absolute', top: 0, left: 0 },
 });

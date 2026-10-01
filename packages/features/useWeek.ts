@@ -29,14 +29,21 @@ export function useWeek(subset: CalendarSubset = 'all') {
     [moved, suggestion, events, weekStart, original],
   );
   // A day the model has forecast takes its plan from the score, exactly as Today does.
-  const week = useMemo(
-    () =>
-      withScores(
-        built,
-        (date) => app.forecasts[date]?.result.score ?? martaWeek.days.find((d) => d.forecastFor === date)?.result.score,
-      ),
-    [built, app.forecasts],
+  const scoreOf = useMemo(
+    () => (date: string) =>
+      app.forecasts[date]?.result.score ?? martaWeek.days.find((d) => d.forecastFor === date)?.result.score,
+    [app.forecasts],
   );
+  const week = useMemo(() => withScores(built, scoreOf), [built, scoreOf]);
 
-  return { weekStart, events, original, week, suggestion, moved };
+  // What the two days would become if the move is accepted: the same week the move produces, so the preview cannot disagree with it.
+  const preview = useMemo(() => {
+    if (!suggestion) return null;
+    const after = withScores(buildWeek(applyMove(events, suggestion), weekStart), scoreOf);
+    const to = after.find((d) => d.date === suggestion.toDate)?.plan;
+    const from = after.find((d) => d.date === suggestion.fromDate)?.plan;
+    return to && from ? { to, from } : null;
+  }, [suggestion, events, weekStart, scoreOf]);
+
+  return { weekStart, events, original, week, suggestion, moved, preview };
 }

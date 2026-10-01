@@ -230,3 +230,20 @@ Today, Week and Progress now look like one product on a real phone: the plan-col
 - The demo path ran end to end, by script, on the production web build (`--no-dev --minify`, 375 × 812): path A (ratings 7 and 7) ended on Train light, 59; path B (7 and 9) ended on Train hard, 65. Path B is the locked one. No person has rehearsed it (GAPS G44).
 - The production iOS bundle builds (6.2 MB, `__DEV__` false). The gallery link is absent in production.
 - Not checked: the Today plan title and estimated glyph on the phone; VoiceOver order (GAPS G41); the dashed glyph's legibility at 24 px.
+
+## Pre-recording fixes (1 Oct 2026, from the user)
+
+Screenshots: `docs/screens/p7/`, production mode (`npm run demo`, `--no-dev --minify`), web at 375 × 812. Not on the phone.
+
+| # | Fix | Check |
+|---|---|---|
+| 1 | Consent: no pre-selection, equal weight until tapped, Continue after all four | Already true. 8 of 8 options unchecked, one style, Continue disabled. Calendar connect: Allow and Skip now equal weight |
+| 2 | Week: preview and inline suggestion | Reads "Wednesday becomes Train hard. Thursday becomes Deep-work day." under Thursday. After Move, Wednesday is Train hard and Thursday a Deep-work day |
+| 3 | Progress: solid segments | 6 segments, 5 filled and 1 outlined, none dashed, plus a legend |
+| 4 | Evening log: 2 + 1 layout, ring | Check icon 210–230 px, label 243–303 px, no overlap. Ring arcs go 0, 1, 2, 3 of 3 filled with the answers |
+| 5 | Slider: no thumb until the first tap | No thumb when unrated, "Not rated"; a real click on the fourth dot sets "3 of 10" and shows the thumb |
+| 6 | Accept plan: no primary after | "Plan accepted." and a text-only "Log tonight" (primary with `?evening=1`) |
+| 7 | Copy | "One tap to sharpen tomorrow." |
+| 8 | Onboarding example dial | 51, likely 34–68, "Example" |
+
+Not verified: all of it on the phone; VoiceOver for the slider and the example dial; the ring's fade and the move animation at speed.

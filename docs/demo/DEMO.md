@@ -16,9 +16,9 @@ Inputs are fixed so the numbers repeat. The clock is the demo clock: Monday 5 Oc
 
 | Day | What you do | What the screen shows |
 |---|---|---|
-| Mon 5, morning | Open Today. The reveal plays. Set the morning rating to **7**. Tap **Accept plan**. | **Train light**, 51, Likely 34–68, Based on 11 of 11 inputs. "Your score is near a typical day, so your Push session is kept light." Drivers: Recent readiness +6, Training load −4, Alcohol −2. The line "2 taps to sharpen tomorrow" disappears once you rate. |
-| Mon 5, evening | **Log tonight**: Moderate, alcohol No, unusual No, plan fit Yes. **Save log**. Tap **Demo: jump to tomorrow morning**. | "Logged. Tomorrow's plan arrives in the morning." |
-| Tue 6, morning | Open **Week**. Read "Thursday dinner, Friday flight. Wednesday has no session. Move Heavy legs there?" Tap **Move to Wednesday**. Back on Today, set the rating to **9**. Accept. | **Train light**, 58, Likely 41–75, Based on 2 of 11 inputs ("Few inputs today"). Recent readiness +10, Training load −4. On Week: Wednesday is now Train hard (Heavy legs), Thursday is a Deep-work day. |
+| Mon 5, morning | Open Today. The reveal plays. Set the morning rating to **7**. Tap **Accept plan**. | **Train light**, 51, Likely 34–68, Based on 11 of 11 inputs. "Your score is near a typical day, so your Push session is kept light." Drivers: Recent readiness +6, Training load −4, Alcohol −2. The line "One tap to sharpen tomorrow." disappears once you rate. After Accept plan the footer reads "Plan accepted." with no primary button. |
+| Mon 5, evening | **Log tonight** (a text link beside "Plan accepted." before 17:00, the primary button after; open Today with `?evening=1` to show the primary at any hour): Moderate, alcohol No, unusual No, plan fit Yes. **Save log**. Tap **Demo: jump to tomorrow morning**. | "Logged. Tomorrow's plan arrives in the morning." |
+| Tue 6, morning | Open **Week**. The suggestion sits under the Thursday row: "Thursday dinner, Friday flight. Wednesday has no session. Move Heavy legs there? Wednesday becomes Train hard. Thursday becomes Deep-work day." Tap **Move to Wednesday**; both rows update. Back on Today, set the rating to **9**. Accept. | **Train light**, 58, Likely 41–75, Based on 2 of 11 inputs ("Few inputs today"). Recent readiness +10, Training load −4. On Week: Wednesday is now Train hard (Heavy legs), Thursday is a Deep-work day. |
 | Tue 6, evening | **Log tonight**: Moderate, No, No, Yes. Save. Tap **Demo: jump to tomorrow morning**. | |
 | Wed 7, morning | Read the screen. | **Train hard** (Ember field), 65, Likely 48–82, Based on 2 of 11 inputs. "Your score is high, so your Heavy legs session stays hard." Recent readiness +17, Training load −3. |
 
@@ -28,7 +28,7 @@ Path A (ratings 7 and 7) ends on Wed 7 at **Train light**, 59, Likely 42–76. A
 
 ### Why "Based on 2 of 11 inputs" on days 2 and 3
 
-Day 1 is seeded from Marta's scripted week, which has all 11 inputs. From day 2 the forecast uses only what the three-tap log and the rating supply. The screen says so. The sentence "2 taps to sharpen tomorrow" is literal: on Tue the rating gave 2 of 11 inputs; in a run where the morning rating was skipped, Wed had 1 of 11.
+Day 1 is seeded from Marta's scripted week, which has all 11 inputs. From day 2 the forecast uses only what the three-tap log and the rating supply. The screen says so. The sentence "One tap to sharpen tomorrow." is literal: on Tue the rating gave 2 of 11 inputs; in a run where the morning rating was skipped, Wed had 1 of 11.
 
 ## Script, about 2:50 (draft for rehearsal)
 

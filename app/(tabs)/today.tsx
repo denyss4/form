@@ -48,13 +48,16 @@ import {
 } from '@ui';
 
 const FEW_INPUTS = 3; // this many inputs used, or fewer, is a thin picture
+const EVENING_HOUR = 17; // from this hour on the phone's clock, "Log tonight" is the primary action [GAP G46: a proposal]
 
 export default function Today() {
   const { color } = useTheme();
   const router = useRouter();
   const app = useAppState();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ state?: string; reveal?: string; log?: string; motion?: string }>();
+  const params = useLocalSearchParams<{ state?: string; reveal?: string; log?: string; motion?: string; evening?: string }>();
+  // Review and demo: ?evening=1 or ?evening=0 overrides the phone's clock.
+  const evening = params.evening === '1' ? true : params.evening === '0' ? false : new Date().getHours() >= EVENING_HOUR;
   // Review only: ?motion=full plays the reveal even when the device asks for reduced motion.
   const reduceMotion = useReducedMotion() && params.motion !== 'full';
 
@@ -310,7 +313,11 @@ export default function Today() {
     ) : accepted ? (
       <>
         <Text variant="body">{copy.today.accepted}</Text>
-        <Button label={copy.today.logTonight} fullWidth onPress={() => setLogOpen(true)} />
+        {evening ? (
+          <Button label={copy.today.logTonight} fullWidth onPress={() => setLogOpen(true)} />
+        ) : (
+          <Button variant="text" label={copy.today.logTonight} onPress={() => setLogOpen(true)} />
+        )}
       </>
     ) : (
       <Button

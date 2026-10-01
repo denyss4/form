@@ -67,7 +67,7 @@ const base = {
       retry: 'Try again',
     },
     checkin: {
-      nudge: '2 taps to sharpen tomorrow',
+      nudge: 'One tap to sharpen tomorrow.',
       title: 'How do you feel this morning?',
       hint: "Your rating helps Form check its forecast.",
       low: 'Very low',
@@ -114,6 +114,8 @@ const base = {
       'See where your hard sessions fit the week.',
     ],
     start: 'Get started',
+    example: 'Example',
+    exampleA11y: (score: number, lo: number, hi: number) => `Example: Form score ${score}. Likely ${lo} to ${hi}.`,
     notice: "Form is for planning. It doesn't diagnose or treat anything.",
   },
 
@@ -198,6 +200,7 @@ const base = {
     keep: (day: string) => `Keep ${day}`,
     moved: (session: string, day: string) => `Moved ${session} to ${day}.`,
     kept: (session: string, day: string) => `Kept ${session} on ${day}.`,
+    preview: (toDay: string, toPlan: string, fromDay: string, fromPlan: string) => `${toDay} becomes ${toPlan}. ${fromDay} becomes ${fromPlan}.`,
   },
 
   settings: {
@@ -222,6 +225,7 @@ const base = {
       title: 'Plan fit',
       headline: (fit: number, answered: number) => `The plan fit on ${fit} of ${answered} ${answered === 1 ? 'day' : 'days'}.`,
       source: 'From your own answers to "Did the plan fit?".',
+      legend: 'Filled: the plan fit. Outlined: it was too hard or too easy.',
       tooFew: (n: number) => (n === 1 ? 'One day so far. Too few to read much.' : `${n} days so far. Too few to read much.`),
       status: { yes: 'Fit', tooHard: 'Too hard', tooEasy: 'Too easy', none: 'No answer' },
       ring: (fit: number, answered: number) => `Plan fit: ${fit} of ${answered} ${answered === 1 ? 'day' : 'days'}`,

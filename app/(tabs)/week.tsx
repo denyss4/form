@@ -1,10 +1,11 @@
 // Layout plan. Job: fit hard sessions into this week. Focal element: the column of plan labels, the week's rhythm.
-// Quiet: the day-type tags. The one action is the suggestion at the bottom, in the thumb zone: one primary plus a text-only action.
+// Quiet: the day-type tags. The one action is the suggestion, inline under the day it moves from, with what the two days become:
+// one primary plus a text-only action.
 // Day types are tags, not plan state, so they carry no colour (5.1). Rows are separated by space and hairlines, never boxed (5.5 #1).
 // States: default, loading, no calendar, partial, low confidence, error. `?state=` holds one for review.
 // Accepting moves the session marker to its new day with translateY (transform only), then the week reflows (MASTER_PROMPT §6).
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import Animated, {
   runOnJS,
@@ -117,7 +118,7 @@ export default function Week() {
   const scenario = oneOf(params.state, scenarios, app.calendar === 'connected' ? 'default' : 'empty');
 
   const subset = scenario === 'partial' || scenario === 'lowconf' ? scenario : scenario === 'default' ? 'all' : 'none';
-  const { weekStart, original, week, suggestion } = useWeek(subset);
+  const { weekStart, original, week, suggestion, preview } = useWeek(subset);
   const cov = coverage(week);
 
   // The session marker: measured once at rest, then moved with translateY.
@@ -128,20 +129,21 @@ export default function Week() {
     showTheMove();
   };
 
-  // When the week opens with a suggestion, scroll so both days it names sit above the footer. The footer covers the lower third,
-  // and the session's travel between the two rows has to be visible when it plays (found on the iPhone: Thursday was hidden).
+  // When the week opens with a suggestion, scroll so both days it names and the suggestion under them are on screen, and the session's
+  // travel between the two rows is visible when it plays.
   const list = useRef<ScrollView>(null);
   const listTop = useRef<number | null>(null);
+  const block = useRef<{ y: number; h: number } | null>(null);
   const shown = useRef(false);
   const viewHeight = useRef(0);
   const showTheMove = () => {
     if (shown.current || !suggestion || app.suggestion !== 'open' || listTop.current === null || viewHeight.current === 0) return;
     const to = layouts.current[suggestion.toDate];
     const from = layouts.current[suggestion.fromDate];
-    if (!to?.h || !from?.h) return;
+    if (!to?.h || !from?.h || !block.current) return;
     shown.current = true;
-    // The least scroll that puts both rows fully above the footer, so the header stays in view as long as it can.
-    const lowest = Math.max(to.y + to.h, from.y + from.h);
+    // The least scroll that puts the suggestion's last line in view, so the header stays in view as long as it can.
+    const lowest = Math.max(to.y + to.h, from.y + from.h, block.current.y + block.current.h);
     const least = listTop.current + lowest - viewHeight.current + space.sm;
     const tops = Object.values(layouts.current).map((slot) => listTop.current! + slot.y).sort((a, b) => a - b);
     const snapped = tops.find((top) => top >= least) ?? least; // the next row top, so no row or title is half cut
@@ -185,6 +187,49 @@ export default function Week() {
       right={<IconButton icon={Settings} label={copy.nav.settings} onPress={() => router.push('/settings')} />}
     />
   );
+
+  const reasons = suggestion
+    ? suggestion.reasons.map((r) => `${weekdayName(r.date)} ${r.what}`).join(', ')
+    : '';
+
+  const suggestionBody =
+    suggestion === null ? null : app.suggestion === 'open' ? (
+      <>
+        <Text variant="bodyStrong">{copy.suggestion.reasons(reasons)}</Text>
+        <Text variant="body">{copy.suggestion.ask(suggestion.session, weekdayName(suggestion.toDate))}</Text>
+        {preview ? (
+          <Text variant="body">
+            {copy.suggestion.preview(
+              weekdayName(suggestion.toDate),
+              copy.plan[preview.to],
+              weekdayName(suggestion.fromDate),
+              copy.plan[preview.from],
+            )}
+          </Text>
+        ) : null}
+        <Button
+          label={copy.suggestion.move(weekdayName(suggestion.toDate))}
+          fullWidth
+          disabled={moving}
+          onPress={accept}
+        />
+        <Button
+          variant="text"
+          label={copy.suggestion.keep(weekdayName(suggestion.fromDate))}
+          disabled={moving}
+          onPress={() => {
+            app.setSuggestion('kept');
+            announce(copy.suggestion.kept(suggestion.session, weekdayName(suggestion.fromDate)));
+          }}
+        />
+      </>
+    ) : (
+      <Text variant="body">
+        {app.suggestion === 'moved'
+          ? copy.suggestion.moved(suggestion.session, weekdayName(suggestion.toDate))
+          : copy.suggestion.kept(suggestion.session, weekdayName(suggestion.fromDate))}
+      </Text>
+    );
 
   let body;
   if (scenario === 'loading') {
@@ -233,16 +278,35 @@ export default function Week() {
             showTheMove();
           }}
         >
-          {week.map((day, i) => (
-            <Row
-              key={day.date}
-              day={day}
-              divider={i < week.length - 1}
-              hideSlot={hidden.includes(day.date)}
-              onRow={(e) => record(day.date, { y: e.nativeEvent.layout.y, h: e.nativeEvent.layout.height })}
-              onSlot={(e) => record(day.date, { slot: e.nativeEvent.layout.y })}
-            />
-          ))}
+          {week.map((day, i) => {
+            const inline = suggestion !== null && day.date === suggestion.fromDate;
+            return (
+              <Fragment key={day.date}>
+                <Row
+                  day={day}
+                  divider={i < week.length - 1 && !inline}
+                  hideSlot={hidden.includes(day.date)}
+                  onRow={(e) => record(day.date, { y: e.nativeEvent.layout.y, h: e.nativeEvent.layout.height })}
+                  onSlot={(e) => record(day.date, { slot: e.nativeEvent.layout.y })}
+                />
+                {inline ? (
+                  <View
+                    aria-live="polite"
+                    onLayout={(e) => {
+                      block.current = { y: e.nativeEvent.layout.y, h: e.nativeEvent.layout.height };
+                      showTheMove();
+                    }}
+                    style={[
+                      styles.inline,
+                      i < week.length - 1 ? { borderBottomWidth: size.hairline, borderBottomColor: color.stroke.hairline } : undefined,
+                    ]}
+                  >
+                    {suggestionBody}
+                  </View>
+                ) : null}
+              </Fragment>
+            );
+          })}
           {moving && suggestion ? (
             <Animated.View pointerEvents="none" style={[styles.marker, { top: startY }, markerStyle]}>
               <Text variant="body">{copy.week.session(suggestion.session, markerTime ?? '')}</Text>
@@ -252,46 +316,6 @@ export default function Week() {
       </>
     );
   }
-
-  const reasons = suggestion
-    ? suggestion.reasons.map((r) => `${weekdayName(r.date)} ${r.what}`).join(', ')
-    : '';
-
-  const footer =
-    suggestion === null ? null : (
-      <View
-        aria-live="polite"
-        style={[styles.footer, { borderTopWidth: size.hairline, borderTopColor: color.stroke.hairline }]}
-      >
-        {app.suggestion === 'open' ? (
-          <>
-            <Text variant="bodyStrong">{copy.suggestion.reasons(reasons)}</Text>
-            <Text variant="body">{copy.suggestion.ask(suggestion.session, weekdayName(suggestion.toDate))}</Text>
-            <Button
-              label={copy.suggestion.move(weekdayName(suggestion.toDate))}
-              fullWidth
-              disabled={moving}
-              onPress={accept}
-            />
-            <Button
-              variant="text"
-              label={copy.suggestion.keep(weekdayName(suggestion.fromDate))}
-              disabled={moving}
-              onPress={() => {
-                app.setSuggestion('kept');
-                announce(copy.suggestion.kept(suggestion.session, weekdayName(suggestion.fromDate)));
-              }}
-            />
-          </>
-        ) : (
-          <Text variant="body">
-            {app.suggestion === 'moved'
-              ? copy.suggestion.moved(suggestion.session, weekdayName(suggestion.toDate))
-              : copy.suggestion.kept(suggestion.session, weekdayName(suggestion.fromDate))}
-          </Text>
-        )}
-      </View>
-    );
 
   return (
     <SafeAreaView edges={['top']} style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
@@ -306,7 +330,6 @@ export default function Week() {
         {header}
         {body}
       </ScrollView>
-      {footer}
     </SafeAreaView>
   );
 }
@@ -320,10 +343,6 @@ const styles = StyleSheet.create({
   hidden: { opacity: 0 },
   marker: { position: 'absolute', left: 0, right: 0 },
   state: { marginTop: space.lg, gap: space.sm, alignItems: 'flex-start' },
-  footer: {
-    paddingHorizontal: space.margin,
-    paddingTop: space.md,
-    paddingBottom: space.md,
-    gap: space.xs,
-  },
+  // The suggestion belongs to the day above it: space and a hairline, no card (5.5 #1).
+  inline: { paddingTop: space.xs, paddingBottom: space.md, gap: space.xs },
 });

@@ -74,7 +74,7 @@ function Option({
         <Animated.View pointerEvents="none" style={[styles.check, shown]}>
           <Check color={color.bg.canvas} size={size.iconSm} strokeWidth={size.outline} />
         </Animated.View>
-        <View>
+        <View style={styles.label}>
           <Animated.View style={hidden}>
             <Text variant="bodyStrong">{label}</Text>
           </Animated.View>
@@ -144,5 +144,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
   },
   check: { position: 'absolute', left: space.md },
+  // Room for the checkmark on both sides, so a long label wraps instead of running under it (found on the iPhone: "Too hard").
+  label: { paddingHorizontal: size.iconSm + space.xs },
   overlay: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
 });

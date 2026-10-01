@@ -87,8 +87,9 @@ export default function ConnectCalendar() {
               </Text>
             </View>
             <View style={styles.actions}>
-              <Button label={copy.calendar.allow} fullWidth onPress={allow} />
-              <Button variant="text" label={copy.calendar.skip} onPress={withoutCalendar} />
+              {/* Allow and Skip look the same: a consent must be as easy to decline as to give (MASTER_PROMPT §7, GDPR Art. 9). */}
+              <Button variant="secondary" label={copy.calendar.allow} fullWidth onPress={allow} />
+              <Button variant="secondary" label={copy.calendar.skip} fullWidth onPress={withoutCalendar} />
             </View>
           </>
         )}

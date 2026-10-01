@@ -124,6 +124,7 @@ export function EveningLog({
         </Text>
         <ChoiceGroup
           label={copy.log.fit.question}
+          columns={2}
           options={[
             { value: 'yes', label: copy.log.fit.yes },
             { value: 'tooHard', label: copy.log.fit.tooHard },

@@ -10,10 +10,11 @@ export const size = {
   ring: 32, // the log's completion ring
   ringLarge: 96, // the Plan Fit ring on Progress
   ringStroke: 8,
+  ringStrokeSm: 4, // the log's completion ring: thick enough to see it fill
   marker: 16, // forecast and felt markers on the felt-vs-forecast bar
   track: 4, // slider track thickness
   thumb: 28, // slider thumb
-  tick: 4, // slider step mark
+  tick: 8, // slider step mark: with no thumb yet, the dots are what you tap
 
   // ScoreDial: a 270-degree arc that opens at the bottom, and a thin bracket outside it for the likely range.
   // [GAP G21: dial sizes are not in the Master. These are proposals; revisit at Review 1.]

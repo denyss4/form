@@ -5,8 +5,12 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { copy } from '@copy';
+import { martaWeek } from '@fixtures';
 import { space } from '@tokens';
 import { Button, IntroMark, Text, useTheme } from '@ui';
+
+// The example day is real model output from the fixtures (the demo's first morning), never an invented number.
+const example = martaWeek.days.find((d) => d.forecastFor === martaWeek.meta.demoToday) ?? martaWeek.days[martaWeek.days.length - 1];
 
 export default function Onboarding() {
   const { color } = useTheme();
@@ -22,7 +26,12 @@ export default function Onboarding() {
     <SafeAreaView style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.mark}>
-          <IntroMark progress={held} />
+          <IntroMark
+            progress={held}
+            sample={{ score: example.result.score, range: example.result.range }}
+            caption={copy.onboarding.example}
+            description={copy.onboarding.exampleA11y(example.result.score, example.result.range[0], example.result.range[1])}
+          />
         </View>
         <Text variant="title" accessibilityRole="header">
           {copy.onboarding.title}
