@@ -167,8 +167,9 @@ export default function Progress() {
 
           <View style={styles.group}>
             <View>
-              {shown.map((day, i) => (
-                <FitRow key={day.date} day={day} divider={i < shown.length - 1} compact={compact} />
+              {/* No dividers: the rows are grouped by spacing alone (white-space guideline 2.4, critique D4). */}
+              {shown.map((day) => (
+                <FitRow key={day.date} day={day} divider={false} compact={compact} />
               ))}
             </View>
             <Text variant="body">{copy.progress.logging(data.logged.days, data.logged.of)}</Text>

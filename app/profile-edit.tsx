@@ -205,7 +205,8 @@ export default function EditProfile() {
     <SafeAreaView style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
       <View style={styles.bar}>
         <Button variant="text" label={copy.editProfile.cancel} onPress={() => (dirty ? setAsking(true) : leave())} />
-        <Button variant="text" label={copy.editProfile.save} onPress={save} />
+        {/* Save is the screen's one action, so it is the primary (critique D4); Cancel stays a text button. */}
+        <Button label={copy.editProfile.save} onPress={save} />
       </View>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Text variant="title" accessibilityRole="header">
@@ -353,6 +354,7 @@ const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: space.margin,
     paddingTop: space.xxs,
   },

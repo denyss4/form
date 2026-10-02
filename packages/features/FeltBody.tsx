@@ -7,7 +7,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { copy } from '@copy';
-import { dayLetter, spokenDate } from '@format';
+import { dateNumber, dayLetter, spokenDate } from '@format';
 import { PairRow } from '@features/PairRow';
 import { RangeLegend } from '@features/RangeBar';
 import type { useProgress } from '@features/useProgress';
@@ -66,7 +66,7 @@ export function FeltBody({ data, retry }: { data: ReturnType<typeof useProgress>
       <View style={styles.chart}>
         <Text variant="bodyStrong">{copy.feltVsForecast.chart.title}</Text>
         <BarChart
-          bars={data.pairs.map((p) => ({ key: p.date, label: dayLetter(p.date), value: p.felt }))}
+          bars={data.pairs.map((p) => ({ key: p.date, label: `${dayLetter(p.date)}\n${dateNumber(p.date)}`, value: p.felt }))}
           max={SCALE_MAX}
           a11yLabel={copy.feltVsForecast.chart.a11y(spoken)}
         />
@@ -76,8 +76,9 @@ export function FeltBody({ data, retry }: { data: ReturnType<typeof useProgress>
       </Text>
       <RangeLegend />
       <View>
-        {data.pairs.map((pair, i) => (
-          <PairRow key={pair.date} pair={pair} divider={i < n - 1} />
+        {/* No dividers: spacing groups the rows (white-space guideline 2.4, critique D4). */}
+        {data.pairs.map((pair) => (
+          <PairRow key={pair.date} pair={pair} divider={false} />
         ))}
       </View>
       <View style={styles.notes}>

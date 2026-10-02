@@ -59,3 +59,10 @@ These need a decision because they change the design system or the demo path:
 - Real accounts and sync (G56), with server-side account deletion.
 - Snappy slider for training days, animated checkbox, spotlight on Profile sections (D3).
 - A real time picker for the usual training time and the evening reminder (no date-picker dependency is approved).
+
+## From D4 (2 Oct 2026)
+
+- Week in morph mode: if rehearsals show hesitation, show today's session line under the strip (critique D4 #7).
+- A thinner dial track, if it can stay at 3:1 or more (critique D4 #8).
+- Sign in with Apple, real accounts and sync remain out of scope (see D2).
+- Re-run `/impeccable critique` after the hackathon, against the Lichen DESIGN.md.

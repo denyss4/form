@@ -1,0 +1,121 @@
+// Colour test for the Lichen dark theme (D4). Reads the real tokens, so the numbers cannot drift from the code.
+// Run: node scripts/colour-test.mjs  (writes docs/colour-test.md)
+// 1. WCAG 2.2 contrast for every pair the app draws, against its required minimum (4.5 text, 3 large text and non-text UI).
+// 2. Glass at its worst case: the canvas tint at opacity.glassTint over pure white behind it.
+// 3. Colour-vision simulation (Machado et al. 2009, severity 1.0) of the plan colours, sage and Data Muted, with OKLab ΔE × 100 for the
+//    closest pairs. Below about 5 is hard to tell apart: those pairs must never rely on colour alone (CLAUDE.md: glyph and label).
+import { writeFileSync } from 'node:fs';
+
+const { darkColor: c, opacity } = await import('../packages/tokens/color.ts');
+
+const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+const lin = (v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+const lum = (rgb) => 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
+const ratio = (a, b) => {
+  const [x, y] = [lum(hex(a)), lum(hex(b))].sort((p, q) => q - p);
+  return (x + 0.05) / (y + 0.05);
+};
+const mix = (top, bottom, alpha) =>
+  '#' + hex(top).map((v, i) => Math.round((v * alpha + hex(bottom)[i] * (1 - alpha)) * 255).toString(16).padStart(2, '0')).join('');
+
+// Every pair the app draws: [what, foreground, background, minimum]
+const pairs = [
+  ['Text High on canvas', c.text.primary, c.bg.canvas, 4.5],
+  ['Text High on raised', c.text.primary, c.bg.raised, 4.5],
+  ['Text High on sunken (fields)', c.text.primary, c.bg.sunken, 4.5],
+  ['Text Muted on canvas', c.text.secondary, c.bg.canvas, 4.5],
+  ['Text Muted on raised', c.text.secondary, c.bg.raised, 4.5],
+  ['Text Muted on sunken (field hints)', c.text.secondary, c.bg.sunken, 4.5],
+  ['Canvas text on sage (primary button)', c.action.onPrimary, c.action.primary, 4.5],
+  ['Canvas text on pressed sage', c.action.onPrimary, c.action.pressed, 4.5],
+  ['Sage on canvas (focus ring, selection)', c.action.primary, c.bg.canvas, 3],
+  ['Control stroke on canvas (inputs, pills, dial track)', c.stroke.control, c.bg.canvas, 3],
+  ['Control stroke on raised', c.stroke.control, c.bg.raised, 3],
+  ['Control stroke on sunken (field border)', c.stroke.control, c.bg.sunken, 3],
+  ['Status Over on canvas (errors, destructive)', c.status.attention, c.bg.canvas, 4.5],
+  ['Status Over on raised', c.status.attention, c.bg.raised, 4.5],
+  ['Data Muted bars on canvas', c.chart.neutral, c.bg.canvas, 3],
+  ...Object.entries(c.plan).flatMap(([id, p]) => [
+    [`Plan ${id} on canvas`, p.base, c.bg.canvas, 4.5],
+    [`Plan ${id} on raised`, p.base, c.bg.raised, 4.5],
+  ]),
+];
+
+// Pure white behind the glass is the test's worst case, not an app colour.
+// eslint-disable-next-line no-restricted-syntax
+const glassWorst = mix(c.bg.canvas, '#ffffff', opacity.glassTint);
+const glass = [
+  ['Text High on glass (worst: white behind)', c.text.primary, glassWorst, 4.5],
+  ['Text Muted on glass (worst) - never used', c.text.secondary, glassWorst, 4.5],
+];
+
+// Machado 2009, severity 1.0, applied in linear RGB.
+const M = {
+  protanopia: [[0.152286, 1.052583, -0.204868], [0.114503, 0.786281, 0.099216], [-0.003882, -0.048116, 1.051998]],
+  deuteranopia: [[0.367322, 0.860646, -0.227968], [0.280085, 0.672501, 0.047413], [-0.01182, 0.04294, 0.968881]],
+  tritanopia: [[1.255528, -0.076749, -0.178779], [-0.078411, 0.930809, 0.147602], [0.004733, 0.691367, 0.3039]],
+};
+const simulate = (h, m) => {
+  const l = hex(h).map(lin);
+  return m.map((row) => Math.min(1, Math.max(0, row[0] * l[0] + row[1] * l[1] + row[2] * l[2])));
+};
+const oklab = ([r, g, b]) => {
+  const L = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return [
+    0.2104542553 * L + 0.793617785 * m - 0.0040720468 * s,
+    1.9779984951 * L - 2.428592205 * m + 0.4505937099 * s,
+    0.0259040371 * L + 0.7827717662 * m - 0.808675766 * s,
+  ];
+};
+const dE = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) * 100;
+const swatches = { ...Object.fromEntries(Object.entries(c.plan).map(([id, p]) => [id, p.base])), sage: c.action.primary, dataMuted: c.chart.neutral };
+const names = Object.keys(swatches);
+const vision = (m) => {
+  const lab = Object.fromEntries(names.map((n) => [n, oklab(m ? simulate(swatches[n], m) : hex(swatches[n]).map(lin))]));
+  const out = [];
+  names.forEach((a, i) => names.slice(i + 1).forEach((b) => out.push([`${a}/${b}`, dE(lab[a], lab[b])])));
+  return out.sort((x, y) => x[1] - y[1]).slice(0, 4);
+};
+
+const row = ([what, fg, bg, min]) => {
+  const r = ratio(fg, bg);
+  return `| ${what} | \`${fg}\` on \`${bg}\` | ${r.toFixed(2)}:1 | ${min}:1 | ${r >= min ? 'Pass' : '**Fail**'} |`;
+};
+const lines = [
+  '# Colour test (Lichen, dark)',
+  '',
+  `Generated by \`node scripts/colour-test.mjs\` from \`packages/tokens/color.ts\`. WCAG 2.2: 4.5:1 for text, 3:1 for large text and non-text UI.`,
+  '',
+  '## Contrast',
+  '',
+  '| Pair | Colours | Ratio | Needs | Result |',
+  '|---|---|---|---|---|',
+  ...pairs.map(row),
+  '',
+  `## Glass (canvas tint ${opacity.glassTint} over white, the worst case: \`${glassWorst}\`)`,
+  '',
+  '| Pair | Colours | Ratio | Needs | Result |',
+  '|---|---|---|---|---|',
+  ...glass.map(row),
+  '',
+  'Text Muted fails on glass, which is why it is never placed there (CLAUDE.md). The Legal sheet and the tab bar use Text High only.',
+  '',
+  '## Colour vision (Machado 2009, severity 1.0; OKLab ΔE × 100, the four closest pairs)',
+  '',
+  '| Vision | Closest pairs |',
+  '|---|---|',
+  ...[['Normal', null], ...Object.entries(M).map(([k, m]) => [k[0].toUpperCase() + k.slice(1), m])].map(
+    ([label, m]) => `| ${label} | ${vision(m).map(([p, d]) => `${p} ${d.toFixed(1)}`).join(', ')} |`,
+  ),
+  '',
+  'Pairs under about 5 are hard to tell apart. Every plan carries its glyph and its label, sage is never a plan colour, and Data Muted is never',
+  'drawn next to Iris (deepwork), so no meaning rests on colour alone.',
+  '',
+];
+writeFileSync(new URL('../docs/colour-test.md', import.meta.url), lines.join('\n'));
+const fails = [...pairs, glass[0]].filter(([, fg, bg, min]) => ratio(fg, bg) < min);
+console.log(`colour test: ${pairs.length + 1} pairs checked, ${fails.length} fail${fails.length === 1 ? '' : 's'}`);
+for (const f of fails) console.log('  FAIL', f[0], ratio(f[1], f[2]).toFixed(2));
+process.exitCode = fails.length ? 1 : 0;

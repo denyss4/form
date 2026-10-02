@@ -233,7 +233,7 @@ export default function Profile() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  content: { paddingHorizontal: space.margin, paddingTop: space.xs, paddingBottom: space.xxl, gap: space.xl },
+  content: { paddingHorizontal: space.margin, paddingTop: space.xs, paddingBottom: space.xxl, gap: space.xxl }, // 48 before each new section (CLAUDE.md spacing)
   header: { marginTop: space.md, marginBottom: space.xs },
   guest: { gap: space.sm },
   actions: { gap: space.xxs },

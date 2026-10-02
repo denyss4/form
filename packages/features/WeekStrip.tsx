@@ -42,6 +42,7 @@ function Column({
   hideGlyph,
   onPress,
   onGlyphLayout,
+  hint,
 }: {
   day: WeekDay;
   today: boolean;
@@ -51,6 +52,7 @@ function Column({
   /** Called with the column's rectangle in window coordinates, so Week can grow the day detail out of it (D3b morph). */
   onPress: (rect: Rect | null) => void;
   onGlyphLayout?: (y: number) => void;
+  hint?: string;
 }) {
   const { color } = useTheme();
   const focus = useFocus();
@@ -63,6 +65,7 @@ function Column({
       accessibilityState={{ selected }}
       aria-selected={selected}
       accessibilityLabel={copy.week.day(spokenDate(day.date), copy.plan[day.plan], estimated, today)}
+      accessibilityHint={hint}
       ref={attach}
       onPress={() => {
         if (!node) return onPress(null);
@@ -104,6 +107,7 @@ export function WeekStrip({
   outlined,
   move,
   onSelect,
+  columnHint,
 }: {
   week: WeekDay[];
   today: string;
@@ -111,6 +115,8 @@ export function WeekStrip({
   outlined: string[];
   move: StripMove | null;
   onSelect: (date: string, rect: Rect | null) => void;
+  /** What a tap does, for screen readers (D3b morph: "Opens the day's details."). */
+  columnHint?: string;
 }) {
   const reduceMotion = useReducedMotion();
   const large = useFontScale() >= LETTER_MAX_SCALE;
@@ -152,6 +158,7 @@ export function WeekStrip({
           outlined={outlined.includes(day.date)}
           hideGlyph={move !== null && (day.date === move.from || day.date === move.to)}
           onGlyphLayout={i === 0 ? setGlyphY : undefined}
+          hint={columnHint}
           onPress={(rect) => {
             haptic.selection();
             onSelect(day.date, rect);

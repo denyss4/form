@@ -230,6 +230,7 @@ export default function Week() {
           outlined={open && suggestion ? [suggestion.fromDate, suggestion.toDate] : []}
           move={move}
           onSelect={select}
+          columnHint={DETAIL_MODE === 'morph' ? copy.week.openHint : undefined}
         />
         {DETAIL_MODE === 'morph' ? (
           <Text variant="caption" tone="secondary">

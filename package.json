@@ -43,7 +43,9 @@
     "verify:model": "node packages/model/verify.mjs",
     "fixtures": "node fixtures/build.mjs",
     "test": "node --test packages/model/adapter.test.ts packages/planner/planner.test.ts packages/planner/tonight.test.ts packages/planner/progress.test.ts packages/copy/pseudo.test.ts",
-    "demo": "node scripts/demo.mjs"
+    "demo": "node scripts/demo.mjs",
+    "colours": "node scripts/colour-test.mjs",
+    "demo:path": "node scripts/demo-path.mts"
   },
   "private": true
 }

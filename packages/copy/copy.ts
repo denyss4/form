@@ -405,6 +405,7 @@ const base = {
   week: {
     // D3b morph mode: the strip is the way into each day's detail.
     tapHint: 'Tap a day to see its plan, day types and session.',
+    openHint: "Opens the day's details.",
     title: 'Week',
     planNote: "Plans for days ahead follow your calendar. Each morning's score can change them.",
     coverage: (found: number, total: number) => `Events found for ${found} of ${total} days.`,
