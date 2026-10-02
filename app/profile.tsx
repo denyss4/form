@@ -173,6 +173,7 @@ export default function Profile() {
               <Text variant="bodyStrong">{copy.profile.eveningTime}</Text>
               <ChoiceGroup
                 label={copy.profile.eveningTime}
+                compact
                 options={timeOptions}
                 value={prefs.eveningTime as (typeof eveningTimes)[number]}
                 onChange={(eveningTime) => app.setPrefs({ eveningTime })}

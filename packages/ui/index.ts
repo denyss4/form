@@ -16,6 +16,8 @@ export { GlassBar, useTabBarSpace } from './GlassBar';
 export { announce } from './announce';
 export { haptic } from './haptics';
 export { InlineMessage } from './InlineMessage';
+export { MorphModal } from './MorphModal';
+export type { Rect } from './MorphModal';
 export { IntroMark } from './IntroMark';
 export { PlanGlow } from './PlanGlow';
 export { ProfileButton } from './ProfileButton';

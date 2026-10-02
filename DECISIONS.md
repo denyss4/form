@@ -206,3 +206,16 @@ Sources on 21st.dev show metadata only without an API key, so each component is 
 - Snappy slider: training days on Edit profile. The thumb follows the finger, a selection haptic marks each detent, and it springs onto the nearest detent on release. Never the morning rating.
 - The morph modal (Week column into a centred detail) is D3b, behind its own phone check (Q3).
 - Found during verification: the preview browser runs with Reduce Motion on, so web checks cover the Reduce Motion paths; the motion paths are checked on the phone.
+
+## D3b: morph modal on Week (2 Oct 2026, behind its own phone check)
+
+- **Changes spec R3 (Q3).** Tapping a Week strip column grows that column into a centred day-detail card (scale and translate from the column's exact rectangle, motion.standard spring), with the content fading in over the second half. Closing (X, the scrim, Android back, Escape on the web) shrinks it back into the column in 220 ms.
+- The inline detail under the strip is replaced by one line: "Tap a day to see its plan, day types and session." The strip stays the hero.
+- Switching back is one line: DETAIL_MODE = 'inline' in app/(tabs)/week.tsx restores the approved R3 inline detail.
+- The card is solid raised, not glass: it carries Text Muted (an estimated day, "No session"), which never sits on glass. No shadow (only bottom sheets get one). The scrim is the sheets' canvas scrim.
+- Accessibility: a modal view; the Close button comes first, then the date as the card's heading; focus returns to the column on the web. At the largest text the card stops 64 pt from the screen edges and its content scrolls.
+- Reduce Motion: no morph; the card cross-fades in place in 120 ms.
+- Review: ?open=2026-10-08 opens a day's card (it fades in, with no column to grow from).
+- Kept after the phone check (user, 2 Oct).
+- Fix found on the phone: the reminder-time pills broke mid-number ("20:0 / 0") and the selected label sat off-centre. Choice pills reserve the check's width on both sides of the label, which leaves about 47 pt in a three-pill row. New compact mode for short labels (times): nothing reserved, the check sits inline before the selected label. The selected overlay now has the same padding as the plain label in every group, so both wrap and centre the same way.
+- Copy that pointed at Settings now points at Profile (Settings folded into Profile in D2).

@@ -22,7 +22,7 @@ import { copy } from '@copy';
 import { dateNumber, dayLetter, spokenDate } from '@format';
 import type { WeekDay } from '@planner';
 import { motion, radius, size, space, type PlanId } from '@tokens';
-import { FocusRing, haptic, PlanGlyph, Text, useFocus, useFontScale, useTheme } from '@ui';
+import { FocusRing, haptic, PlanGlyph, Text, useFocus, useFontScale, useTheme, type Rect } from '@ui';
 
 const LETTER_MAX_SCALE = 2;
 const RING = space.xs; // the estimated ring: 8 pt across
@@ -48,11 +48,13 @@ function Column({
   selected: boolean;
   outlined: boolean;
   hideGlyph: boolean;
-  onPress: () => void;
+  /** Called with the column's rectangle in window coordinates, so Week can grow the day detail out of it (D3b morph). */
+  onPress: (rect: Rect | null) => void;
   onGlyphLayout?: (y: number) => void;
 }) {
   const { color } = useTheme();
   const focus = useFocus();
+  const [node, attach] = useState<View | null>(null); // a callback ref: measured on press
   const large = useFontScale() >= LETTER_MAX_SCALE;
   const estimated = day.source === 'guessed';
   return (
@@ -61,7 +63,11 @@ function Column({
       accessibilityState={{ selected }}
       aria-selected={selected}
       accessibilityLabel={copy.week.day(spokenDate(day.date), copy.plan[day.plan], estimated, today)}
-      onPress={onPress}
+      ref={attach}
+      onPress={() => {
+        if (!node) return onPress(null);
+        node.measureInWindow((x, y, width, height) => onPress({ x, y, width, height }));
+      }}
       onFocus={focus.onFocus}
       onBlur={focus.onBlur}
       style={[
@@ -104,7 +110,7 @@ export function WeekStrip({
   selected: string;
   outlined: string[];
   move: StripMove | null;
-  onSelect: (date: string) => void;
+  onSelect: (date: string, rect: Rect | null) => void;
 }) {
   const reduceMotion = useReducedMotion();
   const large = useFontScale() >= LETTER_MAX_SCALE;
@@ -146,9 +152,9 @@ export function WeekStrip({
           outlined={outlined.includes(day.date)}
           hideGlyph={move !== null && (day.date === move.from || day.date === move.to)}
           onGlyphLayout={i === 0 ? setGlyphY : undefined}
-          onPress={() => {
+          onPress={(rect) => {
             haptic.selection();
-            onSelect(day.date);
+            onSelect(day.date, rect);
           }}
         />
       ))}

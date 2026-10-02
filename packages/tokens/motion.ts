@@ -40,6 +40,8 @@ export const motion = {
   },
   // Flux loader: the segment flows along the track every loop ms; the line writes itself in once over write ms.
   flux: { loop: 1400, write: 600, easing: [0.42, 0, 0.58, 1] },
+  // The Week morph modal (D3b) shrinks back into its column a little faster than it opened.
+  morphClose: 220,
   // Spotlight surfaces: the light appears at the press point and fades within 200 ms of release.
   spotlight: { in: 120, out: 200 },
   reducedFade: 120, // ms, under the 150 ms limit, when reduce-motion is on

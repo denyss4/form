@@ -31,11 +31,13 @@ function Option({
   selected,
   onPress,
   columns,
+  compact,
 }: {
   label: string;
   selected: boolean;
   onPress: () => void;
   columns: number;
+  compact: boolean;
 }) {
   const { color } = useTheme();
   const reduceMotion = useReducedMotion();
@@ -71,16 +73,24 @@ function Option({
           pointerEvents="none"
           style={[styles.fill, { backgroundColor: color.state.selected }, shown]}
         />
-        <Animated.View pointerEvents="none" style={[styles.check, shown]}>
-          <Check color={color.action.onPrimary} size={size.iconSm} strokeWidth={size.outline} />
-        </Animated.View>
-        <View style={styles.label}>
+        {compact ? null : (
+          <Animated.View pointerEvents="none" style={[styles.check, shown]}>
+            <Check color={color.action.onPrimary} size={size.iconSm} strokeWidth={size.outline} />
+          </Animated.View>
+        )}
+        <View style={compact ? undefined : styles.label}>
           <Animated.View style={hidden}>
             <Text variant="bodyStrong" style={styles.labelText}>
               {label}
             </Text>
           </Animated.View>
-          <Animated.View pointerEvents="none" style={[styles.overlay, shown]}>
+          {/* Same padding as the plain label, so the selected label wraps and centres exactly like it. Compact: the check sits inline. */}
+          <Animated.View pointerEvents="none" style={[styles.overlay, compact ? styles.overlayCompact : styles.label, shown]}>
+            {compact ? (
+              <View style={styles.inlineCheck}>
+                <Check color={color.action.onPrimary} size={size.iconSm} strokeWidth={size.outline} />
+              </View>
+            ) : null}
             <Text variant="bodyStrong" tone="inverse" style={styles.labelText}>
               {label}
             </Text>
@@ -97,6 +107,7 @@ export function ChoiceGroup<T extends string>({
   value,
   onChange,
   columns: preferred = options.length,
+  compact = false,
 }: {
   label: string;
   options: Choice<T>[];
@@ -104,6 +115,8 @@ export function ChoiceGroup<T extends string>({
   onChange: (value: T) => void;
   /** Options per row. Four options read better as two rows of two. */
   columns?: number;
+  /** Short labels (times, numbers): no space reserved for the check, which sits inline when selected. */
+  compact?: boolean;
 }) {
   // Larger text needs wider options, so the group stacks: two per row above 1.3x, one per row from 2x.
   const scale = useFontScale();
@@ -116,6 +129,7 @@ export function ChoiceGroup<T extends string>({
           label={option.label}
           selected={option.value === value}
           columns={columns}
+          compact={compact}
           onPress={() => {
             if (option.value !== value) haptic.selection();
             onChange(option.value);
@@ -152,4 +166,8 @@ const styles = StyleSheet.create({
   label: { paddingHorizontal: size.iconSm },
   labelText: { textAlign: 'center' },
   overlay: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
+  // Compact (short labels such as times, three to a row): nothing is reserved, so "20:00" never breaks; the check sits inline, overlapping
+  // the pill's own padding rather than the label. Found on the iPhone, 2 Oct: "20:0 / 0" in the reminder-time pills.
+  inlineCheck: { flexShrink: 0 }, // the label may wrap; the check never shrinks away
+  overlayCompact: { flexDirection: 'row', gap: space.xxs, transform: [{ translateX: -(size.iconSm + space.xxs) / 2 }] },
 });

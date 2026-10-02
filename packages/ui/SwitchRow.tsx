@@ -1,7 +1,7 @@
 // Layout plan. Job: turn one setting on or off. Focal element: the label. Quiet: the caption.
 // The platform switch, in Form's colours: sage track when on, control stroke when off (4.60:1 on canvas). The switch's own shape and
 // position say on or off, so colour is never alone. At least 48 tall.
-import { StyleSheet, Switch, View } from 'react-native';
+import { Platform, StyleSheet, Switch, View } from 'react-native';
 
 import { size, space } from '@tokens';
 
@@ -37,6 +37,8 @@ export function SwitchRow({
         onValueChange={onChange}
         trackColor={{ true: color.action.primary, false: color.stroke.control }}
         thumbColor={color.text.primary}
+        // react-native-web colours the "on" thumb with its own teal unless told (a web-only prop); the phone uses thumbColor.
+        {...(Platform.OS === 'web' ? { activeThumbColor: color.text.primary } : {})}
         ios_backgroundColor={color.stroke.control}
       />
     </View>

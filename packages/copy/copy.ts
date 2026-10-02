@@ -97,7 +97,7 @@ const base = {
     ring: (done: number, total: number) => `${done} of ${total} answered`,
   },
 
-  nav: { back: 'Back', settings: 'Settings', profile: 'Profile' },
+  nav: { back: 'Back', settings: 'Settings', profile: 'Profile', close: 'Close' },
   tabs: { today: 'Today', week: 'Week', progress: 'Progress' },
   tag: { work: 'Work', training: 'Training', social: 'Social', travel: 'Travel', rest: 'Rest' },
 
@@ -352,7 +352,7 @@ const base = {
   // [GAP G26: consent wording is demo text. Where the personal model runs and where data is stored are not decided. Needs legal review.]
   consent: {
     title: 'What Form may use',
-    intro: 'Choose for each one. You can change any of them later in Settings.',
+    intro: 'Choose for each one. You can change any of them later in Profile.',
     allow: 'Allow',
     decline: 'Not now',
     purposes: {
@@ -396,13 +396,15 @@ const base = {
     },
     off: {
       title: 'Calendar is off.',
-      body: 'You chose Not now for your calendar. Change that in Settings to connect one.',
-      settings: 'Open Settings',
+      body: 'You chose Not now for your calendar. Change that in Profile, Privacy, to connect one.',
+      settings: 'Open Privacy',
       without: 'Continue without calendar',
     },
   },
 
   week: {
+    // D3b morph mode: the strip is the way into each day's detail.
+    tapHint: 'Tap a day to see its plan, day types and session.',
     title: 'Week',
     planNote: "Plans for days ahead follow your calendar. Each morning's score can change them.",
     coverage: (found: number, total: number) => `Events found for ${found} of ${total} days.`,
@@ -516,14 +518,14 @@ const base = {
     done: { title: 'Preview only.', body: 'No health data was read.', action: 'Done' },
     error: {
       title: 'Health access was denied.',
-      body: 'Try again, or carry on without it. You can connect it later in Settings.',
+      body: 'Try again, or carry on without it. You can connect it later in Profile.',
       retry: 'Try again',
       without: 'Carry on without it',
     },
     off: {
       title: 'Health data is off.',
-      body: 'You chose Not now for health data. Change that in Settings to connect it.',
-      settings: 'Open Settings',
+      body: 'You chose Not now for health data. Change that in Profile, Privacy, to connect it.',
+      settings: 'Open Privacy',
     },
   },
 
@@ -537,14 +539,14 @@ const base = {
     done: { title: 'Preview only.', body: 'Your calendar was not changed.', action: 'Done' },
     error: {
       title: 'Calendar changes were denied.',
-      body: 'Try again, or keep Form read-only. You can change this later in Settings.',
+      body: 'Try again, or keep Form read-only. You can change this later in Profile.',
       retry: 'Try again',
       without: 'Keep it read-only',
     },
     off: {
       title: 'Calendar is off.',
-      body: 'Changes need calendar access first. Turn your calendar on in Settings.',
-      settings: 'Open Settings',
+      body: 'Changes need calendar access first. Turn your calendar on in Profile, Privacy.',
+      settings: 'Open Privacy',
     },
   },
 

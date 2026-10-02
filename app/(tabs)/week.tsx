@@ -25,6 +25,7 @@ import {
   DayTypes,
   haptic,
   InlineMessage,
+  MorphModal,
   oneOf,
   PlanLabel,
   ScreenHeader,
@@ -33,6 +34,7 @@ import {
   Text,
   useTabBarSpace,
   useTheme,
+  type Rect,
 } from '@ui';
 
 const scenarios = ['default', 'loading', 'empty', 'partial', 'error', 'lowconf'] as const;
@@ -47,16 +49,21 @@ function reasonOf(s: MoveSuggestion, name: (session: string) => string) {
   return copy.suggestion.reason(name(s.session), weekdayName(s.fromDate), parts);
 }
 
-/** The selected day: plan, estimated or not, day types, session. The one content surface on the screen. */
-function DayDetail({ day }: { day: WeekDay }) {
-  const { color } = useTheme();
+// D3b (Q3, behind its own phone check): 'morph' grows the tapped column into a centred detail card; 'inline' is the approved spec R3
+// detail under the strip. Switching back is this one line (DECISIONS, D3b).
+const DETAIL_MODE: 'morph' | 'inline' = 'morph';
+
+/** A day's plan, estimated or not, day types and session. Shared by the inline surface and the morph card. */
+function DayDetailContent({ day, inset = false }: { day: WeekDay; inset?: boolean }) {
   const name = useSessionName();
   const session = day.sessions[0];
   const estimated = day.source === 'guessed';
   return (
-    // Spotlight (D3): a press lights the surface at the press point. One level, never nested.
-    <SpotlightSurface style={[styles.detail, { backgroundColor: color.bg.raised }]}>
-      <Text variant="bodyStrong">{formatLong(day.date)}</Text>
+    <>
+      {/* In the card, the date clears the close button; it is the card's heading for screen readers. */}
+      <Text variant="bodyStrong" accessibilityRole="header" style={inset ? styles.inset : undefined}>
+        {formatLong(day.date)}
+      </Text>
       <View style={styles.detailPlan}>
         <PlanLabel plan={day.plan} estimated={estimated} quiet />
       </View>
@@ -68,6 +75,17 @@ function DayDetail({ day }: { day: WeekDay }) {
           {copy.week.noSession}
         </Text>
       )}
+    </>
+  );
+}
+
+/** The selected day, inline under the strip (DETAIL_MODE 'inline'). The one content surface on the screen. */
+function DayDetail({ day }: { day: WeekDay }) {
+  const { color } = useTheme();
+  return (
+    // Spotlight (D3): a press lights the surface at the press point. One level, never nested.
+    <SpotlightSurface style={[styles.detail, { backgroundColor: color.bg.raised }]}>
+      <DayDetailContent day={day} />
     </SpotlightSurface>
   );
 }
@@ -93,7 +111,7 @@ export default function Week() {
   const router = useRouter();
   const app = useAppState();
   const sessionName = useSessionName();
-  const params = useLocalSearchParams<{ state?: string }>();
+  const params = useLocalSearchParams<{ state?: string; open?: string }>();
   const scenario = oneOf(params.state, scenarios, app.calendar === 'connected' ? 'default' : 'empty');
 
   const subset = scenario === 'partial' || scenario === 'lowconf' ? scenario : scenario === 'default' ? 'all' : 'none';
@@ -101,9 +119,20 @@ export default function Week() {
   const cov = coverage(week);
 
   const today = week.some((d) => d.date === app.demoDay) ? app.demoDay : (week[0]?.date ?? app.demoDay);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(params.open ?? null);
   const selectedDay = week.find((d) => d.date === (selected ?? today)) ?? week[0];
   const [move, setMove] = useState<StripMove | null>(null);
+  // The morph card: the day it shows stays set while it shrinks back, so the content does not change mid-close.
+  // Review only: ?open=2026-10-08 opens a day's card (without a column to grow from, it fades in).
+  const [card, setCard] = useState<{ date: string; rect: Rect | null } | null>(params.open ? { date: params.open, rect: null } : null);
+  const [cardOpen, setCardOpen] = useState(Boolean(params.open));
+  const cardDay = card ? week.find((d) => d.date === card.date) : undefined;
+  const select = (date: string, rect: Rect | null) => {
+    setSelected(date);
+    if (DETAIL_MODE !== 'morph') return;
+    setCard({ date, rect });
+    setCardOpen(true);
+  };
 
   const open = suggestion !== null && app.suggestion === 'open';
 
@@ -200,10 +229,15 @@ export default function Week() {
           selected={selectedDay.date}
           outlined={open && suggestion ? [suggestion.fromDate, suggestion.toDate] : []}
           move={move}
-          onSelect={setSelected}
+          onSelect={select}
         />
+        {DETAIL_MODE === 'morph' ? (
+          <Text variant="caption" tone="secondary">
+            {copy.week.tapHint}
+          </Text>
+        ) : null}
         {suggestionBlock}
-        <DayDetail day={selectedDay} />
+        {DETAIL_MODE === 'inline' ? <DayDetail day={selectedDay} /> : null}
         <View style={styles.notes}>
           <Text variant="caption" tone="secondary">
             {copy.week.planNote}
@@ -229,6 +263,11 @@ export default function Week() {
         <View style={styles.header}>{header}</View>
         <View style={styles.group}>{body}</View>
       </ScrollView>
+      {DETAIL_MODE === 'morph' ? (
+        <MorphModal visible={cardOpen && cardDay !== undefined} from={card?.rect ?? null} onClose={() => setCardOpen(false)}>
+          {cardDay ? <DayDetailContent day={cardDay} inset /> : null}
+        </MorphModal>
+      ) : null}
     </SafeAreaView>
   );
 }
@@ -245,6 +284,7 @@ const styles = StyleSheet.create({
   movedText: { flexShrink: 1 },
   // The one content surface: the selected day's detail (radius.surface; spotlight-on-press arrives in D3).
   detail: { borderRadius: radius.surface, padding: space.md, gap: space.sm },
+  inset: { marginRight: size.touch },
   detailPlan: { alignSelf: 'flex-start' },
   notes: { gap: space.xxs },
   state: { gap: space.sm, alignItems: 'flex-start' },
