@@ -52,3 +52,10 @@ These need a decision because they change the design system or the demo path:
 - The Week suggestion as one clearly anchored block (for example, a 2 px Ink rule on the left) instead of plain paragraphs between rows.
 - An empty-state glyph (calendar) on Week and Progress, centred, as 5.2 allows.
 - Day types on Week as tags with a glyph, as `CLAUDE.md` says; today they are plain comma-separated text.
+
+## From D2 (2 Oct 2026)
+
+- Sign in with Apple: required on iOS as soon as any third-party sign-in is added (App Store 4.8). Social sign-in is out of scope.
+- Real accounts and sync (G56), with server-side account deletion.
+- Snappy slider for training days, animated checkbox, spotlight on Profile sections (D3).
+- A real time picker for the usual training time and the evening reminder (no date-picker dependency is approved).

@@ -106,7 +106,7 @@ export default function Welcome() {
 
   const startAccount = (mode: "signup" | "signin") => {
     app.setOnboardingPath("account");
-    router.push(`/account?mode=${mode}`);
+    router.push(mode === 'signup' ? '/sign-up' : '/sign-in');
   };
   const startGuest = () => {
     app.setOnboardingPath("guest");

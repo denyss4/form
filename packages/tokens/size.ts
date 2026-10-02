@@ -15,6 +15,9 @@ export const size = {
   thumb: 28, // slider thumb
   tick: 8, // slider step mark: with no thumb yet, the dots are what you tap
   segment: 12, // Plan Fit segment height: a meter, not a row of buttons
+  check: 24, // the checkbox box, centred in a 48 pt row
+  // Profile (REDESIGN-PROMPT §5): the header button, and the capsule avatar that echoes the pills and the week-strip columns.
+  avatar: { button: 36, capsuleWidth: 112, capsuleHeight: 168, weekCapsule: 40 },
 
   // ScoreDial: a 270-degree arc that opens at the bottom, and a thin bracket outside it for the likely range.
   // [GAP G21: dial sizes are not in the Master. These are proposals; revisit at Review 1.]

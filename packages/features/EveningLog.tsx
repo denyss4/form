@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { copy } from '@copy';
+import { useSessionName } from '@features/useSessionName';
 import type { EveningAnswers, Effort, Fit } from '@planner/dailyLog';
 import type { WeekDay } from '@planner';
 import { space } from '@tokens';
@@ -33,6 +34,7 @@ export function EveningLog({
   onSave: (answers: EveningAnswers) => void;
 }) {
   const session = day.sessions[0];
+  const sessionName = useSessionName();
   const [effort, setEffort] = useState<Effort | null>(null);
   const [alcohol, setAlcohol] = useState<'no' | 'yes' | null>(null);
   const [unusual, setUnusual] = useState<'no' | 'yes' | null>(null);
@@ -90,9 +92,9 @@ export function EveningLog({
 
       {session ? (
         <View style={styles.question}>
-          <Text variant="bodyStrong">{copy.log.effort.question(session.name)}</Text>
+          <Text variant="bodyStrong">{copy.log.effort.question(sessionName(session.name))}</Text>
           <ChoiceGroup
-            label={copy.log.effort.question(session.name)}
+            label={copy.log.effort.question(sessionName(session.name))}
             columns={2}
             options={[
               { value: 'skipped', label: copy.log.effort.skipped },

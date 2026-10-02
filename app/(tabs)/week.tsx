@@ -8,11 +8,12 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Settings from 'lucide-react-native/icons/settings';
 
 import { copy } from '@copy';
 import { formatLong, formatWeek, weekdayName } from '@format';
 import { useWeek } from '@features/useWeek';
+import { HeaderProfile } from '@features/HeaderProfile';
+import { useSessionName } from '@features/useSessionName';
 import { WeekStrip, type StripMove } from '@features/WeekStrip';
 import { coverage } from '@planner';
 import type { MoveSuggestion, WeekDay } from '@planner';
@@ -23,7 +24,6 @@ import {
   Button,
   DayTypes,
   haptic,
-  IconButton,
   InlineMessage,
   oneOf,
   PlanLabel,
@@ -38,17 +38,18 @@ const scenarios = ['default', 'loading', 'empty', 'partial', 'error', 'lowconf']
 const LOW_CONFIDENCE_DAYS = 2; // this many days with events, or fewer, is mostly guessing
 
 /** "Heavy legs on Thursday sits before a late dinner and a Friday flight." Built from the engine's reasons. */
-function reasonOf(s: MoveSuggestion) {
+function reasonOf(s: MoveSuggestion, name: (session: string) => string) {
   const parts = s.reasons.map((r) =>
     // A same-day reason is a social event from the engine's LATE_HOUR on, so "late" is backed by the rule, not added for colour.
     r.date === s.fromDate ? copy.suggestion.lateEvent(r.what) : copy.suggestion.dayEvent(weekdayName(r.date), r.what),
   );
-  return copy.suggestion.reason(s.session, weekdayName(s.fromDate), parts);
+  return copy.suggestion.reason(name(s.session), weekdayName(s.fromDate), parts);
 }
 
 /** The selected day: plan, estimated or not, day types, session. The one content surface on the screen. */
 function DayDetail({ day }: { day: WeekDay }) {
   const { color } = useTheme();
+  const name = useSessionName();
   const session = day.sessions[0];
   const estimated = day.source === 'guessed';
   return (
@@ -59,7 +60,7 @@ function DayDetail({ day }: { day: WeekDay }) {
       </View>
       <DayTypes tags={day.tags} />
       {session ? (
-        <Text variant="body">{copy.week.session(session.name, session.start)}</Text>
+        <Text variant="body">{copy.week.session(name(session.name), session.start)}</Text>
       ) : (
         <Text variant="body" tone="secondary">
           {copy.week.noSession}
@@ -89,6 +90,7 @@ export default function Week() {
   const tabSpace = useTabBarSpace(); // the tab bar floats on glass; the content scrolls under it
   const router = useRouter();
   const app = useAppState();
+  const sessionName = useSessionName();
   const params = useLocalSearchParams<{ state?: string }>();
   const scenario = oneOf(params.state, scenarios, app.calendar === 'connected' ? 'default' : 'empty');
 
@@ -114,7 +116,7 @@ export default function Week() {
       onDone: () => {
         app.setSuggestion('moved');
         setMove(null);
-        announce(copy.suggestion.moved(suggestion.session, weekdayName(suggestion.toDate)));
+        announce(copy.suggestion.moved(sessionName(suggestion.session), weekdayName(suggestion.toDate)));
       },
     });
   };
@@ -123,14 +125,14 @@ export default function Week() {
     <ScreenHeader
       title={copy.week.title}
       caption={formatWeek(weekStart)}
-      right={<IconButton icon={Settings} label={copy.nav.settings} onPress={() => router.push('/settings')} />}
+      right={<HeaderProfile />}
     />
   );
 
   const suggestionBlock =
     suggestion === null ? null : open ? (
       <View aria-live="polite" style={styles.suggestion}>
-        <Text variant="bodyStrong">{reasonOf(suggestion)}</Text>
+        <Text variant="bodyStrong">{reasonOf(suggestion, sessionName)}</Text>
         {preview ? (
           <Text variant="body" tone="secondary">
             {copy.suggestion.preview(
@@ -148,21 +150,21 @@ export default function Week() {
           disabled={move !== null}
           onPress={() => {
             app.setSuggestion('kept');
-            announce(copy.suggestion.kept(suggestion.session, weekdayName(suggestion.fromDate)));
+            announce(copy.suggestion.kept(sessionName(suggestion.session), weekdayName(suggestion.fromDate)));
           }}
         />
       </View>
     ) : app.suggestion === 'moved' ? (
       <View aria-live="polite" style={styles.moved}>
         <Text variant="body" style={styles.movedText}>
-          {copy.suggestion.moved(suggestion.session, weekdayName(suggestion.toDate))}
+          {copy.suggestion.moved(sessionName(suggestion.session), weekdayName(suggestion.toDate))}
         </Text>
         <Button
           variant="text"
           label={copy.suggestion.undo}
           onPress={() => {
             app.setSuggestion('open');
-            announce(copy.suggestion.undone(suggestion.session, weekdayName(suggestion.fromDate)));
+            announce(copy.suggestion.undone(sessionName(suggestion.session), weekdayName(suggestion.fromDate)));
           }}
         />
       </View>

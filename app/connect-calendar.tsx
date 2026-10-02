@@ -77,7 +77,7 @@ export default function ConnectCalendar() {
         ) : view === 'off' ? (
           <InlineMessage title={copy.calendar.off.title} body={copy.calendar.off.body}>
             <View style={styles.actions}>
-              <Button label={copy.calendar.off.settings} onPress={() => router.push('/settings')} />
+              <Button label={copy.calendar.off.settings} onPress={() => router.push('/privacy')} />
               <Button variant="text" label={copy.calendar.off.without} onPress={withoutCalendar} />
             </View>
           </InlineMessage>

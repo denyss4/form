@@ -34,3 +34,25 @@ export function formatWeek(start: string): string {
     ? `${dayNumber(start)}–${dayNumber(end)} ${monthOf(end)}`
     : `${dayNumber(start)} ${monthOf(start)}–${dayNumber(end)} ${monthOf(end)}`;
 }
+
+// Work days on Profile, Monday-first indexes (0 = Monday ... 6 = Sunday).
+const mondayFirst = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const mondayFirstLong = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+export const weekdayShort = (index: number) => mondayFirst[index] ?? '';
+export const weekdayLong = (index: number) => mondayFirstLong[index] ?? '';
+
+/** "Mon–Fri" for a run of three or more days, otherwise "Mon, Wed". */
+export function formatDays(days: number[]): string {
+  const sorted = [...days].sort((a, b) => a - b);
+  const run = sorted.length >= 3 && sorted.every((d, i) => i === 0 || d === (sorted[i - 1] ?? -2) + 1);
+  if (run) return `${weekdayShort(sorted[0] ?? 0)}–${weekdayShort(sorted[sorted.length - 1] ?? 0)}`;
+  return sorted.map(weekdayShort).join(', ');
+}
+
+/** The spoken form: "Monday to Friday", or "Monday, Wednesday". */
+export function spokenDays(days: number[]): string {
+  const sorted = [...days].sort((a, b) => a - b);
+  const run = sorted.length >= 3 && sorted.every((d, i) => i === 0 || d === (sorted[i - 1] ?? -2) + 1);
+  if (run) return `${weekdayLong(sorted[0] ?? 0)} to ${weekdayLong(sorted[sorted.length - 1] ?? 0)}`;
+  return sorted.map(weekdayLong).join(', ');
+}

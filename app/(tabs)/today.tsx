@@ -19,11 +19,11 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Settings from 'lucide-react-native/icons/settings';
 
 import { copy } from '@copy';
 import { explain } from '@copy/explain';
 import { EveningLog } from '@features/EveningLog';
+import { HeaderProfile } from '@features/HeaderProfile';
 import { MorningRating } from '@features/MorningRating';
 import { todayScenarios, useHistory, useToday } from '@features/useToday';
 import { formatLong } from '@format';
@@ -41,7 +41,6 @@ import {
   DayTypes,
   DriverRow,
   haptic,
-  IconButton,
   InlineMessage,
   oneOf,
   PlanGlow,
@@ -179,12 +178,12 @@ export default function Today() {
   };
   const onCaptionLongPress = demoClockOn ? stepDemoClock : undefined;
 
-  const settingsButton = <IconButton icon={Settings} label={copy.nav.settings} onPress={() => router.push('/settings')} />;
+  const profileButton = <HeaderProfile />;
   const header = (
     <ScreenHeader
       title={copy.today.title}
       caption={formatLong(app.demoDay)}
-      right={settingsButton}
+      right={profileButton}
       onCaptionLongPress={onCaptionLongPress}
     />
   );
@@ -243,7 +242,7 @@ export default function Today() {
           title={copy.plan[p]}
           plan={p}
           caption={copy.today.dateCaption(formatLong(app.demoDay))}
-          right={settingsButton}
+          right={profileButton}
           onCaptionLongPress={onCaptionLongPress}
         />
         <View style={styles.dial}>

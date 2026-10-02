@@ -54,7 +54,7 @@ export function PermissionPreview({
   const forced = oneOf(params.state, views, 'auto');
   const view = forced !== 'auto' ? forced : blocked ? 'off' : phase === 'idle' ? 'default' : phase;
 
-  const leave = () => (router.canGoBack() ? router.back() : router.replace('/settings'));
+  const leave = () => (router.canGoBack() ? router.back() : router.replace('/profile'));
 
   const allow = () => {
     setPhase('loading');
@@ -92,7 +92,7 @@ export function PermissionPreview({
         ) : view === 'off' ? (
           <InlineMessage title={copy.off.title} body={copy.off.body}>
             <View style={styles.actions}>
-              <Button label={copy.off.settings} onPress={() => router.replace('/settings')} />
+              <Button label={copy.off.settings} onPress={() => router.replace('/privacy')} />
             </View>
           </InlineMessage>
         ) : (

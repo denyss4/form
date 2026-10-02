@@ -26,7 +26,14 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Form uses a photo you choose as your profile picture. It stays on this phone.",
+          "cameraPermission": false
+        }
+      ]
     ]
   }
 }

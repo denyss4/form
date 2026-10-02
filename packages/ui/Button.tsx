@@ -14,7 +14,8 @@ import { Text } from './Text';
 import { useTheme } from './theme';
 import { usePress } from './usePress';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'text';
+/** destructive: text-only in Status Over (5.45:1 on canvas), always behind a confirmation (CLAUDE.md). The words carry the meaning. */
+export type ButtonVariant = 'primary' | 'secondary' | 'text' | 'destructive';
 
 export interface ButtonProps {
   label: string;
@@ -45,7 +46,9 @@ export function Button({
   const inactive = disabled || loading;
 
   const labelTone = variant === 'primary' ? 'inverse' : 'primary';
-  const labelColor = variant === 'primary' ? color.action.onPrimary : color.text.primary;
+  const labelColor =
+    variant === 'primary' ? color.action.onPrimary : variant === 'destructive' ? color.status.attention : color.text.primary;
+  const textOnly = variant === 'text' || variant === 'destructive';
 
   return (
     <Pressable
@@ -87,14 +90,18 @@ export function Button({
           variant === 'secondary'
             ? { borderWidth: size.outline, borderColor: color.stroke.control }
             : undefined,
-          variant === 'text' ? styles.textOnly : undefined,
+          textOnly ? styles.textOnly : undefined,
           press.style,
         ]}
       >
         <Text
           variant="bodyStrong"
           tone={labelTone}
-          style={[variant === 'text' ? styles.underline : undefined, loading ? styles.hidden : undefined]}
+          style={[
+            textOnly ? styles.underline : undefined,
+            variant === 'destructive' ? { color: labelColor } : undefined,
+            loading ? styles.hidden : undefined,
+          ]}
         >
           {label}
         </Text>

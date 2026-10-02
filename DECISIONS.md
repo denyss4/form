@@ -176,3 +176,18 @@ Source: `docs/prompts/REDESIGN-PROMPT.md`. Plan: Step 1 sections A–H, approved
 - Stepper: guest 3 steps (consent, calendar, notifications); account path 4 (account first). The total stays fixed when calendar is declined, so the count jumps from 1 to 3 rather than changing while consent is being answered.
 - Notifications pre-prompt: "Allow notifications" (primary) and "Not now" (text). Unlike the per-purpose consents, this is a system permission, not health-data consent, so the equal-weight rule does not apply; "Not now" is still a full 48 pt target. The real system prompt runs only when the demo clock is off and not on the web.
 - The Legal sheet is glass, Text High only (Text Muted on glass is 2.11:1). It covers terms and privacy only and says that health-data consent is asked separately.
+
+## D2: Profile and mocked auth (2 Oct 2026)
+
+- The gear on Today, Week and Progress is now a profile button (Q4): a 36 pt circle in a 48 pt target with the photo, the initials, or a person icon for a guest. Settings folds into Profile; its consent controls are the Privacy screen (`/privacy`), opened from Profile.
+- Mocked auth: accounts made this launch are kept by name and email only. Passwords are checked for 8 characters and never stored. Sign in finds an account by email; an unknown email gets an inline message. In the demo build, "Continue as Marta" (and signing in with marta@example.com) uses the demo account. Forgot password never says whether an account exists.
+- **The name on the profile arc is set in capitals**: the one display exception to sentence case (REDESIGN-PROMPT §5). Screen readers hear the name once, as plain text, with the email.
+- The profile header is centred as one composition (backdrop, arc, capsule), like the dial; everything below it is left-aligned. The backdrop is the Welcome horizon at 30% with no glow (no glow on Profile). The capsule has a canvas fill with a control-stroke outline ("hollow"), so the horizon line does not cross the initials.
+- A guest sees what an account adds and "Create account" / "Sign in" at the top (white-space audit E: no empty capsule), so the Account section is not repeated for guests.
+- Profile defaults come from the fixture calendar, not invented values: 4 sessions (Push, Pull, Heavy legs, Full body), 4 training days, usually 18:00, work days Mon–Fri. Profile says these settings do not change plans yet (G55).
+- Session renames reach Week (detail and the move suggestion) and the evening log through a display-name map (Q7). Removing a session from the list only drops its rename; the calendar still decides the week.
+- The email under the avatar stops growing at 2× text: an address has no spaces, so it cannot wrap.
+- Destructive actions: a new text-only `destructive` button in Status Over (5.45:1). Delete my data asks in a sheet and then really clears the in-memory state; Delete account needs DELETE typed. Both follow CLAUDE.md (text-only with confirmation).
+- Notifications on Profile: morning plan and evening reminder switches, with 20:00, 21:00 or 22:00 for the reminder (21:00 by default, a proposal; G53). Allowing notifications in onboarding turns both on.
+- New components: TextField (label above, inline error with icon, show/hide for secure entry), Checkbox (unchecked by default), SwitchRow, ProfileButton. The snappy slider, animated checkbox and spotlight surfaces are D3.
+- expo-image-picker installed (approved 1 Oct): photo library only, camera disabled in the plugin config; the photo lives in memory.

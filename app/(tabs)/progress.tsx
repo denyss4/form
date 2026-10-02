@@ -6,18 +6,17 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Settings from 'lucide-react-native/icons/settings';
 
 import { copy } from '@copy';
 import { formatDay } from '@format';
 import { FitStrip } from '@features/FitStrip';
+import { HeaderProfile } from '@features/HeaderProfile';
 import { progressScenarios, useProgress } from '@features/useProgress';
 import { fitSummary, type FitDay } from '@planner/progress';
 import { buildStamp, showBuildStamp } from '@state/build';
 import { size, space } from '@tokens';
 import {
   Button,
-  IconButton,
   InlineMessage,
   LinkRow,
   oneOf,
@@ -106,7 +105,7 @@ export default function Progress() {
     <ScreenHeader
       title={copy.progress.title}
       caption={copy.progress.demoNote}
-      right={<IconButton icon={Settings} label={copy.nav.settings} onPress={() => router.push('/settings')} />}
+      right={<HeaderProfile />}
     />
   );
 

@@ -48,10 +48,10 @@ Dark "Lichen" is the app theme (`docs/prompts/REDESIGN-PROMPT.md` §1, approved 
 | Recover (Sea glass) | `plan.recover` | `#75d1c5` | 9.90:1 |
 | Deep-work day (Iris) | `plan.deepwork` | `#b0a6ed` | 8.07:1 |
 
-- Sage appears at most once per screen as an action; never a plan colour, never decoration. Primary button: sage fill, canvas text; secondary: control-stroke outline, Text High; destructive: text-only with confirmation.
+- Sage appears at most once per screen as an action; never a plan colour, never decoration (the one exception: Welcome's first-light glow). Primary button: sage fill, canvas text; secondary: control-stroke outline, Text High; destructive: text-only with confirmation.
 - Never colour alone: every plan has a glyph and a label (accessibility; under tritanopia Iris sits close to sage and Data Muted).
 - Glass (`expo-blur`) only on floating layers (tab bar, sheets, morph modal), canvas tint ≥ 0.70, Text High only. Reduce Transparency and Android: solid raised.
-- One ambient glow per screen at most: Today's plan glow behind the dial (`opacity.glow` 0.16). No other glow, no neon, no gradient text.
+- One ambient glow per screen at most: Today's plan glow behind the dial (`opacity.glow` 0.16), and Welcome's sage "first light" from the horizon (`opacity.firstLight` 0.14; REDESIGN-PROMPT §1, approved 2 Oct). No other glow, no neon, no gradient text.
 
 ## Spacing, type, shape
 

@@ -1,4 +1,5 @@
-// Layout plan. Job: change any consent as easily as it was given. Focal element: the four choices. Quiet: licences and demo tools.
+// Layout plan. Job: change any consent as easily as it was given. Focal element: the four choices. Quiet: the intro line.
+// Opened from Profile, Privacy (D2: Settings folded into Profile; connections and licences moved there).
 // The same ChoiceGroup as the consent screen, so withdrawing is exactly as easy as allowing (MASTER_PROMPT §7).
 import { useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -8,9 +9,9 @@ import { copy } from '@copy';
 import { purposes, useAppState } from '@state';
 import { answerOptions } from '@state/answers';
 import { space } from '@tokens';
-import { ChoiceGroup, LinkRow, ScreenHeader, Section, Text, useTheme } from '@ui';
+import { ChoiceGroup, ScreenHeader, Section, Text, useTheme } from '@ui';
 
-export default function SettingsScreen() {
+export default function PrivacyScreen() {
   const { color } = useTheme();
   const router = useRouter();
   const app = useAppState();
@@ -19,11 +20,11 @@ export default function SettingsScreen() {
     <SafeAreaView style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
       <ScrollView contentContainerStyle={styles.content}>
         <ScreenHeader
-          title={copy.settings.title}
-          onBack={() => (router.canGoBack() ? router.back() : router.replace('/'))}
+          title={copy.privacy.title}
+          onBack={() => (router.canGoBack() ? router.back() : router.replace('/profile'))}
         />
 
-        <Section title={copy.settings.privacy} note={copy.settings.privacyNote}>
+        <Section title={copy.profile.consents} note={copy.privacy.intro}>
           {purposes.map((purpose) => (
             <View key={purpose} style={styles.purpose}>
               <Text variant="bodyStrong">{copy.consent.purposes[purpose].name}</Text>
@@ -40,30 +41,6 @@ export default function SettingsScreen() {
           ))}
         </Section>
 
-        <Section title={copy.settings.connections}>
-          <View>
-            <LinkRow
-              label={copy.settings.healthRow.label}
-              caption={copy.settings.healthRow.status}
-              onPress={() => router.push('/health-sync')}
-            />
-            <LinkRow
-              label={copy.settings.calendarWriteRow.label}
-              caption={copy.settings.calendarWriteRow.status}
-              divider={false}
-              onPress={() => router.push('/calendar-write')}
-            />
-          </View>
-        </Section>
-
-        <Section title={copy.settings.licences}>
-          <Text variant="caption" tone="secondary">
-            {copy.settings.fonts}
-          </Text>
-          <Text variant="caption" tone="secondary">
-            {copy.settings.model}
-          </Text>
-        </Section>
       </ScrollView>
     </SafeAreaView>
   );

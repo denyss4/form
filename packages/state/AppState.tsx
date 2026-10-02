@@ -7,6 +7,8 @@ import type { DailyLog, FormResult } from '@model';
 import type { EveningAnswers } from '@planner/dailyLog';
 import type { PlanId } from '@tokens';
 
+import { defaultPrefs, defaultProfile, type Account, type NotificationPrefs, type Profile } from './profile';
+
 export type Purpose = 'scoring' | 'personalModel' | 'calendar' | 'health';
 export const purposes: Purpose[] = ['scoring', 'personalModel', 'calendar', 'health'];
 
@@ -50,6 +52,12 @@ interface State {
   logs: Record<string, EveningAnswers>;
   dailyLogs: Record<string, DailyLog>; // the model's view of each saved log, so tomorrow's forecast can build on it
   forecasts: Record<string, Forecast>; // by the morning the forecast is for
+  // Mocked auth (REDESIGN-PROMPT §5): accounts made on this phone this launch, by name and email only. No password is ever kept.
+  accounts: Account[];
+  account: Account | null; // signed in, or null for a guest
+  photo: string | null; // a local image URI, in memory only
+  profile: Profile;
+  prefs: NotificationPrefs;
 }
 
 interface AppState extends State {
@@ -71,6 +79,16 @@ interface AppState extends State {
   /** The scripted clock moves to the next morning. */
   advanceTo: (day: string) => void;
   resetDemo: () => void;
+  signUp: (account: Account) => void;
+  /** Signs in an account made on this phone this launch (or the demo account). False when no account uses the email. */
+  signIn: (email: string) => boolean;
+  signOut: () => void;
+  deleteAccount: () => void;
+  changeEmail: (email: string) => void;
+  saveProfile: (changes: { name?: string; photo?: string | null; profile: Profile }) => void;
+  setPrefs: (changes: Partial<NotificationPrefs>) => void;
+  /** Delete my data: everything on this phone goes, and Form starts again at Welcome. */
+  deleteData: () => void;
 }
 
 const empty: State = {
@@ -89,7 +107,14 @@ const empty: State = {
   logs: {},
   dailyLogs: {},
   forecasts: {},
+  accounts: [],
+  account: null,
+  photo: null,
+  profile: defaultProfile,
+  prefs: defaultPrefs,
 };
+
+const sameEmail = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
 
 const AppStateContext = createContext<AppState | null>(null);
 
@@ -113,7 +138,13 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       completeOnboarding: () => setState((s) => ({ ...s, onboarded: true })),
       markWelcomePlayed: () => setState((s) => (s.welcomePlayed ? s : { ...s, welcomePlayed: true })),
       setOnboardingPath: (onboardingPath) => setState((s) => ({ ...s, onboardingPath })),
-      setNotifications: (notifications) => setState((s) => ({ ...s, notifications })),
+      // Allowing notifications turns on both the morning plan and the evening reminder; Profile can change either.
+      setNotifications: (notifications) =>
+        setState((s) => ({
+          ...s,
+          notifications,
+          prefs: notifications === 'allowed' ? { ...s.prefs, morningPlan: true, eveningReminder: true } : s.prefs,
+        })),
       connectCalendar: () => setState((s) => ({ ...s, calendar: 'connected' })),
       setSuggestion: (suggestion) => setState((s) => ({ ...s, suggestion })),
       setDemoPhase: (demoPhase) => setState((s) => ({ ...s, demoPhase })),
@@ -135,6 +166,44 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       // The next morning: the demo clock goes back to morning with it.
       advanceTo: (day) => setState((s) => ({ ...s, demoDay: day, demoPhase: 'morning' })),
       resetDemo: () => setState(empty),
+      signUp: (account) =>
+        setState((s) => ({
+          ...s,
+          accounts: [...s.accounts.filter((a) => !sameEmail(a.email, account.email)), account],
+          account,
+        })),
+      signIn: (email) => {
+        const found = state.accounts.find((a) => sameEmail(a.email, email));
+        if (found) setState((s) => ({ ...s, account: found }));
+        return Boolean(found);
+      },
+      signOut: () => setState((s) => ({ ...s, account: null, photo: null })),
+      deleteAccount: () =>
+        setState((s) => ({
+          ...s,
+          accounts: s.account ? s.accounts.filter((a) => !sameEmail(a.email, s.account?.email ?? '')) : s.accounts,
+          account: null,
+          photo: null,
+        })),
+      changeEmail: (email) =>
+        setState((s) => {
+          if (!s.account) return s;
+          const account = { ...s.account, email: email.trim() };
+          return { ...s, account, accounts: s.accounts.map((a) => (sameEmail(a.email, s.account?.email ?? '') ? account : a)) };
+        }),
+      saveProfile: ({ name, photo, profile }) =>
+        setState((s) => {
+          const account = s.account && name !== undefined ? { ...s.account, name: name.trim() } : s.account;
+          return {
+            ...s,
+            profile,
+            photo: photo === undefined ? s.photo : photo,
+            account,
+            accounts: account ? s.accounts.map((a) => (sameEmail(a.email, account.email) ? account : a)) : s.accounts,
+          };
+        }),
+      setPrefs: (changes) => setState((s) => ({ ...s, prefs: { ...s.prefs, ...changes } })),
+      deleteData: () => setState(empty),
     }),
     [state, setConsent],
   );
