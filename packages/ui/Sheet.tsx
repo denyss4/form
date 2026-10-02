@@ -18,6 +18,7 @@ import X from 'lucide-react-native/icons/x';
 import { copy } from '@copy';
 import { motion, opacity, radius, shadow, size, space } from '@tokens';
 
+import { GlassBar } from './GlassBar';
 import { IconButton } from './ScreenHeader';
 import { Text } from './Text';
 import { useTheme } from './theme';
@@ -31,6 +32,7 @@ export function Sheet({
   accessory,
   children,
   footer,
+  glass = false,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -38,6 +40,8 @@ export function Sheet({
   accessory?: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
+  /** A glass sheet (REDESIGN-PROMPT §2.2). Only for content in Text High: Text Muted never sits on glass. The evening log stays solid. */
+  glass?: boolean;
 }) {
   const { color, scheme } = useTheme();
   const reduceMotion = useReducedMotion();
@@ -111,10 +115,12 @@ export function Sheet({
           style={[
             styles.sheet,
             shadow.sheet,
-            { backgroundColor: color.bg.raised, maxHeight: height * MAX_HEIGHT, paddingBottom: insets.bottom + space.md },
+            glass ? styles.glass : { backgroundColor: color.bg.raised },
+            { maxHeight: height * MAX_HEIGHT, paddingBottom: insets.bottom + space.md },
             sheet,
           ]}
         >
+          {glass ? <GlassBar /> : null}
           <View style={styles.header}>
             <Text variant="heading" accessibilityRole="header" level={2} style={styles.title}>
               {title}
@@ -148,6 +154,7 @@ const styles = StyleSheet.create({
     minHeight: size.touch,
   },
   title: { flex: 1 },
+  glass: { backgroundColor: 'transparent', overflow: 'hidden' },
   content: { paddingHorizontal: space.margin, paddingVertical: space.sm, gap: space.md },
   footer: { paddingHorizontal: space.margin, paddingTop: space.sm, gap: space.xs },
 });

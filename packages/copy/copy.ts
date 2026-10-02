@@ -115,6 +115,77 @@ const base = {
     notice: "Form is for planning. It doesn't diagnose or treat anything.",
   },
 
+  // Welcome (REDESIGN-PROMPT §4.1, concept A "Dawn over the week").
+  welcome: {
+    wordmark: 'Form',
+    tagline: "Plan your week around how you'll feel.",
+    createAccount: 'Create account',
+    signIn: 'Sign in',
+    guest: 'Continue without an account',
+    legal: 'Terms and privacy',
+    a11y: "Form. Plan your week around how you'll feel. A sample week of plans rises over a horizon.",
+  },
+
+  // The Legal sheet covers terms and privacy only, never health-data consent (CLAUDE.md, consent rules).
+  legal: {
+    title: 'Terms and privacy',
+    body: 'Using Form means you agree to these:',
+    terms: 'Terms of use',
+    privacy: 'Privacy notice',
+    health: 'Health data consent is asked separately, one purpose at a time.',
+    notice: "Form is for planning. It doesn't diagnose or treat anything.",
+    // [GAP G51: the terms of use and the privacy notice are not written yet. Needs legal review.]
+    placeholder: (doc: string) => `${doc} is not written yet. It needs legal review before release.`,
+    back: 'Back',
+  },
+
+  // Carousel: three slides, slide 1 carries the whole value on its own.
+  intro: {
+    skip: 'Skip',
+    next: 'Next',
+    done: 'Continue',
+    page: (n: number, total: number) => `Page ${n} of ${total}`,
+    chipA11y: (plan: string, score: number, lo: number, hi: number) => `Example: ${plan}. Form score ${score}. Likely ${lo} to ${hi}.`,
+    weekA11y: 'Example: a week of plans, one glyph per day.',
+    logRows: ['How hard it felt', 'Alcohol', 'Anything unusual'],
+    logA11y: 'Example: the evening log, three questions, all answered.',
+    slides: [
+      { title: 'One plan for your day, with the reasons.', body: "Each morning Form turns last night's log into a plan and a likely range." },
+      { title: 'See where your hard sessions fit the week.', body: "Your calendar sets each day's type, and Form suggests where a hard session sits better." },
+      { title: 'Log tonight in three taps.', body: "How hard it felt, alcohol, anything unusual. That is all tomorrow's plan needs." },
+    ],
+  },
+
+  stepper: {
+    short: (step: number, total: number) => `Step ${step} of ${total}`,
+    label: (step: number, total: number, name: string) => `Step ${step} of ${total}, ${name}`,
+    steps: { account: 'Account', consent: 'Consent', calendar: 'Calendar', notifications: 'Notifications' },
+  },
+
+  notifications: {
+    title: 'Your plan, each morning',
+    body: 'Get your plan each morning and a reminder to log at night.',
+    allow: 'Allow notifications',
+    later: 'Not now',
+    cardApp: 'Form',
+    cardTime: 'now',
+    card: (plan: string, lo: number, hi: number) => `${plan}. Likely ${lo}–${hi}`,
+    cardA11y: (plan: string, lo: number, hi: number) => `Example notification: ${plan}. Likely ${lo} to ${hi}.`,
+    demoNote: 'Demo: the system prompt is skipped in the demo build.',
+    error: {
+      title: "Couldn't ask for notifications",
+      body: 'Your plan still appears on Today each morning. You can turn notifications on later in the phone settings.',
+      continue: 'Continue',
+    },
+  },
+
+  // [GAP G54: account screens are built in D2. Until then the account buttons lead here.]
+  account: {
+    title: 'Accounts arrive next',
+    body: 'Sign up and sign in are being built. Form works fully without an account.',
+    continue: 'Continue without an account',
+  },
+
   // [GAP G26: consent wording is demo text. Where the personal model runs and where data is stored are not decided. Needs legal review.]
   consent: {
     title: 'What Form may use',

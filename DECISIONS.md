@@ -165,3 +165,14 @@ Source: `docs/prompts/REDESIGN-PROMPT.md`. Plan: Step 1 sections A–H, approved
 - **Against spec R3:** day letters and dates stop growing at 2× text, and the glyph drops to the small size from 2×. R3 lets the date wrap, but a number cannot wrap: at 3× two-digit dates ran together and 48 pt glyphs touched in 50 pt columns.
 - The suggestion's reason is built from the engine's reasons ("Heavy legs on Thursday sits before a late dinner and a Friday flight."); "late" is backed by the engine's 19:00 rule. After a move: "Heavy legs moved to Wednesday." with Undo (restores the week and the suggestion). "Keep Thursday" dismisses it for the week.
 - The dashed "estimated" glyph is retired everywhere: estimated plans show a solid glyph in Text Muted with the word or the ring.
+
+## D1: Welcome and onboarding (2 Oct 2026)
+
+- Order (REDESIGN-PROMPT §4.2): Welcome → (Create account / Sign in → account step, or Continue without an account) → carousel → consent → calendar (only if allowed) → notifications pre-prompt → Today. Onboarding completes on the pre-prompt, not on consent.
+- Welcome A, "Dawn over the week": the wordmark in the `score` style (Manrope 800, 72; capped at 1.3× like the dial), the tagline in Text Muted, the demo week's seven plan glyphs rising through a thin horizon line, a faint sage "first light" glow (0.14). 1.1 s, once per launch (G52), tap to skip, Reduce Motion shows the end state. Liquid metal on "Create account" waits for D3.
+- **Left-aligned wordmark and tagline**, against the centred Step 1 wireframe: CLAUDE.md centres only the dial and empty-state art.
+- Per white-space audit E: the three actions sit together under the horizon (4 pt apart, 48 pt targets), and the info icon moved to the top right. The carousel has a plain canvas behind every slide, not the dimmed chips and glyphs §4.2 describes, because they competed with the focal object.
+- Carousel: slide 1 is the demo's first-morning result from the fixtures (Train light, 51, Likely 34–68); slide 2 the Week strip; slide 3 the log's three questions. Skip is always visible; screen readers hear "Page n of 3". Titles cap at 2× text, like screen titles.
+- Stepper: guest 3 steps (consent, calendar, notifications); account path 4 (account first). The total stays fixed when calendar is declined, so the count jumps from 1 to 3 rather than changing while consent is being answered.
+- Notifications pre-prompt: "Allow notifications" (primary) and "Not now" (text). Unlike the per-purpose consents, this is a system permission, not health-data consent, so the equal-weight rule does not apply; "Not now" is still a full 48 pt target. The real system prompt runs only when the demo clock is off and not on the web.
+- The Legal sheet is glass, Text High only (Text Muted on glass is 2.11:1). It covers terms and privacy only and says that health-data consent is asked separately.

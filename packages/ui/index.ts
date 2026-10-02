@@ -22,6 +22,7 @@ export type { ScoreDialProps, ScoreDialReveal } from './ScoreDial';
 export { Sheet } from './Sheet';
 export { Slider } from './Slider';
 export { Skeleton } from './Skeleton';
+export { Stepper } from './Stepper';
 export { Text } from './Text';
 export { useFontScale } from './useFontScale';
 export { useIconSize } from './useIconSize';

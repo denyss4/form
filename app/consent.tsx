@@ -7,16 +7,18 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { copy } from '@copy';
+import { useOnboardingStep } from '@features/onboardingSteps';
 import { purposes, useAppState } from '@state';
 import { answerOptions } from '@state/answers';
 import { space } from '@tokens';
-import { Button, ChoiceGroup, ScreenHeader, Text, useTheme } from '@ui';
+import { Button, ChoiceGroup, ScreenHeader, Stepper, Text, useTheme } from '@ui';
 
 export default function Consent() {
   const { color } = useTheme();
   const router = useRouter();
   const app = useAppState();
   const params = useLocalSearchParams<{ preset?: string }>();
+  const step = useOnboardingStep('consent');
 
   // Review only: ?preset=partial or ?preset=all fills answers on arrival.
   useEffect(() => {
@@ -29,15 +31,14 @@ export default function Consent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.preset]);
 
-  const next = () => {
-    app.completeOnboarding();
-    router.replace(app.consents.calendar === 'allow' ? '/connect-calendar' : '/today');
-  };
+  // Onboarding goes on to the calendar (if allowed), then the notifications pre-prompt, which completes it (REDESIGN-PROMPT §4.2 order).
+  const next = () => router.push(app.consents.calendar === 'allow' ? '/connect-calendar' : '/notifications');
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
       <ScrollView contentContainerStyle={styles.content}>
         <ScreenHeader title={copy.consent.title} onBack={() => router.back()} />
+        <Stepper {...step} />
         <Text variant="body" tone="secondary">
           {copy.consent.intro}
         </Text>

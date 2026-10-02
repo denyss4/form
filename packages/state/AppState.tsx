@@ -14,6 +14,9 @@ export type Answer = 'allow' | 'decline';
 export type SuggestionStatus = 'open' | 'moved' | 'kept';
 /** The demo clock's time of day. Used only when the demo build turns the demo clock on (see clock.ts). */
 export type DemoPhase = 'morning' | 'evening';
+/** How the person left Welcome. The account path adds an account step to the onboarding stepper (auth is mocked, D2). */
+export type OnboardingPath = 'guest' | 'account';
+export type NotificationsAnswer = 'allowed' | 'declined';
 
 /**
  * This morning's 0-10 rating (spec R2). It is the model's training label, so it is only ever collected before the score is seen:
@@ -33,6 +36,9 @@ export interface Forecast {
 
 interface State {
   onboarded: boolean;
+  welcomePlayed: boolean; // the Welcome sequence plays once per launch (GAP G52: once per install needs storage)
+  onboardingPath: OnboardingPath;
+  notifications: NotificationsAnswer | null;
   consents: Record<Purpose, Answer | null>;
   calendar: 'none' | 'connected';
   suggestion: SuggestionStatus;
@@ -50,6 +56,9 @@ interface AppState extends State {
   allAnswered: boolean;
   setConsent: (purpose: Purpose, answer: Answer) => void;
   completeOnboarding: () => void;
+  markWelcomePlayed: () => void;
+  setOnboardingPath: (path: OnboardingPath) => void;
+  setNotifications: (answer: NotificationsAnswer) => void;
   connectCalendar: () => void;
   setSuggestion: (status: SuggestionStatus) => void;
   /** The pre-reveal step: a tap stores the rating, Skip stores nothing. Either way the step is done for the day. */
@@ -66,6 +75,9 @@ interface AppState extends State {
 
 const empty: State = {
   onboarded: false,
+  welcomePlayed: false,
+  onboardingPath: 'guest',
+  notifications: null,
   consents: { scoring: null, personalModel: null, calendar: null, health: null },
   calendar: 'none',
   suggestion: 'open',
@@ -99,6 +111,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       allAnswered: purposes.every((p) => state.consents[p] !== null),
       setConsent,
       completeOnboarding: () => setState((s) => ({ ...s, onboarded: true })),
+      markWelcomePlayed: () => setState((s) => (s.welcomePlayed ? s : { ...s, welcomePlayed: true })),
+      setOnboardingPath: (onboardingPath) => setState((s) => ({ ...s, onboardingPath })),
+      setNotifications: (notifications) => setState((s) => ({ ...s, notifications })),
       connectCalendar: () => setState((s) => ({ ...s, calendar: 'connected' })),
       setSuggestion: (suggestion) => setState((s) => ({ ...s, suggestion })),
       setDemoPhase: (demoPhase) => setState((s) => ({ ...s, demoPhase })),

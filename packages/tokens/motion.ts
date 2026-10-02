@@ -27,5 +27,11 @@ export const motion = {
     duration: 1600,
     easing: [0.42, 0, 0.58, 1], // ease-in-out
   },
+  // Welcome, 'Dawn over the week' (REDESIGN-PROMPT §4.1): the wordmark assembles and the week's glyphs rise, in 1.2 s at most, once per
+  // launch (GAP G52: once per install needs storage). Tap skips to the end state; Reduce Motion shows it static.
+  welcome: {
+    duration: 1100,
+    easing: [0.215, 0.61, 0.355, 1], // ease-out cubic
+  },
   reducedFade: 120, // ms, under the 150 ms limit, when reduce-motion is on
 } as const;

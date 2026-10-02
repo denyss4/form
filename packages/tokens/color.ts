@@ -88,4 +88,9 @@ export const opacity = {
   glow: 0.16,
   // Glass (expo-blur): the canvas tint over the blur. At 0.70 Text High is 6.05:1 over pure white behind it, the worst case.
   glassTint: 0.7,
+  // Welcome (REDESIGN-PROMPT §4.1): the horizon line, the week's glyphs at rest, and the sage first-light glow. Decorative only; nothing
+  // is read from them (the screen's text is Text High on the canvas).
+  horizon: 0.3,
+  welcomeGlyph: 0.6,
+  firstLight: 0.14,
 } as const;
