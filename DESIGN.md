@@ -2,28 +2,21 @@
 name: Form
 description: Plan your week around how you'll feel.
 colors:
-  night: "#0E1B2A"
-  dusk: "#172A3E"
-  moonlight: "#E8EEF5"
-  haze: "#9DB0C3"
-  control-stroke: "#6B7C8D"
-  ember-night: "#FF8A66"
-  ochre-night: "#F2BE5C"
-  tide-night: "#6FB9DB"
-  iris-night: "#A99BF2"
-  dawn: "#F3F6FA"
-  white-raised: "#FFFFFF"
-  ink: "#13263A"
-  slate-text: "#4A5B6C"
-  hairline-light: "#C9D3DD"
-  ember: "#B83A1B"
-  ember-field: "#FBE8E1"
-  ochre: "#8A5A10"
-  ochre-field: "#FAF0DA"
-  tide: "#1F6280"
-  tide-field: "#E1EEF4"
-  iris: "#51479E"
-  iris-field: "#ECE9F7"
+  surface-100: "#16181A"
+  surface-200: "#232528"
+  sunken: "#1d1f22"
+  text-high: "#F5F5F7"
+  text-muted: "#8E9298"
+  control-stroke: "#7d828a"
+  hairline: "#2e3135"
+  sage: "#b3be8b"
+  sage-pressed: "#9ba47a"
+  status-over: "#C87A65"
+  data-muted: "#94A8B6"
+  marigold: "#faab3f"
+  butter: "#eada78"
+  sea-glass: "#75d1c5"
+  iris: "#b0a6ed"
 typography:
   display:
     fontFamily: "Manrope-ExtraBold, Manrope, system-ui, sans-serif"
@@ -66,8 +59,9 @@ typography:
     fontWeight: 400
     lineHeight: "18px"
 rounded:
-  control: "10px"
-  sheet: "20px"
+  control: "12px"
+  surface: "16px"
+  sheet: "24px"
   full: "999px"
 spacing:
   xxs: "4px"
@@ -81,45 +75,59 @@ spacing:
   margin: "20px"
 components:
   button-primary:
-    backgroundColor: "{colors.moonlight}"
-    textColor: "{colors.night}"
+    backgroundColor: "{colors.sage}"
+    textColor: "{colors.surface-100}"
     typography: "{typography.body-strong}"
     rounded: "{rounded.control}"
     padding: "0 24px"
     height: "48px"
+  button-primary-pressed:
+    backgroundColor: "{colors.sage-pressed}"
+    textColor: "{colors.surface-100}"
+    rounded: "{rounded.control}"
+    height: "48px"
   button-secondary:
-    textColor: "{colors.moonlight}"
+    textColor: "{colors.text-high}"
     typography: "{typography.body-strong}"
     rounded: "{rounded.control}"
     padding: "0 24px"
     height: "48px"
   button-text:
-    textColor: "{colors.moonlight}"
+    textColor: "{colors.text-high}"
     typography: "{typography.body-strong}"
     height: "48px"
   choice-option:
-    textColor: "{colors.moonlight}"
+    textColor: "{colors.text-high}"
     typography: "{typography.body-strong}"
     rounded: "{rounded.full}"
-    padding: "0 16px"
+    padding: "0 12px"
     height: "48px"
   choice-option-selected:
-    backgroundColor: "{colors.moonlight}"
-    textColor: "{colors.night}"
+    backgroundColor: "{colors.sage}"
+    textColor: "{colors.surface-100}"
     typography: "{typography.body-strong}"
     rounded: "{rounded.full}"
-    padding: "0 16px"
+    padding: "0 12px"
     height: "48px"
   sheet:
-    backgroundColor: "{colors.dusk}"
+    backgroundColor: "{colors.surface-200}"
     rounded: "{rounded.sheet}"
     padding: "8px 20px 16px"
-  slider-thumb:
-    backgroundColor: "{colors.moonlight}"
-    rounded: "{rounded.full}"
-    size: "28px"
+  day-detail:
+    backgroundColor: "{colors.surface-200}"
+    rounded: "{rounded.surface}"
+    padding: "16px"
+  week-column-selected:
+    backgroundColor: "{colors.surface-200}"
+    rounded: "{rounded.control}"
+    width: "50px"
+  rating-target:
+    textColor: "{colors.text-high}"
+    typography: "{typography.body-strong}"
+    rounded: "{rounded.control}"
+    height: "48px"
   fit-segment:
-    backgroundColor: "{colors.moonlight}"
+    backgroundColor: "{colors.text-high}"
     rounded: "{rounded.full}"
     height: "12px"
 ---
@@ -130,139 +138,153 @@ components:
 
 **Creative North Star: "The Night Planner"**
 
-Form looks like a calm dark desk at the end of the day. One plan is set down quietly, and colour appears only where the plan lives: the dial's arc, the plan's title on Today, and one glyph per row in a list. Everything else is moonlight text on a deep navy night. The system is calm, precise and honest. It shows a likely range instead of a falsely exact number, says which inputs it used, and names the reasons.
+Form is a calm planning desk at the end of the day, now in "Lichen": a muted sage on dark stone. One plan is set down quietly, and colour appears only where it carries meaning. The plan's colour marks the dial, Today's title, the glyphs in the Week strip and a faint glow behind the score. Sage marks the one action on a screen and the thing you chose. Everything else is off-white text on stone. The system is calm, precise and honest. It shows a likely range instead of a falsely exact number, says which inputs are missing, and names the reasons.
 
-Density is low and the rhythm is generous: one focal element per screen, grouped by space before lines, and lines before containers. There are no cards. Depth comes from one raised surface (the bottom sheet) and nothing else. Type does the work of hierarchy: Manrope, set tight, for what you decide on; Source Sans 3 for everything you read.
+Density is low and the rhythm is generous. Each screen has one focal element: the dial on Today, the seven-day strip on Week, the fit sentence on Progress. Space groups the content and dividers are removed wherever spacing already does the work (white-space guidelines). Depth comes only from floating layers: the glass tab bar and the bottom sheet. Manrope, set tight, carries what you decide on; Source Sans 3 carries what you read.
 
-Dark is the app theme (user decision, 1 Oct 2026). The light theme ("Dawn" and "Ink") stays defined and is used in the gallery.
+Dark Lichen is the app theme (approved 1 Oct 2026). The previous light palette is kept for the gallery only and is not maintained.
 
 **Key Characteristics:**
-- One flat dark canvas; colour reserved for the plan.
-- One focal element per screen: the dial on Today, the plan glyphs on Week, the fit sentence on Progress.
-- Honest numbers: a range, an inputs count, signed drivers.
+- Dark stone surfaces; sage only for the one action and for selection; plan colours only for plans.
+- One focal element per screen, isolated by space (nothing within 32 pt of the dial).
+- Honest numbers: a range, a missing-inputs line when inputs are missing, signed drivers.
+- Glass only on floating layers, with Text High only.
 - Tight display type, open body type, 48 pt targets everywhere.
 
 ## Colors
 
-A deep navy night with moonlight text and four plan hues that each mean exactly one plan.
+Dark stone with off-white text, one sage accent, and four plan hues that each mean exactly one plan.
 
 ### Primary
-- **Moonlight** (#E8EEF5): primary text, icons, the primary button fill, the selected choice pill, the slider's filled track and thumb, filled Plan Fit segments, focus rings.
+- **Sage** (#b3be8b): the primary button fill (canvas text on it, 9.03:1), its pressed state (#9ba47a), focus rings, selected choice pills, the active tab icon, the outline on the two days a move would change. At most once per screen as an action. Never a plan colour, never decoration.
 
 ### Secondary
 The four plan hues. Each is the colour of one plan and nothing else.
-- **Ember Night** (#FF8A66): Train hard.
-- **Ochre Night** (#F2BE5C): Train light.
-- **Tide Night** (#6FB9DB): Recover.
-- **Iris Night** (#A99BF2): Deep-work day.
+- **Marigold** (#faab3f): Train hard.
+- **Butter** (#eada78): Train light.
+- **Sea Glass** (#75d1c5): Recover.
+- **Iris** (#b0a6ed): Deep-work day.
+
+### Tertiary
+- **Status Over** (#C87A65): errors, destructive text and over-limit states, always with an icon and words.
+- **Data Muted** (#94A8B6): non-plan chart data only, never next to Iris in one chart.
 
 ### Neutral
-- **Night** (#0E1B2A): the canvas behind every screen, the tab bar and the Today field (the field equals the canvas in dark).
-- **Dusk** (#172A3E): the one raised surface (bottom sheets), and decorative hairlines between list rows.
-- **Haze** (#9DB0C3): secondary text, captions, the "Fit" status, estimated plans.
-- **Control Stroke** (#6B7C8D): outlines of unselected choice pills, the slider track and its step dots. Shared with the light theme.
-
-### Light theme (alternate)
-Dawn (#F3F6FA) canvas, White (#FFFFFF) raised, Ink (#13263A) text and primary fill, Slate (#4A5B6C) secondary, Light Hairline (#C9D3DD). Plan hues Ember (#B83A1B), Ochre (#8A5A10), Tide (#1F6280), Iris (#51479E), each with a pale field tint behind the Today dial (#FBE8E1, #FAF0DA, #E1EEF4, #ECE9F7).
+- **Surface 100** (#16181A): the canvas behind every screen.
+- **Surface 200** (#232528): the one raised level: sheets, the selected Week column, the day detail, the tab bar's solid fallback.
+- **Sunken** (#1d1f22): input fills and pressed rows.
+- **Text High** (#F5F5F7): text, icons, filled Plan Fit segments, the today underline; the only text on glass.
+- **Text Muted** (#8E9298): secondary text, captions, estimated plans. Never on glass.
+- **Control Stroke** (#7d828a): outlined pills, secondary button outlines, the dial track, the empty Day 1 dial.
+- **Hairline** (#2e3135): decorative edges only (the glass bar's top edge).
 
 ### Named Rules
-**The Plan Owns Colour Rule.** A plan hue appears only where that plan is shown: the dial arc and range bracket, the plan title on Today, and the plan glyph in a list row. In lists the plan's word is plain moonlight text.
+**The Plan Owns Its Colour Rule.** A plan hue appears only where that plan is shown: the dial arc and range band, Today's title, the plan glyph, and the Today glow. In lists and details the plan's word is plain text.
 
-**The Never Alone Rule.** A plan is never colour alone. Every plan shows its glyph (Dumbbell, Footprints, Moon, Focus) and its label.
+**The One Sage Rule.** Sage marks the single action on a screen and the state of what you chose. A second sage button on one screen is a bug.
 
-**The Night Field Rule.** In dark, Today has no colour field. The field token equals Night, because the dial's reveal cover is drawn in the field colour and must match what is behind it.
+**The Never Alone Rule.** A plan is never colour alone: every plan shows its glyph (Dumbbell, Footprints, Moon, Focus) and its label. Estimated days add a hollow ring and the word "Estimated".
+
+**The Glass Carries Text High Rule.** Glass sits at a canvas tint of at least 0.70, and only Text High goes on it (6.05:1 at the worst case). Text Muted on glass drops to 2.11:1.
 
 ## Typography
 
 **Display Font:** Manrope (ExtraBold 800, Bold 700, SemiBold 600; system sans fallback)
 **Body Font:** Source Sans 3 (Regular 400, SemiBold 600; system sans fallback)
 
-**Character:** Manrope is geometric and decisive, set tight for the things you act on. Source Sans 3 is open and plain, for the things you read. The fonts are fixed by the user.
+**Character:** Manrope is geometric and decisive, set tight for the things you act on; Source Sans 3 is open and plain for the things you read. The fonts are fixed by the user.
 
 ### Hierarchy
-- **Display** (800, 72/72, −1.5 tracking, tabular figures): the Form score inside the dial, and nowhere else. Scales to 1.3× at most so it never wraps.
-- **Headline** (700, 28/34, −0.6): one screen title per screen. On Today it is the plan, in the plan's hue, with its glyph.
-- **Title** (600, 20/26, −0.3): section headings ("What moved your score") and the sheet title.
+- **Display** (800, 72/72, −1.5, tabular): the Form score inside the dial only; scales to 1.3× at most.
+- **Headline** (700, 28/34, −0.6): one screen title per screen; on Today it is the plan, in its hue, with its glyph. Stops growing at 2×.
+- **Title** (600, 20/26, −0.3): section headings and the sheet title.
 - **Plan** (700, 17/22, −0.2): a plan label where the plan is the subject.
-- **Body** (400, 16/24): sentences, sessions, list rows. About 70 characters per line at most.
-- **Body Strong** (600, 16/24): button labels, driver names, day names, signed values.
-- **Label** (400, 13/18): dates, captions, tags, legends, helper lines.
+- **Body** (400, 16/24): sentences, sessions, the plan word in lists and details.
+- **Body Strong** (600, 16/24): buttons, driver and day names, signed values, the Week strip dates.
+- **Label** (400, 13/18): dates, captions, tags, legends, the Week strip day letters.
 
 ### Named Rules
-**The Decide and Read Rule.** Manrope never sets a paragraph and is never italic. Anything longer than a label is Source Sans 3.
+**The Decide and Read Rule.** Manrope never sets a paragraph and is never italic.
 
 **The Tabular Rule.** Every number that changes uses tabular figures.
 
-**The Wrap Rule.** Dynamic Type stays on. Text wraps and is never truncated; a label cell shrinks and wraps rather than running off the screen.
+**The Wrap Rule.** Dynamic Type stays on; text wraps and is never truncated. The exceptions are chrome that cannot wrap: tab labels stop at 1.3×; the Week strip's letters and dates stop at 2× and its glyphs drop to the small size.
 
 ## Layout
 
 A single left-aligned column with a 20 pt margin on both sides, on a 4 pt base (4, 8, 12, 16, 24, 32, 48, 64). Inside a group 12 to 16; between groups 32; before a new section 48. Only the ScoreDial and empty-state art are centred.
 
-Each screen is a header (title, a one-line caption, the settings gear on the right), then groups separated by space, then hairlines between list rows. A footer action sits in the thumb zone above the tab bar with no rule between them. Safe areas come from the platform. Lists are rows, never grids: a day per row, the day name on the left, the plan glyph and word on the right, the session under it, the tags under that.
+Each tab screen is a header (title, a one-line caption, the settings gear), then its focal element, then its groups. The tab bar floats on glass, so every tab screen reserves the bar's height at its bottom and its content scrolls under the glass. The Week strip is seven equal columns across the width (50 pt each at 390 pt).
 
 ### Named Rules
-**The Space First Rule.** Group with space; add a hairline only between rows of a list; add a container only for a sheet.
+**The Space First Rule.** Group with space. Remove a divider wherever space already groups the content; keep one only where rows are dense and tappable.
+
+**The Gallery Isolation Rule.** The focal element sits alone in its field: nothing within 32 pt of the dial on Today.
 
 ## Elevation & Depth
 
-Flat. Depth is one step: the bottom sheet, on Dusk, with a soft shadow and a scrim that dims the screen behind it (Night at 72% in dark, Ink at 40% in light). Nothing else casts a shadow. Lists, messages and summaries sit directly on the canvas.
+Flat content on stone, with two floating layers. The tab bar floats on glass (`expo-blur`, canvas tint 0.70, a hairline top edge; solid Surface 200 under Reduce Transparency and on Android). The bottom sheet sits on Surface 200 with a soft shadow and a scrim of the canvas at 72%. Content surfaces (the Week day detail) are Surface 200 with no shadow. One ambient glow is allowed per screen: on Today, the plan colour at 16% behind the dial, fading to nothing.
 
 ### Shadow Vocabulary
-- **Sheet** (`shadow-color: Ink; opacity 0.12; radius 24; offset 0 −8; elevation 16`): bottom sheets only.
+- **Sheet** (`shadow-color: #13263A; opacity 0.12; radius 24; offset 0 −8; elevation 16`): bottom sheets only.
 
 ### Named Rules
-**The One Lift Rule.** Only the bottom sheet is raised. If something needs emphasis, give it space or weight, not a shadow.
+**The Float Only Rule.** Glass and shadow belong to floating layers only. Content never floats.
+
+**The One Glow Rule.** At most one glow per screen, behind the focal element, in the plan's colour. No neon edges, no gradient text.
 
 ## Shapes
 
-Corners follow hierarchy: gently rounded controls and inputs (10px), softer sheets and the one raised surface (20px), and full pills for choices, toggles, the slider and Plan Fit segments (999px). Lines are 1 pt hairlines for decoration and 2 pt outlines for anything interactive. The dial is a 270° arc open at the bottom, with a thin flat bracket outside it for the likely range.
+Corners follow hierarchy: controls and inputs 12 pt, the content surface 16 pt, sheets 24 pt on the top corners, and full pills for choices, the slider and Plan Fit segments. Lines are 1 pt hairlines for decoration and 2 pt outlines for anything interactive or meaningful (focus ring, today underline, the move outline). The dial is a 270° arc open at the bottom: the track first, the plan arc on top, the likely-range band last.
 
 ## Components
 
 ### Buttons
-Quiet and certain: one solid action per screen, everything else lighter.
-- **Shape:** gently rounded (10px), 48 pt tall, 24 pt side padding.
-- **Primary:** Moonlight fill, Night label in Body Strong. Full width in a footer, hugging its label inline.
-- **Secondary:** 2 pt Moonlight outline, Moonlight label.
-- **Text:** an underlined Moonlight label on the text margin, with a 48 × 48 target. Also used for destructive actions, behind a confirmation.
-- **States:** press scales to 0.97 with 0.8 opacity in 100 ms; disabled at 40% opacity; loading swaps the label for a spinner without changing size; focus draws a 2 pt Moonlight ring 2 pt outside the control.
+One sage action per screen; everything else quieter.
+- **Shape:** 12 pt corners, 48 pt tall, 24 pt side padding.
+- **Primary:** Sage fill with Surface 100 text; Sage Pressed while held. Full width in a footer or under the Week suggestion.
+- **Secondary:** a 2 pt Control Stroke outline with Text High.
+- **Text:** an underlined Text High label on the text margin, with a 48 × 48 target; also for destructive actions, behind a confirmation.
+- **States:** press scales to 0.97 with 0.8 opacity in 100 ms; disabled at 40%; loading swaps the label for a spinner; focus is a 2 pt sage ring 2 pt outside.
 
 ### Chips (choice pills)
-- **Style:** full pills, 48 pt tall, 2 pt Control Stroke outline, Moonlight label.
-- **State:** selected fills with Moonlight (covering the outline) and shows a check; Night label. Pairs such as Not now / Allow sit side by side with equal weight.
+- **Style:** full pills, 48 pt tall, 12 pt side padding, a 2 pt Control Stroke outline, Text High label centred, 20 pt kept for the checkmark on each side.
+- **State:** selected fills Sage with a check and Surface 100 text. Pairs (Not now / Allow) and 2 × 2 grids keep equal weight; nothing is preselected.
 
 ### Cards / Containers
-None. Content sits on the canvas, grouped by space and hairlines. The only container is the bottom sheet (Dusk, 20px top corners, 8 pt top, 20 pt sides, 16 pt plus the safe area at the bottom).
+One content surface: the Week day detail (Surface 200, 16 pt corners, 16 pt padding, no shadow). Spotlight-on-press arrives in D3. The bottom sheet is the only other container.
 
 ### Inputs / Fields
-- **Slider (morning check-in):** a 4 pt Control Stroke track with 8 pt step dots and the numbers 0 to 10 under them. The thumb (28 pt circle, 2 pt Moonlight outline) rests hollow on 0 until touched, then fills with Moonlight; the track fills to it. The readout above reads "7 of 10".
-- **Focus:** the shared 2 pt ring wraps the track and the numbers together.
+- **Morning rating:** eleven 51 × 48 pt targets in two rows (0–5, 6–10, same column widths), 12 pt corners, Control Stroke outline. No default value; one tap records and starts the reveal; "Skip to my plan".
 
 ### Navigation
-The platform's bottom tab bar (Today, Week, Progress) on the Night canvas with no rule above it. Icons Sun, CalendarDays, TrendingUp in 2 pt strokes. Active is Moonlight with a SemiBold label; inactive is Haze. Labels stop growing at 1.3×. Sub-screens show a "Back" link with an arrow at the top left.
+The platform tab bar (Today, Week, Progress) floating on glass. Labels are Text High (semibold when active); the active icon is Sage, the others Text High. Sub-screens show "Back" with an arrow.
 
 ### ScoreDial (signature)
-The one instrument. A 264 pt dial with a 16 pt arc in the plan hue over a faint track of the same hue, a 6 pt range bracket outside it, and the score in Display at its centre. Under it, "Likely 34–68" in Body and the inputs count in Label. The morning reveal (600 ms ease-in-out, once a day) uncovers the arc from its start to the score; under Reduce Motion it is instant.
+A 264 pt dial: a 16 pt Control Stroke track, the plan-coloured arc on top with round caps, a 6 pt range band outside it, and the score in Display at the centre. The morning reveal (600 ms, once a day) draws the arc along its length while the number and band fade in; under Reduce Motion it is instant. Behind it, the plan glow.
+
+### Week strip (signature)
+Seven columns: day letter (Label, Text Muted), date (Body Strong), plan glyph in its hue. Today has a Text High underline under the date; the selected day has the Surface 200 fill; an estimated day has a Text Muted glyph and a hollow ring; while a move is offered, the two days it changes are outlined in Sage. Accepting the move sends the session's glyph across the columns with the standard spring. VoiceOver reads each column as "Thursday 8 October, Train hard".
 
 ### Plan Fit meter
-Up to seven 12 pt full pills in a row, one per answered day. Filled Moonlight means the plan fit; a 2 pt outline means it was too hard or too easy. Shape carries the meaning, never colour; a dashed outline is reserved for "Estimated".
+One 12 pt pill per followed day: filled Text High means the plan fit, a 2 pt outline means too hard or too easy. "Did something else" days have no segment. The headline and the VoiceOver value are the same sentence.
 
 ### Driver row
-An up or down arrow, the driver's name in Body Strong with its basis ("vs. a typical day") in Label under it, and the signed value (+6, −4) in Body Strong with tabular figures on the right. Hairline between rows.
+An up or down arrow, the driver's name (Body Strong) with its basis (Label, Text Muted), and the signed value (Body Strong, tabular). 16 pt between rows, no dividers.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** keep a plan hue to the plan: the dial, the Today title, and one glyph per list row (The Plan Owns Colour Rule).
+- **Do** keep a plan hue to the plan: the dial, Today's title, the glyph, the Today glow (The Plan Owns Its Colour Rule).
 - **Do** give every plan its glyph and its word (The Never Alone Rule).
-- **Do** set Manrope tight (−0.6 headline, −0.3 title, −0.2 plan) and Source Sans 3 at default tracking.
+- **Do** use Sage for the one action and for selection only (The One Sage Rule).
+- **Do** put only Text High on glass, at a 0.70 tint or more (The Glass Carries Text High Rule).
 - **Do** use 48 between sections, 32 between groups, 12 to 16 inside a group, and a 20 pt margin.
 - **Do** keep every target at least 48 pt and every state (default, pressed, focused, disabled, loading) designed.
-- **Do** show the range and the inputs count whenever the score is shown.
 
 ### Don't:
 - **Don't** change the fonts; Manrope and Source Sans 3 are fixed by the user.
-- **Don't** put a colour field behind the Today dial in dark (The Night Field Rule).
-- **Don't** raise anything but the bottom sheet (The One Lift Rule).
+- **Don't** put Text Muted on glass, or glass on content.
+- **Don't** add a second glow, a gradient on text, or a neon edge (The One Glow Rule).
+- **Don't** draw a divider where space already groups the content (The Space First Rule).
 - **Don't** truncate text; wrap it (The Wrap Rule).

@@ -157,3 +157,11 @@ Source: `docs/prompts/REDESIGN-PROMPT.md`. Plan: Step 1 sections A–H, approved
 
 - Q1: Marigold `#faab3f` (Train hard) and Butter `#eada78` (Train light) accepted after the iPhone check of D0a. Data Muted stays `#94A8B6`.
 - D0a as built: Lichen tokens (dark app theme; light palette kept for the gallery only), radius 12/16/24, sage primary and selection, glass floating tab bar (expo-blur, canvas tint 0.70, Text High labels, sage active icon; solid under Reduce Transparency and on Android), Today plan glow at 0.16, dial order track → arc → band with a dash-drawn reveal, dividers removed on Today and Week.
+
+## D0b: Day 1 and the Week strip (2 Oct 2026)
+
+- Day 1 (v2 Item 3): the empty dial (control-stroke track, 4.60:1 on canvas), the calendar's day types with icons (`DayTypes`: work, training, social, travel, rest; never the plan glyphs) and "Your plan arrives tomorrow, after tonight's log." No provisional plan (GAP G49).
+- Week strip (spec R3, v2 Item 4) as the hero, with the inline detail (Q3: the morph modal waits for D3). Today: a Text High underline under the date. Selected: the raised fill. Estimated: a solid glyph in Text Muted plus a hollow ring (no dashes). While the move is offered, Wednesday and Thursday are outlined in the selection colour (sage, a state, not a second action).
+- **Against spec R3:** day letters and dates stop growing at 2× text, and the glyph drops to the small size from 2×. R3 lets the date wrap, but a number cannot wrap: at 3× two-digit dates ran together and 48 pt glyphs touched in 50 pt columns.
+- The suggestion's reason is built from the engine's reasons ("Heavy legs on Thursday sits before a late dinner and a Friday flight."); "late" is backed by the engine's 19:00 rule. After a move: "Heavy legs moved to Wednesday." with Undo (restores the week and the suggestion). "Keep Thursday" dismisses it for the week.
+- The dashed "estimated" glyph is retired everywhere: estimated plans show a solid glyph in Text Muted with the word or the ring.

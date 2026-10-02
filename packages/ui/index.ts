@@ -5,6 +5,7 @@ export { ChoiceGroup } from './ChoiceGroup';
 export { CompletionRing } from './CompletionRing';
 export type { Choice } from './ChoiceGroup';
 export { contrastRatio } from './contrast';
+export { DayTypes } from './DayTypes';
 export { DriverRow } from './DriverRow';
 export { FocusRing, useFocus } from './focus';
 export { GlassBar, useTabBarSpace } from './GlassBar';

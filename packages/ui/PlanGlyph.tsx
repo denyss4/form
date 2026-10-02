@@ -7,7 +7,7 @@ import Footprints from 'lucide-react-native/icons/footprints';
 import Moon from 'lucide-react-native/icons/moon';
 
 import { copy } from '@copy';
-import { opacity, size, space, type PlanId } from '@tokens';
+import { size, space, type PlanId } from '@tokens';
 
 import { Text } from './Text';
 import { useTheme } from './theme';
@@ -20,12 +20,10 @@ export function PlanGlyph({ plan, small = false, estimated = false }: { plan: Pl
   const Icon = icons[plan];
   const px = useIconSize(small ? size.iconSm : size.icon);
   return (
-    <Icon
-      color={color.plan[plan].base}
-      size={px}
-      strokeWidth={size.outline}
-      {...(estimated ? { opacity: opacity.estimated, strokeDasharray: '3 2', strokeLinecap: 'butt' } : null)}
-    />
+    // Estimated (no events, so the weekday decided): a solid glyph in Text Muted (5.69:1 on canvas, 4.91:1 on raised). The dashed
+    // outline read as a loading spinner (critique, 1 Oct). The non-colour cue is the hollow ring the Week strip draws under it, plus the
+    // word "Estimated" wherever there is room.
+    <Icon color={estimated ? color.text.secondary : color.plan[plan].base} size={px} strokeWidth={size.outline} />
   );
 }
 

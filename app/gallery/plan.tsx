@@ -2,12 +2,17 @@
 import { StyleSheet, View } from 'react-native';
 
 import { copy } from '@copy';
+import { useWeek } from '@features/useWeek';
+import { WeekStrip } from '@features/WeekStrip';
 import { planIds, radius, space } from '@tokens';
 import { GalleryScreen, PlanGlyph, PlanLabel, Section, Text, useTheme } from '@ui';
 
 export default function PlanGallery() {
   const { color } = useTheme();
   const p = copy.dev.plan;
+  // A thin calendar (Monday only), with today set to the estimated Tuesday and selected: the one combination the demo data never shows.
+  const { week } = useWeek('lowconf');
+  const tuesday = week[1]?.date ?? '';
 
   return (
     <GalleryScreen title={copy.dev.hub.plan} note={p.note}>
@@ -29,6 +34,10 @@ export default function PlanGallery() {
         {planIds.map((plan) => (
           <PlanLabel key={plan} plan={plan} estimated />
         ))}
+      </Section>
+
+      <Section title={p.stripCombo}>
+        <WeekStrip week={week} today={tuesday} selected={tuesday} outlined={[]} move={null} onSelect={() => {}} />
       </Section>
 
       <Section title={p.glyphs}>

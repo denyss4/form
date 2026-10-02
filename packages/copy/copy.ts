@@ -54,9 +54,9 @@ const base = {
     fewInputs: 'Few inputs today. Add more for a fuller picture.',
     logTonight: 'Log tonight',
     logged: "Logged. Tomorrow's plan arrives in the morning.",
+    // Day 1: no score yet, so no plan. The calendar's day types show what today holds (GAP G49: no plan rule without a score).
     day1: {
-      title: 'No score yet',
-      body: 'Log tonight and Form will forecast tomorrow morning.',
+      body: "Your plan arrives tomorrow, after tonight's log.",
     },
     error: {
       title: "Couldn't calculate your score.",
@@ -173,9 +173,10 @@ const base = {
     planNote: "Plans for days ahead follow your calendar. Each morning's score can change them.",
     coverage: (found: number, total: number) => `Events found for ${found} of ${total} days.`,
     lowConfidence: 'Most day types are guessed from the weekday.',
-    guessed: 'guessed from the weekday',
     estimated: 'Estimated',
     noSession: 'No session',
+    day: (spoken: string, plan: string, estimated: boolean, today: boolean) =>
+      `${spoken}, ${plan}${estimated ? ', estimated' : ''}${today ? ', today' : ''}`,
     session: (name: string, time: string) => `${name}, ${time}`,
     empty: {
       title: 'No calendar yet',
@@ -190,11 +191,16 @@ const base = {
   },
 
   suggestion: {
-    reasons: (list: string) => `${list}.`,
-    ask: (session: string, day: string) => `${day} has no session. Move ${session} there?`,
+    // The reason in one sentence, from the engine's reasons: "Heavy legs on Thursday sits before a late dinner and a Friday flight."
+    reason: (session: string, day: string, parts: string[]) =>
+      `${session} on ${day} sits before ${parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}` : parts[0]}.`,
+    lateEvent: (what: string) => `a late ${what}`, // same-day social events from the engine's LATE_HOUR (19:00) on
+    dayEvent: (day: string, what: string) => `a ${day} ${what}`,
     move: (day: string) => `Move to ${day}`,
     keep: (day: string) => `Keep ${day}`,
-    moved: (session: string, day: string) => `Moved ${session} to ${day}.`,
+    moved: (session: string, day: string) => `${session} moved to ${day}.`,
+    undo: 'Undo',
+    undone: (session: string, day: string) => `${session} is back on ${day}.`,
     kept: (session: string, day: string) => `Kept ${session} on ${day}.`,
     preview: (toDay: string, toPlan: string, fromDay: string, fromPlan: string) => `${toDay} becomes ${toPlan}. ${fromDay} becomes ${fromPlan}.`,
   },
@@ -394,7 +400,8 @@ const base = {
       note: 'Each plan has a glyph and a label. Colour is never the only signal.',
       onCanvas: 'On the canvas',
       onField: 'On its own field',
-      estimated: 'Estimated day: muted glyph, dashed, and the word',
+      estimated: 'Estimated day: solid glyph in Text Muted, and the word',
+      stripCombo: 'Week strip: today, selected and estimated on one day (Tuesday)',
       glyphs: 'Glyph sizes',
     },
     dial: {

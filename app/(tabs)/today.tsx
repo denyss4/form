@@ -38,6 +38,7 @@ import { motion, radius, size, space } from '@tokens';
 import {
   announce,
   Button,
+  DayTypes,
   DriverRow,
   haptic,
   IconButton,
@@ -220,10 +221,11 @@ export default function Today() {
         <View style={styles.dial}>
           <ScoreDial score={null} />
         </View>
-        <Text variant="heading">{copy.today.day1.title}</Text>
-        <Text variant="body" tone="secondary">
-          {copy.today.day1.body}
-        </Text>
+        {/* Day 1: the calendar's day types for today, then when the plan arrives. No provisional plan (GAP G49). */}
+        <View style={styles.day1}>
+          <DayTypes tags={data.day.tags} />
+          <Text variant="body">{copy.today.day1.body}</Text>
+        </View>
       </>
     );
     // Spec R1: no primary in the morning. From 17:00 (or the demo clock's evening) "Log tonight" is the primary.
@@ -402,6 +404,7 @@ const styles = StyleSheet.create({
   // Gallery isolation: 36 above the dial with the field gap, so nothing sits within 32 of it (REDESIGN-PROMPT §2.1).
   dial: { alignItems: 'center', marginTop: space.lg },
   annotation: { alignItems: 'center', gap: space.xxs },
+  day1: { marginTop: space.lg, gap: space.sm },
   section: { paddingHorizontal: space.margin, marginTop: space.xxl, gap: space.sm }, // 48 before a new section (5.2)
   footer: { paddingHorizontal: space.margin, paddingTop: space.md, paddingBottom: space.md, gap: space.xs },
 });
