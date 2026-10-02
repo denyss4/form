@@ -10,7 +10,7 @@ import { copy } from '@copy';
 import { useOnboardingStep } from '@features/onboardingSteps';
 import { useAppState } from '@state';
 import { space } from '@tokens';
-import { Busy, Button, InlineMessage, oneOf, ScreenHeader, Stepper, Text, useTheme } from '@ui';
+import { Button, FluxLoader, InlineMessage, oneOf, ScreenHeader, Stepper, Text, useTheme } from '@ui';
 
 const views = ['auto', 'default', 'loading', 'error', 'off'] as const;
 const CONNECT_MS = 1400; // the mock sign-in takes a moment
@@ -60,12 +60,9 @@ export default function ConnectCalendar() {
         {onboarding ? <Stepper {...step} /> : null}
 
         {view === 'loading' ? (
-          <View style={styles.progress} accessibilityRole="progressbar" accessibilityLabel={copy.calendar.reading}>
-            <Busy color={color.text.primary} />
-            <Text variant="bodyStrong">{copy.calendar.reading}</Text>
-            <Text variant="caption" tone="secondary">
-              {copy.calendar.readingNote}
-            </Text>
+          // Over 1 s (CONNECT_MS), so the flux loader: progress plus a plain line.
+          <View style={styles.progress}>
+            <FluxLoader label={copy.calendar.reading} note={copy.calendar.readingNote} />
           </View>
         ) : view === 'error' ? (
           <InlineMessage title={copy.calendar.error.title} body={copy.calendar.error.body}>

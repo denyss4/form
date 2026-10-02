@@ -93,4 +93,11 @@ export const opacity = {
   horizon: 0.3,
   welcomeGlyph: 0.6,
   firstLight: 0.14,
+  // The sheen (D3): white over the sage fill, Text High over the canvas, and the canvas-coloured edges of liquid metal. Transient light
+  // only: the label stays above it, and nothing is read from it.
+  sheenOnFill: 0.45,
+  sheenOnCanvas: 0.12,
+  sheenShadow: 0.18,
+  // Spotlight: Text High at the press point, fading out at the edge of its radius.
+  spotlight: 0.08,
 } as const;

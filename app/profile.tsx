@@ -135,18 +135,21 @@ export default function Profile() {
               label={copy.profile.calendar}
               caption={app.calendar === 'connected' ? copy.profile.calendarOn : copy.profile.calendarOff}
               divider={false}
+              spotlight
               onPress={() => router.push('/connect-calendar')}
             />
             <LinkRow
               label={copy.settings.healthRow.label}
               caption={copy.settings.healthRow.status}
               divider={false}
+              spotlight
               onPress={() => router.push('/health-sync')}
             />
             <LinkRow
               label={copy.settings.calendarWriteRow.label}
               caption={copy.settings.calendarWriteRow.status}
               divider={false}
+              spotlight
               onPress={() => router.push('/calendar-write')}
             />
           </View>
@@ -184,18 +187,19 @@ export default function Profile() {
               label={copy.profile.consents}
               caption={copy.profile.consentsCaption(allowed, purposes.length)}
               divider={false}
+              spotlight
               onPress={() => router.push('/privacy')}
             />
-            <LinkRow label={copy.profile.export} divider={false} onPress={() => router.push('/export-data')} />
-            <LinkRow label={copy.profile.deleteData} divider={false} onPress={() => router.push('/delete-data')} />
+            <LinkRow label={copy.profile.export} divider={false} spotlight onPress={() => router.push('/export-data')} />
+            <LinkRow label={copy.profile.deleteData} divider={false} spotlight onPress={() => router.push('/delete-data')} />
           </View>
         </Section>
 
         {account ? (
           <Section title={copy.profile.account}>
             <View>
-              <LinkRow label={copy.profile.changeEmail} divider={false} onPress={() => router.push('/change-email')} />
-              <LinkRow label={copy.profile.changePassword} divider={false} onPress={() => router.push('/change-password')} />
+              <LinkRow label={copy.profile.changeEmail} divider={false} spotlight onPress={() => router.push('/change-email')} />
+              <LinkRow label={copy.profile.changePassword} divider={false} spotlight onPress={() => router.push('/change-password')} />
             </View>
             <View style={styles.actions}>
               <Button variant="text" label={copy.profile.signOut} onPress={signOut} />

@@ -33,5 +33,14 @@ export const motion = {
     duration: 1100,
     easing: [0.215, 0.61, 0.355, 1], // ease-out cubic
   },
+  // A band of light crossing a control (REDESIGN-PROMPT §6). band is its width as a share of the control's width.
+  sheen: {
+    highlight: { duration: 280, easing: [0.215, 0.61, 0.355, 1], band: 0.45 }, // the press sweep, ≤ 300 ms
+    metal: { duration: 1200, easing: [0.42, 0, 0.58, 1], band: 0.7 }, // liquid metal, once, then still
+  },
+  // Flux loader: the segment flows along the track every loop ms; the line writes itself in once over write ms.
+  flux: { loop: 1400, write: 600, easing: [0.42, 0, 0.58, 1] },
+  // Spotlight surfaces: the light appears at the press point and fades within 200 ms of release.
+  spotlight: { in: 120, out: 200 },
   reducedFade: 120, // ms, under the 150 ms limit, when reduce-motion is on
 } as const;

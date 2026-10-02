@@ -10,6 +10,7 @@ import { opacity, radius, size, space } from '@tokens';
 
 import { Busy } from './Busy';
 import { FocusRing, useFocus } from './focus';
+import { Sheen } from './Sheen';
 import { Text } from './Text';
 import { useTheme } from './theme';
 import { usePress } from './usePress';
@@ -25,6 +26,8 @@ export interface ButtonProps {
   loading?: boolean;
   fullWidth?: boolean;
   accessibilityHint?: string;
+  /** Liquid metal (Welcome "Create account" only): each change of this number plays the sheen once. 0 never plays. */
+  metalPlay?: number;
   /** Gallery only: hold a state in place so it can be reviewed and screenshotted. */
   forceState?: 'pressed' | 'focused';
 }
@@ -37,6 +40,7 @@ export function Button({
   loading = false,
   fullWidth = false,
   accessibilityHint,
+  metalPlay,
   forceState,
 }: ButtonProps) {
   const { color } = useTheme();
@@ -44,6 +48,9 @@ export function Button({
   const [pressed, setPressed] = useState(forceState === 'pressed');
   const focus = useFocus();
   const inactive = disabled || loading;
+  // The highlight sweep confirms a press on the two filled or outlined buttons; text buttons keep plain press feedback.
+  const [sweep, setSweep] = useState(0);
+  const sweeps = variant === 'primary' || variant === 'secondary';
 
   const labelTone = variant === 'primary' ? 'inverse' : 'primary';
   const labelColor =
@@ -65,6 +72,7 @@ export function Button({
           : () => {
               setPressed(true);
               press.onPressIn();
+              if (sweeps) setSweep((n) => n + 1);
             }
       }
       onPressOut={
@@ -94,6 +102,8 @@ export function Button({
           press.style,
         ]}
       >
+        {sweeps ? <Sheen play={sweep} kind="highlight" tone={variant === 'primary' ? 'onFill' : 'onCanvas'} /> : null}
+        {metalPlay !== undefined && variant === 'primary' ? <Sheen play={metalPlay} kind="metal" tone="onFill" /> : null}
         <Text
           variant="bodyStrong"
           tone={labelTone}

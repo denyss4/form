@@ -1,14 +1,19 @@
 // Layout plan. Job: show whether the plans fit, in the person's own words. Focal element: the Plan Fit sentence and its segments.
-// Quiet: the day list (one line a day, plan glyph in colour, plan word in body text) and the logging line. The link to Felt vs forecast sits directly under the summary. No score, no streak, no reward: a process measure (MASTER_PROMPT §2).
+// Quiet: the day list (one line a day, plan glyph in colour, plan word in body text) and the logging line. No score, no streak, no
+// reward: a process measure (MASTER_PROMPT §2).
+// Slide tabs (D3, REDESIGN-PROMPT §6): "Plan fit" and "Felt vs forecast" are the two views of this screen; the second shows FeltBody,
+// with its bar chart. `?tab=felt` opens it for review.
 // A Recover day that fit counts the same as a training day that fit. The meter shows followed days only, never more than was answered;
 // a 'Did something else' day is listed as "Not followed" and left out of the counts (spec R1).
 // States: default, loading, no feedback yet, partial, low confidence, error. `?state=` holds one for review.
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { copy } from '@copy';
 import { formatDay } from '@format';
+import { FeltBody } from '@features/FeltBody';
 import { FitStrip } from '@features/FitStrip';
 import { HeaderProfile } from '@features/HeaderProfile';
 import { progressScenarios, useProgress } from '@features/useProgress';
@@ -18,11 +23,11 @@ import { size, space } from '@tokens';
 import {
   Button,
   InlineMessage,
-  LinkRow,
   oneOf,
   PlanLabel,
   ScreenHeader,
   Skeleton,
+  SlideTabs,
   Text,
   useFontScale,
   useTabBarSpace,
@@ -96,7 +101,8 @@ export default function Progress() {
   const { color } = useTheme();
   const tabSpace = useTabBarSpace(); // the tab bar floats on glass; the list scrolls under it
   const router = useRouter();
-  const params = useLocalSearchParams<{ state?: string }>();
+  const params = useLocalSearchParams<{ state?: string; tab?: string }>();
+  const [tab, setTab] = useState(oneOf(params.tab, ['fit', 'felt'] as const, 'fit'));
   const scenario = oneOf(params.state, progressScenarios, 'default');
   const data = useProgress(scenario);
   const compact = useFontScale() < 1.5; // one line per day; larger text puts the plan on its own line
@@ -157,12 +163,6 @@ export default function Progress() {
                 </Text>
               </View>
             </View>
-            <LinkRow
-              label={copy.progress.felt.title}
-              caption={copy.progress.felt.note}
-              divider={false}
-              onPress={() => router.push('/felt-vs-forecast')}
-            />
           </View>
 
           <View style={styles.group}>
@@ -172,11 +172,6 @@ export default function Progress() {
               ))}
             </View>
             <Text variant="body">{copy.progress.logging(data.logged.days, data.logged.of)}</Text>
-            {showBuildStamp ? (
-              <Text variant="caption" tone="secondary" selectable>
-                {buildStamp}
-              </Text>
-            ) : null}
           </View>
         </>
       );
@@ -187,7 +182,21 @@ export default function Progress() {
     <SafeAreaView edges={['top']} style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
       <ScrollView contentContainerStyle={[styles.content, { paddingBottom: space.lg + tabSpace }]}>
         {header}
-        {body}
+        <SlideTabs
+          label={copy.progress.tabs.label}
+          tabs={[
+            { value: 'fit', label: copy.progress.tabs.fit },
+            { value: 'felt', label: copy.progress.tabs.felt },
+          ]}
+          value={tab}
+          onChange={setTab}
+        />
+        {tab === 'fit' ? body : <FeltBody data={data} retry={() => router.replace('/progress?tab=felt')} />}
+        {showBuildStamp ? (
+          <Text variant="caption" tone="secondary" selectable>
+            {buildStamp}
+          </Text>
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );

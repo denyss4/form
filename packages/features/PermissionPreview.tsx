@@ -9,7 +9,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { space } from '@tokens';
-import { Busy, Button, InlineMessage, oneOf, ScreenHeader, Text, useTheme } from '@ui';
+import { Button, FluxLoader, InlineMessage, oneOf, ScreenHeader, Text, useTheme } from '@ui';
 
 export interface PermissionCopy {
   title: string;
@@ -68,9 +68,8 @@ export function PermissionPreview({
         <Text variant="bodyStrong">{copy.preview}</Text>
 
         {view === 'loading' ? (
-          <View style={styles.progress} accessibilityRole="progressbar" accessibilityLabel={copy.reading}>
-            <Busy color={color.text.primary} forceMotion={params.motion === 'full'} />
-            <Text variant="bodyStrong">{copy.reading}</Text>
+          <View style={styles.progress}>
+            <FluxLoader label={copy.reading} />
           </View>
         ) : view === 'done' ? (
           <View style={styles.group} aria-live="polite">

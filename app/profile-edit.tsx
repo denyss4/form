@@ -5,23 +5,23 @@
 // - Save: "Saved." with the success haptic, then back to Profile.
 // - Photo via expo-image-picker (approved 1 Oct), held in memory; the initials are always the fallback. Signed in only, with the name.
 // - Sessions: rename, reorder, remove, add. Renames reach Week and the evening log through a display-name map (Q7); GAP G55.
-// - Training days use the existing Slider; the snappy slider arrives in D3.
-import * as ImagePicker from "expo-image-picker";
-import { useNavigation, useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
-import Animated from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
-import ArrowDown from "lucide-react-native/icons/arrow-down";
-import ArrowUp from "lucide-react-native/icons/arrow-up";
-import CircleCheck from "lucide-react-native/icons/circle-check";
-import X from "lucide-react-native/icons/x";
+// - Training days use the snappy slider (D3).
+import * as ImagePicker from 'expo-image-picker';
+import { useNavigation, useRouter } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
+import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import Animated from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ArrowDown from 'lucide-react-native/icons/arrow-down';
+import ArrowUp from 'lucide-react-native/icons/arrow-up';
+import CircleCheck from 'lucide-react-native/icons/circle-check';
+import X from 'lucide-react-native/icons/x';
 
-import { copy } from "@copy";
-import { weekdayLong, weekdayShort } from "@format";
-import { useAppState } from "@state";
-import { initials, validTime, type SessionEntry } from "@state/profile";
-import { radius, size, space } from "@tokens";
+import { copy } from '@copy';
+import { weekdayLong, weekdayShort } from '@format';
+import { useAppState } from '@state';
+import { initials, validTime, type SessionEntry } from '@state/profile';
+import { radius, size, space } from '@tokens';
 import {
   announce,
   Button,
@@ -31,26 +31,18 @@ import {
   InlineMessage,
   Section,
   Sheet,
-  Slider,
+  SnappySlider,
   Text,
   TextField,
   useFocus,
   usePress,
   useTheme,
-} from "@ui";
+} from '@ui';
 
 const SAVED_MS = 700; // "Saved." stays long enough to read before Profile returns
 const days = [0, 1, 2, 3, 4, 5, 6];
 
-function DayToggle({
-  day,
-  on,
-  onChange,
-}: {
-  day: number;
-  on: boolean;
-  onChange: (on: boolean) => void;
-}) {
+function DayToggle({ day, on, onChange }: { day: number; on: boolean; onChange: (on: boolean) => void }) {
   const { color } = useTheme();
   const press = usePress();
   const focus = useFocus();
@@ -81,7 +73,7 @@ function DayToggle({
           press.style,
         ]}
       >
-        <Text variant="bodyStrong" tone={on ? "inverse" : "primary"}>
+        <Text variant="bodyStrong" tone={on ? 'inverse' : 'primary'}>
           {weekdayShort(day)}
         </Text>
         <FocusRing visible={focus.focused} radius={radius.full} />
@@ -97,13 +89,11 @@ export default function EditProfile() {
   const app = useAppState();
   const signedIn = app.account !== null;
 
-  const [name, setName] = useState(app.account?.name ?? "");
+  const [name, setName] = useState(app.account?.name ?? '');
   const [photo, setPhoto] = useState(app.photo);
   const [trainingDays, setTrainingDays] = useState(app.profile.trainingDays);
   const [trainingTime, setTrainingTime] = useState(app.profile.trainingTime);
-  const [sessions, setSessions] = useState<SessionEntry[]>(
-    app.profile.sessions,
-  );
+  const [sessions, setSessions] = useState<SessionEntry[]>(app.profile.sessions);
   const [workDays, setWorkDays] = useState(app.profile.workDays);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [showAll, setShowAll] = useState(false);
@@ -122,7 +112,7 @@ export default function EditProfile() {
     workDays,
   };
   const original = {
-    name: app.account?.name ?? "",
+    name: app.account?.name ?? '',
     photo: app.photo,
     trainingDays: app.profile.trainingDays,
     trainingTime: app.profile.trainingTime,
@@ -133,25 +123,19 @@ export default function EditProfile() {
 
   const lower = sessions.map((s) => s.name.trim().toLowerCase());
   const sessionError = (s: SessionEntry, i: number) =>
-    !s.name.trim()
-      ? copy.editProfile.errors.session
-      : lower.indexOf(lower[i] ?? "") !== i
-        ? copy.editProfile.errors.duplicate
-        : null;
+    !s.name.trim() ? copy.editProfile.errors.session : lower.indexOf(lower[i] ?? '') !== i ? copy.editProfile.errors.duplicate : null;
   const errors = {
     name: signedIn && !name.trim() ? copy.editProfile.errors.name : null,
     time: validTime(trainingTime) ? null : copy.editProfile.errors.time,
     sessions: sessions.map(sessionError),
   };
-  const errorCount = [errors.name, errors.time, ...errors.sessions].filter(
-    Boolean,
-  ).length;
+  const errorCount = [errors.name, errors.time, ...errors.sessions].filter(Boolean).length;
   const show = (key: string) => showAll || touched[key];
   const touch = (key: string) => setTouched((t) => ({ ...t, [key]: true }));
 
   // Back, the swipe and Cancel all pass through here: with unsaved changes, ask first.
   useEffect(() => {
-    return navigation.addListener("beforeRemove", (e) => {
+    return navigation.addListener('beforeRemove', (e) => {
       if (!dirty || leaving.current) return;
       e.preventDefault();
       pending.current = () => navigation.dispatch(e.data.action);
@@ -159,8 +143,7 @@ export default function EditProfile() {
     });
   }, [navigation, dirty]);
 
-  const leave = () =>
-    router.canGoBack() ? router.back() : router.replace("/profile");
+  const leave = () => (router.canGoBack() ? router.back() : router.replace('/profile'));
 
   const discard = () => {
     setAsking(false);
@@ -199,7 +182,7 @@ export default function EditProfile() {
     setPhotoError(false);
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ["images"],
+        mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [2, 3], // the capsule's proportion
         quality: 0.7,
@@ -221,28 +204,17 @@ export default function EditProfile() {
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
       <View style={styles.bar}>
-        <Button
-          variant="text"
-          label={copy.editProfile.cancel}
-          onPress={() => (dirty ? setAsking(true) : leave())}
-        />
+        <Button variant="text" label={copy.editProfile.cancel} onPress={() => (dirty ? setAsking(true) : leave())} />
         <Button variant="text" label={copy.editProfile.save} onPress={save} />
       </View>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Text variant="title" accessibilityRole="header">
           {copy.editProfile.title}
         </Text>
 
         {saved ? (
           <View style={styles.saved} accessibilityLiveRegion="polite">
-            <CircleCheck
-              color={color.status.success}
-              size={size.icon}
-              strokeWidth={size.outline}
-            />
+            <CircleCheck color={color.status.success} size={size.icon} strokeWidth={size.outline} />
             <Text variant="bodyStrong">{copy.editProfile.saved}</Text>
           </View>
         ) : null}
@@ -256,52 +228,25 @@ export default function EditProfile() {
         {signedIn ? (
           <View style={styles.group}>
             <View style={styles.photoRow}>
-              <View
-                style={[styles.capsule, { borderColor: color.stroke.control }]}
-              >
+              <View style={[styles.capsule, { borderColor: color.stroke.control }]}>
                 {photo ? (
-                  <Image
-                    source={{ uri: photo }}
-                    style={styles.photo}
-                    accessibilityIgnoresInvertColors
-                  />
+                  <Image source={{ uri: photo }} style={styles.photo} accessibilityIgnoresInvertColors />
                 ) : (
-                  <Text variant="heading">
-                    {initials(name || (app.account?.name ?? ""))}
-                  </Text>
+                  <Text variant="heading">{initials(name || (app.account?.name ?? ''))}</Text>
                 )}
               </View>
               <View style={styles.photoActions}>
-                <Button
-                  variant="secondary"
-                  label={
-                    photo
-                      ? copy.editProfile.changePhoto
-                      : copy.editProfile.addPhoto
-                  }
-                  onPress={pickPhoto}
-                />
-                {photo ? (
-                  <Button
-                    variant="text"
-                    label={copy.editProfile.removePhoto}
-                    onPress={() => setPhoto(null)}
-                  />
-                ) : null}
+                <Button variant="secondary" label={photo ? copy.editProfile.changePhoto : copy.editProfile.addPhoto} onPress={pickPhoto} />
+                {photo ? <Button variant="text" label={copy.editProfile.removePhoto} onPress={() => setPhoto(null)} /> : null}
               </View>
             </View>
-            {photoError ? (
-              <InlineMessage
-                title={copy.editProfile.photo}
-                body={copy.editProfile.photoError}
-              />
-            ) : null}
+            {photoError ? <InlineMessage title={copy.editProfile.photo} body={copy.editProfile.photoError} /> : null}
             <TextField
               label={copy.auth.name}
               value={name}
               onChangeText={setName}
-              onBlur={() => touch("name")}
-              error={show("name") ? errors.name : null}
+              onBlur={() => touch('name')}
+              error={show('name') ? errors.name : null}
               autoComplete="name"
               textContentType="name"
               autoCapitalize="words"
@@ -310,44 +255,33 @@ export default function EditProfile() {
         ) : null}
 
         <Section title={copy.profile.training}>
-          <Slider
+          <SnappySlider
             label={copy.editProfile.trainingDays}
             value={trainingDays}
             onChange={setTrainingDays}
             min={1}
             max={7}
             valueText={copy.editProfile.trainingDaysValue(trainingDays)}
-            lowLabel="1"
-            highLabel="7"
           />
           <TextField
             label={copy.editProfile.trainingTime}
             value={trainingTime}
             onChangeText={setTrainingTime}
-            onBlur={() => touch("time")}
+            onBlur={() => touch('time')}
             hint={copy.editProfile.trainingTimeHint}
-            error={show("time") ? errors.time : null}
+            error={show('time') ? errors.time : null}
             keyboardType="numbers-and-punctuation"
           />
         </Section>
 
-        <Section
-          title={copy.editProfile.sessions}
-          note={copy.editProfile.sessionsHint}
-        >
+        <Section title={copy.editProfile.sessions} note={copy.editProfile.sessionsHint}>
           {sessions.map((s, i) => (
             <View key={s.id} style={styles.session}>
               <View style={styles.sessionField}>
                 <TextField
                   label={copy.editProfile.sessionName(i + 1)}
                   value={s.name}
-                  onChangeText={(value) =>
-                    setSessions((list) =>
-                      list.map((x) =>
-                        x.id === s.id ? { ...x, name: value } : x,
-                      ),
-                    )
-                  }
+                  onChangeText={(value) => setSessions((list) => list.map((x) => (x.id === s.id ? { ...x, name: value } : x)))}
                   onBlur={() => touch(s.id)}
                   error={show(s.id) ? (errors.sessions[i] ?? null) : null}
                   autoCapitalize="sentences"
@@ -356,29 +290,19 @@ export default function EditProfile() {
               <View style={styles.sessionTools}>
                 {/* A fixed slot per tool, so every name field is the same width. */}
                 {i > 0 ? (
-                  <IconButton
-                    icon={ArrowUp}
-                    label={copy.editProfile.moveUp(s.name)}
-                    onPress={() => move(i, -1)}
-                  />
+                  <IconButton icon={ArrowUp} label={copy.editProfile.moveUp(s.name)} onPress={() => move(i, -1)} />
                 ) : (
                   <View style={styles.slot} />
                 )}
                 {i < sessions.length - 1 ? (
-                  <IconButton
-                    icon={ArrowDown}
-                    label={copy.editProfile.moveDown(s.name)}
-                    onPress={() => move(i, 1)}
-                  />
+                  <IconButton icon={ArrowDown} label={copy.editProfile.moveDown(s.name)} onPress={() => move(i, 1)} />
                 ) : (
                   <View style={styles.slot} />
                 )}
                 <IconButton
                   icon={X}
                   label={copy.editProfile.remove(s.name)}
-                  onPress={() =>
-                    setSessions((list) => list.filter((x) => x.id !== s.id))
-                  }
+                  onPress={() => setSessions((list) => list.filter((x) => x.id !== s.id))}
                 />
               </View>
             </View>
@@ -399,45 +323,25 @@ export default function EditProfile() {
           />
         </Section>
 
-        <Section
-          title={copy.editProfile.workDays}
-          note={copy.editProfile.workDaysHint}
-        >
+        <Section title={copy.editProfile.workDays} note={copy.editProfile.workDaysHint}>
           <View style={styles.days} accessibilityRole="none">
             {days.map((d) => (
               <DayToggle
                 key={d}
                 day={d}
                 on={workDays.includes(d)}
-                onChange={(on) =>
-                  setWorkDays((list) =>
-                    on ? [...list, d] : list.filter((x) => x !== d),
-                  )
-                }
+                onChange={(on) => setWorkDays((list) => (on ? [...list, d] : list.filter((x) => x !== d)))}
               />
             ))}
           </View>
         </Section>
       </ScrollView>
 
-      <Sheet
-        visible={asking}
-        onClose={() => setAsking(false)}
-        title={copy.editProfile.discardTitle}
-      >
+      <Sheet visible={asking} onClose={() => setAsking(false)} title={copy.editProfile.discardTitle}>
         <Text variant="body">{copy.editProfile.discardBody}</Text>
         <View style={styles.sheetActions}>
-          <Button
-            variant="secondary"
-            label={copy.editProfile.keep}
-            fullWidth
-            onPress={() => setAsking(false)}
-          />
-          <Button
-            variant="destructive"
-            label={copy.editProfile.discard}
-            onPress={discard}
-          />
+          <Button variant="secondary" label={copy.editProfile.keep} fullWidth onPress={() => setAsking(false)} />
+          <Button variant="destructive" label={copy.editProfile.discard} onPress={discard} />
         </View>
       </Sheet>
     </SafeAreaView>
@@ -447,8 +351,8 @@ export default function EditProfile() {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   bar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: space.margin,
     paddingTop: space.xxs,
   },
@@ -458,43 +362,43 @@ const styles = StyleSheet.create({
     paddingBottom: space.xxl,
     gap: space.xl,
   },
-  saved: { flexDirection: "row", alignItems: "center", gap: space.xs },
+  saved: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   group: { gap: space.md },
   photoRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: space.md,
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
   },
   capsule: {
     width: size.avatar.weekCapsule * 1.5,
     height: size.avatar.weekCapsule * 2.25,
     borderRadius: radius.full,
     borderWidth: size.hairline,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
-  photo: { width: "100%", height: "100%" },
+  photo: { width: '100%', height: '100%' },
   photoActions: { gap: space.xxs, flexShrink: 1 },
   session: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "flex-end",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-end',
     gap: space.xxs,
   },
   sessionField: { flexGrow: 1, flexBasis: space.xxxl * 3 },
-  sessionTools: { flexDirection: "row" },
+  sessionTools: { flexDirection: 'row' },
   slot: { width: size.touch, height: size.touch },
-  days: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
+  days: { flexDirection: 'row', flexWrap: 'wrap', gap: space.xs },
   day: {
     minWidth: size.touch,
     minHeight: size.touch,
     paddingHorizontal: space.sm,
     borderRadius: radius.full,
     borderWidth: size.outline,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   sheetActions: { gap: space.xs },
 });

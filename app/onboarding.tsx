@@ -4,9 +4,9 @@
 // to the top right so the bottom is not heavy (white-space audit E, 1 Oct). Left-aligned text (CLAUDE.md: centre only the dial and art).
 // The sequence plays once per launch (GAP G52), ≤ 1.2 s, tap to skip; Reduce Motion shows the end state. The horizon glyphs are the
 // demo week's real plans from the fixtures' calendar, never invented.
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
@@ -16,37 +16,24 @@ import Animated, {
   useSharedValue,
   withTiming,
   type SharedValue,
-} from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Info from "lucide-react-native/icons/info";
+} from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Info from 'lucide-react-native/icons/info';
 
-import { copy } from "@copy";
-import { LegalSheet } from "@features/LegalSheet";
-import { useWeek } from "@features/useWeek";
-import { WelcomeHorizon } from "@features/WelcomeHorizon";
-import { useAppState } from "@state";
-import { motion, scoreMaxFontScale, space } from "@tokens";
-import { Button, IconButton, Text } from "@ui";
+import { copy } from '@copy';
+import { LegalSheet } from '@features/LegalSheet';
+import { useWeek } from '@features/useWeek';
+import { WelcomeHorizon } from '@features/WelcomeHorizon';
+import { useAppState } from '@state';
+import { motion, scoreMaxFontScale, space } from '@tokens';
+import { Button, IconButton, Text } from '@ui';
 
 const LETTER_STAGGER = 0.12; // of the sequence, between one letter and the next
 const LETTER_WINDOW = 0.3; // of the sequence, for one letter to appear
 
-function Letter({
-  char,
-  index,
-  progress,
-}: {
-  char: string;
-  index: number;
-  progress: SharedValue<number>;
-}) {
+function Letter({ char, index, progress }: { char: string; index: number; progress: SharedValue<number> }) {
   const style = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      progress.value,
-      [index * LETTER_STAGGER, index * LETTER_STAGGER + LETTER_WINDOW],
-      [0, 1],
-      "clamp",
-    ),
+    opacity: interpolate(progress.value, [index * LETTER_STAGGER, index * LETTER_STAGGER + LETTER_WINDOW], [0, 1], 'clamp'),
   }));
   return (
     <Animated.View style={style}>
@@ -63,19 +50,20 @@ export default function Welcome() {
   const reduceMotion = useReducedMotion();
   const { week } = useWeek();
   const params = useLocalSearchParams<{ at?: string; legal?: string }>();
-  const [legal, setLegal] = useState(params.legal === "1");
+  const [legal, setLegal] = useState(params.legal === '1');
 
   // Review only: ?at=0.4 holds the sequence at 40%.
-  const held =
-    params.at === undefined || Number.isNaN(Number(params.at))
-      ? undefined
-      : Math.min(Math.max(Number(params.at), 0), 1);
+  const held = params.at === undefined || Number.isNaN(Number(params.at)) ? undefined : Math.min(Math.max(Number(params.at), 0), 1);
   // Decided once, on arrival: coming back to Welcome later in the launch shows the end state.
-  const [play] = useState(
-    () => held === undefined && !app.welcomePlayed && !reduceMotion,
-  );
+  const [play] = useState(() => held === undefined && !app.welcomePlayed && !reduceMotion);
   const progress = useSharedValue(held ?? (play ? 0 : 1));
   const [playing, setPlaying] = useState(play);
+  // Liquid metal plays once, when the sequence reaches its end state (white-space audit E: it marks the one action, never loops).
+  const [metal, setMetal] = useState(0);
+  const settle = () => {
+    setPlaying(false);
+    setMetal(1);
+  };
 
   useEffect(() => {
     if (!play) return;
@@ -86,7 +74,7 @@ export default function Welcome() {
         easing: Easing.bezier(...motion.welcome.easing),
       }),
     );
-    const done = setTimeout(() => setPlaying(false), motion.welcome.duration);
+    const done = setTimeout(settle, motion.welcome.duration);
     return () => clearTimeout(done);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -94,23 +82,23 @@ export default function Welcome() {
   const skip = () => {
     cancelAnimation(progress);
     progress.set(1);
-    setPlaying(false);
+    settle();
   };
 
   const tagline = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0.45, 0.8], [0, 1], "clamp"),
+    opacity: interpolate(progress.value, [0.45, 0.8], [0, 1], 'clamp'),
   }));
   const actions = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0.7, 1], [0, 1], "clamp"),
+    opacity: interpolate(progress.value, [0.7, 1], [0, 1], 'clamp'),
   }));
 
-  const startAccount = (mode: "signup" | "signin") => {
-    app.setOnboardingPath("account");
+  const startAccount = (mode: 'signup' | 'signin') => {
+    app.setOnboardingPath('account');
     router.push(mode === 'signup' ? '/sign-up' : '/sign-in');
   };
   const startGuest = () => {
-    app.setOnboardingPath("guest");
-    router.push("/intro");
+    app.setOnboardingPath('guest');
+    router.push('/intro');
   };
 
   return (
@@ -118,34 +106,15 @@ export default function Welcome() {
       {/* Scrolls only when large text needs it; otherwise the stage fills the screen. */}
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.top}>
-          <IconButton
-            icon={Info}
-            label={copy.welcome.legal}
-            onPress={() => setLegal(true)}
-          />
+          <IconButton icon={Info} label={copy.welcome.legal} onPress={() => setLegal(true)} />
         </View>
 
         {/* Tap anywhere above the actions to skip the sequence. Not a control for screen readers: the sequence is short and silent. */}
-        <Pressable
-          style={styles.stage}
-          onPress={skip}
-          disabled={!playing}
-          accessible={false}
-        >
+        <Pressable style={styles.stage} onPress={skip} disabled={!playing} accessible={false}>
           <View style={styles.upper}>
-            <View
-              accessible
-              accessibilityRole="header"
-              accessibilityLabel={copy.welcome.wordmark}
-              style={styles.wordmark}
-            >
-              {copy.welcome.wordmark.split("").map((char, i) => (
-                <Letter
-                  key={`${i}-${char}`}
-                  char={char}
-                  index={i}
-                  progress={progress}
-                />
+            <View accessible accessibilityRole="header" accessibilityLabel={copy.welcome.wordmark} style={styles.wordmark}>
+              {copy.welcome.wordmark.split('').map((char, i) => (
+                <Letter key={`${i}-${char}`} char={char} index={i} progress={progress} />
               ))}
             </View>
             <Animated.View style={tagline}>
@@ -157,28 +126,11 @@ export default function Welcome() {
           <WelcomeHorizon plans={week.map((d) => d.plan)} progress={progress} />
         </Pressable>
 
-        <Animated.View
-          style={[styles.actions, actions]}
-          pointerEvents={playing ? "none" : "auto"}
-        >
-          {/* The one sage action. Liquid metal (a one-time sheen that settles) arrives in D3. */}
-          <Button
-            label={copy.welcome.createAccount}
-            fullWidth
-            onPress={() => startAccount("signup")}
-          />
-          <Button
-            variant="text"
-            label={copy.welcome.signIn}
-            fullWidth
-            onPress={() => startAccount("signin")}
-          />
-          <Button
-            variant="text"
-            label={copy.welcome.guest}
-            fullWidth
-            onPress={startGuest}
-          />
+        <Animated.View style={[styles.actions, actions]} pointerEvents={playing ? 'none' : 'auto'}>
+          {/* The one sage action, with liquid metal: one sheen as Welcome settles, then still. */}
+          <Button label={copy.welcome.createAccount} fullWidth metalPlay={metal} onPress={() => startAccount('signup')} />
+          <Button variant="text" label={copy.welcome.signIn} fullWidth onPress={() => startAccount('signin')} />
+          <Button variant="text" label={copy.welcome.guest} fullWidth onPress={startGuest} />
         </Animated.View>
       </ScrollView>
 
@@ -191,18 +143,18 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
   scroll: { flexGrow: 1 },
   top: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     paddingHorizontal: space.margin - space.sm,
   },
   stage: { flex: 1, paddingHorizontal: space.margin, paddingBottom: space.xl },
   upper: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
     gap: space.sm,
     paddingBottom: space.xl,
   },
-  wordmark: { flexDirection: "row" },
+  wordmark: { flexDirection: 'row' },
   actions: {
     paddingHorizontal: space.margin,
     paddingBottom: space.md,

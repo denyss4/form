@@ -191,3 +191,18 @@ Source: `docs/prompts/REDESIGN-PROMPT.md`. Plan: Step 1 sections A–H, approved
 - Notifications on Profile: morning plan and evening reminder switches, with 20:00, 21:00 or 22:00 for the reminder (21:00 by default, a proposal; G53). Allowing notifications in onboarding turns both on.
 - New components: TextField (label above, inline error with icon, show/hide for secure entry), Checkbox (unchecked by default), SwitchRow, ProfileButton. The snappy slider, animated checkbox and spotlight surfaces are D3.
 - expo-image-picker installed (approved 1 Oct): photo library only, camera disabled in the plugin config; the photo lives in memory.
+
+## D3a: component upgrades (2 Oct 2026)
+
+Sources on 21st.dev show metadata only without an API key, so each component is rebuilt from its intent (Step 1, section C) with RN primitives, Reanimated and react-native-svg, in Form tokens. Hover becomes press.
+- Highlight button: a white band (0.45 over sage) or Text High band (0.12 over canvas) sweeps once on press, 280 ms, on primary and secondary buttons only. Text buttons keep plain press feedback.
+- Liquid metal: Welcome "Create account" only. A slower, wider band with canvas-coloured edges on both sides (light between two shadows), 1.2 s, played once when the Welcome sequence settles, then still. No chrome, no second accent. It plays only when the sequence plays, so it is skipped under Reduce Motion and on a second visit. If the phone check reads it as decoration, it goes (white-space audit E).
+- Both bands are positioned in percent (no measuring), drawn under the label inside their own clip, so the label and the focus ring stay intact.
+- Spotlight: Text High at 8% from the press point, fading within 200 ms of release, on the Week day detail and Profile rows. One level, never nested; the Week detail wrapper is not a control for screen readers.
+- Flux loader: for waits over 1 s (calendar connect, the Health and calendar-write previews). A flat Text High segment flows along a hairline track and the line writes itself in once. No glow (one per screen at most). Reduce Motion: a static hourglass with the line.
+- Bar chart: Progress, Felt vs forecast tab. One bar per morning (the felt rating, 0–100), flat tops, three labelled gridlines, Data Muted bars; read aloud as one sentence with every value.
+- Slide tabs: Progress, "Plan fit" and "Felt vs forecast" on one screen. The selected label is also bold. The Felt vs forecast screen stays as a route (FeltBody is shared).
+- Checkbox: the check draws itself in one stroke, 180 ms; Reduce Motion shows it at once. Still unchecked by default.
+- Snappy slider: training days on Edit profile. The thumb follows the finger, a selection haptic marks each detent, and it springs onto the nearest detent on release. Never the morning rating.
+- The morph modal (Week column into a centred detail) is D3b, behind its own phone check (Q3).
+- Found during verification: the preview browser runs with Reduce Motion on, so web checks cover the Reduce Motion paths; the motion paths are checked on the phone.

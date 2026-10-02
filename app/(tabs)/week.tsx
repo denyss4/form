@@ -29,6 +29,7 @@ import {
   PlanLabel,
   ScreenHeader,
   Skeleton,
+  SpotlightSurface,
   Text,
   useTabBarSpace,
   useTheme,
@@ -53,7 +54,8 @@ function DayDetail({ day }: { day: WeekDay }) {
   const session = day.sessions[0];
   const estimated = day.source === 'guessed';
   return (
-    <View style={[styles.detail, { backgroundColor: color.bg.raised }]}>
+    // Spotlight (D3): a press lights the surface at the press point. One level, never nested.
+    <SpotlightSurface style={[styles.detail, { backgroundColor: color.bg.raised }]}>
       <Text variant="bodyStrong">{formatLong(day.date)}</Text>
       <View style={styles.detailPlan}>
         <PlanLabel plan={day.plan} estimated={estimated} quiet />
@@ -66,7 +68,7 @@ function DayDetail({ day }: { day: WeekDay }) {
           {copy.week.noSession}
         </Text>
       )}
-    </View>
+    </SpotlightSurface>
   );
 }
 

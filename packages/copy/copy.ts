@@ -468,6 +468,8 @@ const base = {
     },
     logging: (days: number, of: number) => `You logged on ${days} of the last ${of} days.`,
     felt: { title: 'Felt vs forecast', note: 'Your morning rating next to what Form forecast.' },
+    // Slide tabs (D3): the two Progress views on one screen.
+    tabs: { label: 'Progress views', fit: 'Plan fit', felt: 'Felt vs forecast' },
     empty: {
       title: 'No plan feedback yet',
       body: 'Answer "Did the plan fit?" in your evening log. It shows up here.',
@@ -480,6 +482,12 @@ const base = {
     title: 'Felt vs forecast',
     intro: 'Each morning you rate how you feel. Here it is next to what Form forecast the evening before.',
     scale: 'Both are on a 0 to 100 scale.',
+    // Bar chart (D3): one bar per morning, the felt rating only. Data Muted: not a plan, never next to Iris.
+    chart: {
+      title: 'How you felt each morning',
+      a11y: (bars: string) => `Bar chart, how you felt each morning, 0 to 100. ${bars}.`,
+      bar: (day: string, felt: number) => `${day} ${felt}`,
+    },
     legend: { forecast: 'Forecast', felt: 'Felt', range: 'Likely range' },
     row: (felt: number, forecast: number, lo: number, hi: number) => `Felt ${felt}, forecast ${forecast}, likely ${lo}–${hi}`,
     summary: (inside: number, days: number) => `${inside} of ${days} ${days === 1 ? 'day' : 'days'} landed inside the likely range.`,
