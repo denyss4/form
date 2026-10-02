@@ -69,10 +69,10 @@ function Option({
         <FocusRing visible={focus.focused} radius={radius.full} />
         <Animated.View
           pointerEvents="none"
-          style={[styles.fill, { backgroundColor: color.text.primary }, shown]}
+          style={[styles.fill, { backgroundColor: color.state.selected }, shown]}
         />
         <Animated.View pointerEvents="none" style={[styles.check, shown]}>
-          <Check color={color.bg.canvas} size={size.iconSm} strokeWidth={size.outline} />
+          <Check color={color.action.onPrimary} size={size.iconSm} strokeWidth={size.outline} />
         </Animated.View>
         <View style={styles.label}>
           <Animated.View style={hidden}>

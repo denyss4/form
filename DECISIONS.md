@@ -152,3 +152,8 @@ Source: `docs/prompts/REDESIGN-PROMPT.md`. Plan: Step 1 sections A–H, approved
 - Dependencies: expo-blur, expo-image-picker and expo-notifications approved; expo-linear-gradient skipped (react-native-svg draws the gradients); Skia rejected. The notifications pre-prompt stays mocked whenever the demo clock is on; the real OS prompt appears only in normal builds.
 - Q1: Marigold #faab3f and Butter #eada78 are shown at D0a. If rejected, Data Muted changes and is re-tested, not the plan colours. Q2 guest mode: yes. Q3 inline Week detail now; the morph modal in D3 behind its own check. Q4: header profile button, no fourth tab. Q5: Welcome A, "Dawn over the week". Q7: profile training and work fields are stored, with a GAP for the engine; a display-name map for sessions.
 - Rejected components: rainbow button (decoration with no job, and a second accent), radar chart (angle and area are read inaccurately, and no data fits it), checkbox todo list (no real use).
+
+## D0a accepted (2 Oct 2026, from the user)
+
+- Q1: Marigold `#faab3f` (Train hard) and Butter `#eada78` (Train light) accepted after the iPhone check of D0a. Data Muted stays `#94A8B6`.
+- D0a as built: Lichen tokens (dark app theme; light palette kept for the gallery only), radius 12/16/24, sage primary and selection, glass floating tab bar (expo-blur, canvas tint 0.70, Text High labels, sage active icon; solid under Reduce Transparency and on Android), Today plan glow at 0.16, dial order track → arc → band with a dash-drawn reveal, dividers removed on Today and Week.

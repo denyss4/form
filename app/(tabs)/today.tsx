@@ -43,20 +43,24 @@ import {
   IconButton,
   InlineMessage,
   oneOf,
+  PlanGlow,
   ScoreDial,
   ScreenHeader,
   Skeleton,
   Text,
+  useTabBarSpace,
   useTheme,
 } from '@ui';
 
 const FEW_INPUTS = 3; // this many inputs used, or fewer, is a thin picture
+const GLOW_DIAMETER = size.dial.app.diameter + size.dial.app.diameter / 2; // the glow reaches past the dial, fading to nothing
 
 export default function Today() {
   const { color } = useTheme();
   const router = useRouter();
   const app = useAppState();
   const insets = useSafeAreaInsets();
+  const tabSpace = useTabBarSpace();
   const params = useLocalSearchParams<{ state?: string; reveal?: string; log?: string; motion?: string; step?: string }>();
   // The phone's clock, or the demo clock in the demo build (packages/state/clock.ts). ?evening=1|0 overrides it for review.
   const { morning, evening } = useDayPhase();
@@ -241,6 +245,10 @@ export default function Today() {
           onCaptionLongPress={onCaptionLongPress}
         />
         <View style={styles.dial}>
+          {/* The one ambient glow: the plan colour behind the dial, fading in with the reveal (REDESIGN-PROMPT §2.3). */}
+          <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, settle]}>
+            <PlanGlow color={color.plan[p].base} diameter={GLOW_DIAMETER} centerY={size.dial.app.diameter / 2} />
+          </Animated.View>
           <ScoreDial
             score={result.score}
             range={result.range}
@@ -296,7 +304,7 @@ export default function Today() {
               </Text>
             ) : (
               result.drivers.map((driver, i) => (
-                <DriverRow key={driver.id} driver={driver} divider={i < result.drivers.length - 1} />
+                <DriverRow key={driver.id} driver={driver} />
               ))
             )}
           </View>
@@ -330,6 +338,7 @@ export default function Today() {
         <MorningRating
           dateCaption={copy.today.dateCaption(formatLong(app.demoDay))}
           topInset={insets.top}
+          bottomInset={tabSpace}
           onRate={(rating) => app.rateMorning(app.demoDay, rating)}
           onSkip={() => app.skipMorning(app.demoDay)}
         />
@@ -339,7 +348,13 @@ export default function Today() {
 
   return (
     <View style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
-      <Animated.ScrollView ref={scroll} onScroll={onScroll} scrollEventThrottle={16} contentContainerStyle={styles.content}>
+      {/* The tab bar floats on glass: with a footer, the footer sits above the bar; without one, the content scrolls under the glass. */}
+      <Animated.ScrollView
+        ref={scroll}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={[styles.content, footer ? null : { paddingBottom: space.lg + tabSpace }]}
+      >
         <View
           onLayout={(e) => fieldHeight.set(e.nativeEvent.layout.height)}
           style={[styles.field, { paddingTop: insets.top + space.md }]}
@@ -358,10 +373,7 @@ export default function Today() {
       </View>
 
       {footer ? (
-        <View
-          aria-live="polite"
-          style={styles.footer}
-        >
+        <View aria-live="polite" style={[styles.footer, { marginBottom: tabSpace }]}>
           {footer}
         </View>
       ) : null}
@@ -387,7 +399,8 @@ const styles = StyleSheet.create({
   field: { paddingHorizontal: space.margin, paddingBottom: space.lg, gap: space.sm },
   fieldBg: { borderBottomLeftRadius: radius.sheet, borderBottomRightRadius: radius.sheet },
   reason: { marginTop: space.sm }, // 24 from the dial's annotation, with the field gap
-  dial: { alignItems: 'center', marginTop: space.sm },
+  // Gallery isolation: 36 above the dial with the field gap, so nothing sits within 32 of it (REDESIGN-PROMPT §2.1).
+  dial: { alignItems: 'center', marginTop: space.lg },
   annotation: { alignItems: 'center', gap: space.xxs },
   section: { paddingHorizontal: space.margin, marginTop: space.xxl, gap: space.sm }, // 48 before a new section (5.2)
   footer: { paddingHorizontal: space.margin, paddingTop: space.md, paddingBottom: space.md, gap: space.xs },

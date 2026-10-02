@@ -45,11 +45,13 @@ function Target({ value, width, onPress }: { value: number; width: number; onPre
 export function MorningRating({
   dateCaption,
   topInset,
+  bottomInset,
   onRate,
   onSkip,
 }: {
   dateCaption: string;
   topInset: number;
+  bottomInset: number; // the floating tab bar's height, so Skip is never under the glass
   onRate: (rating: number) => void;
   onSkip: () => void;
 }) {
@@ -64,7 +66,7 @@ export function MorningRating({
 
   return (
     // Scrolls, so at the largest text sizes the numbers and Skip stay reachable.
-    <ScrollView contentContainerStyle={[styles.wrap, { paddingTop: topInset + space.md }]}>
+    <ScrollView contentContainerStyle={[styles.wrap, { paddingTop: topInset + space.md, paddingBottom: space.lg + bottomInset }]}>
       <Text variant="caption" tone="secondary">
         {dateCaption}
       </Text>
@@ -102,7 +104,7 @@ export function MorningRating({
 }
 
 const styles = StyleSheet.create({
-  wrap: { paddingHorizontal: space.margin, paddingBottom: space.lg, gap: space.lg },
+  wrap: { paddingHorizontal: space.margin, gap: space.lg },
   question: { gap: space.xs, marginTop: space.lg },
   grid: { flexDirection: 'row', flexWrap: 'wrap', columnGap: space.xs, rowGap: space.xs },
   target: {

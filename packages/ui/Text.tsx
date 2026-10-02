@@ -35,7 +35,7 @@ export function Text({
       : tone === 'secondary'
         ? color.text.secondary
         : tone === 'inverse'
-          ? color.bg.canvas
+          ? color.action.onPrimary
           : color.plan[tone].base;
 
   // Native scales itself. On web the gallery's multiplier stands in, capped the same way.

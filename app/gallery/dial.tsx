@@ -78,6 +78,15 @@ export default function DialGallery() {
           <ScoreDial score={null} plan={plan} dial="widget" />
         </View>
       </Section>
+
+      {/* REDESIGN-PROMPT §3: check both caps at the app size, with the active arc drawn on top of the track. */}
+      <Section title={d.edgeScores}>
+        <View style={styles.row}>
+          {[0, 1, 51, 99, 100].map((s) => (
+            <ScoreDial key={s} score={s} range={[Math.max(0, s - 17), Math.min(100, s + 17)]} plan={plan} />
+          ))}
+        </View>
+      </Section>
     </GalleryScreen>
   );
 }

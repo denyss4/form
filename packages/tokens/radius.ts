@@ -1,6 +1,7 @@
-// Radius follows hierarchy (MASTER_PROMPT §5.4): there is no single radius for everything.
+// Radius follows hierarchy (REDESIGN-PROMPT §1): there is no single radius for everything.
 export const radius = {
-  control: 10, // controls and inputs
-  sheet: 20, // sheets and the one raised surface
-  full: 999, // toggles and segmented pills
+  control: 12, // controls and inputs
+  surface: 16, // the one content surface (Week day detail, Profile sections)
+  sheet: 24, // bottom sheets, top corners only
+  full: 999, // toggles, pills, the slider, Plan Fit segments
 } as const;

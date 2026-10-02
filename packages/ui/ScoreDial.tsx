@@ -4,13 +4,13 @@
 // The range text and the plan label sit OUTSIDE the dial, so they can wrap at large text sizes. Only the number scales up to 1.3x.
 // Sizes: app (on Today), widget, watch. Below about 20 pt the display token maps to the system font (5.3).
 //
-// The morning reveal (MASTER_PROMPT §6) uses transform and opacity only. The value arc is drawn in full, then hidden by a cover in the
-// colour of the field behind the dial. The cover is one arc, as long as the score's sweep, and it ROTATES forward along the ring, so
-// the arc is uncovered from its start to the score. The track is drawn above the cover so the ring never looks broken. The range bracket
-// and the number fade in. Resolves GAPS G22.
+// Layer order (REDESIGN-PROMPT §3): the full 0-100 track in the control stroke, then the active arc ON TOP with round caps, then the
+// likely-range band last. The morning reveal draws the active arc along its length (an animated stroke dash; the motion limits were lifted
+// on 1 Oct 2026), so the opaque track is never covered and the ring never looks broken. The range bracket and the number fade in.
 import { StyleSheet, View } from 'react-native';
 import Animated, {
   interpolate,
+  useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
   type SharedValue,
@@ -18,18 +18,19 @@ import Animated, {
 import Svg, { Path } from 'react-native-svg';
 
 import { copy } from '@copy';
-import { opacity, scoreMaxFontScale, size, systemDisplay, type DialSize, type PlanId } from '@tokens';
+import { scoreMaxFontScale, size, systemDisplay, type DialSize, type PlanId } from '@tokens';
 
 import { Text } from './Text';
 import { useTheme } from './theme';
 
 const SCORE_MAX = 100;
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 export interface ScoreDialReveal {
   /** 0 = nothing shown yet, 1 = fully revealed. */
   progress: SharedValue<number>;
-  /** The colour behind the dial. The cover is drawn in it. */
-  field: string;
+  /** The colour behind the dial. Kept for callers; the dash reveal no longer needs it. */
+  field?: string;
 }
 
 export interface ScoreDialProps {
@@ -84,9 +85,16 @@ export function ScoreDial({ score, range, plan, dial = 'app', reveal }: ScoreDia
 
   const settled = useSharedValue(1);
   const progress = reveal?.progress ?? settled;
-  const cover = useAnimatedStyle(() => ({ transform: [{ rotate: `${progress.value * sweep}deg` }] }));
   const bracket = useAnimatedStyle(() => ({ opacity: interpolate(progress.value, [0.7, 1], [0, 1], 'clamp') }));
   const numeral = useAnimatedStyle(() => ({ opacity: interpolate(progress.value, [0.3, 0.8], [0, 1], 'clamp') }));
+
+  // The active arc's length, for the dash reveal: dash = the whole arc, gap = the same, offset from the whole length to 0.
+  const arcLength = (valueRadius * Math.abs(sweep) * Math.PI) / 180;
+  const arcProps = useAnimatedProps(() => ({
+    strokeDashoffset: arcLength * (1 - progress.value),
+    // A zero-length dash still draws its round caps as a dot, so the arc is hidden until it has started to draw.
+    strokeOpacity: progress.value > 0.01 ? 1 : 0,
+  }));
 
   const label = hasScore
     ? range
@@ -94,53 +102,34 @@ export function ScoreDial({ score, range, plan, dial = 'app', reveal }: ScoreDia
       : `Form score ${score}`
     : copy.dial.empty;
 
-  const track = (
-    <Path
-      d={arcPath(centre, valueRadius, start, end)}
-      stroke={plan ? ink : color.stroke.hairline}
-      strokeOpacity={plan ? opacity.track : 1}
-      strokeWidth={g.stroke}
-      strokeLinecap="round"
-      fill="none"
-    />
-  );
   const drawn = hasScore && score > 0;
 
   return (
     <View accessible accessibilityLabel={label} style={{ width: g.diameter, height }}>
       <Svg style={styles.layer} width={g.diameter} height={height} viewBox={`0 0 ${g.diameter} ${height}`}>
-        {reveal ? null : track}
+        {/* 1. The inactive track, 0-100. */}
+        <Path
+          d={arcPath(centre, valueRadius, start, end)}
+          stroke={color.stroke.control}
+          strokeWidth={g.stroke}
+          strokeLinecap="round"
+          fill="none"
+        />
+        {/* 2. The active arc, on top. */}
         {drawn ? (
-          <Path
+          <AnimatedPath
             d={arcPath(centre, valueRadius, start, scoreEnd)}
             stroke={ink}
             strokeWidth={g.stroke}
             strokeLinecap="round"
+            strokeDasharray={[arcLength, arcLength]}
+            animatedProps={arcProps}
             fill="none"
           />
         ) : null}
       </Svg>
 
-      {reveal && drawn ? (
-        <Animated.View style={[styles.layer, { width: g.diameter, height: g.diameter }, cover]}>
-          <Svg width={g.diameter} height={g.diameter}>
-            <Path
-              d={arcPath(centre, valueRadius, start, scoreEnd)}
-              stroke={reveal.field}
-              strokeWidth={g.stroke + size.hairline * 2}
-              strokeLinecap="round"
-              fill="none"
-            />
-          </Svg>
-        </Animated.View>
-      ) : null}
-
-      {reveal ? (
-        <Svg style={styles.layer} width={g.diameter} height={height} viewBox={`0 0 ${g.diameter} ${height}`}>
-          {track}
-        </Svg>
-      ) : null}
-
+      {/* 3. The likely-range band, last. */}
       {hasScore && range ? (
         <Animated.View style={[styles.layer, bracket]}>
           <Svg width={g.diameter} height={height} viewBox={`0 0 ${g.diameter} ${height}`}>

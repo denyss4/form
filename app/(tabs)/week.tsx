@@ -1,7 +1,7 @@
 // Layout plan. Job: fit hard sessions into this week. Focal element: the column of plan glyphs, the week's rhythm (colour only in the glyphs).
 // Quiet: the day-type tags. The one action is the suggestion, inline under the day it moves from, with what the two days become:
 // one primary plus a text-only action.
-// Day types are tags, not plan state, so they carry no colour (5.1). Rows are separated by space and hairlines, never boxed (5.5 #1).
+// Day types are tags, not plan state, so they carry no colour. Rows are separated by space alone, never boxed (REDESIGN-PROMPT §2.1).
 // States: default, loading, no calendar, partial, low confidence, error. `?state=` holds one for review.
 // Accepting moves the session marker to its new day with translateY (transform only), then the week reflows (MASTER_PROMPT §6).
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -35,6 +35,7 @@ import {
   ScreenHeader,
   Skeleton,
   Text,
+  useTabBarSpace,
   useTheme,
 } from '@ui';
 
@@ -49,28 +50,19 @@ interface Slot {
 
 function Row({
   day,
-  divider,
   hideSlot,
   onRow,
   onSlot,
 }: {
   day: WeekDay;
-  divider: boolean;
   hideSlot: boolean;
   onRow: (e: LayoutChangeEvent) => void;
   onSlot: (e: LayoutChangeEvent) => void;
 }) {
-  const { color } = useTheme();
   const tags = day.tags.map((t) => copy.tag[t]).join(', ');
   const session = day.sessions[0];
   return (
-    <View
-      onLayout={onRow}
-      style={[
-        styles.row,
-        divider ? { borderBottomWidth: size.hairline, borderBottomColor: color.stroke.hairline } : undefined,
-      ]}
-    >
+    <View onLayout={onRow} style={styles.row}>
       <View style={styles.line}>
         <Text variant="bodyStrong">{formatDay(day.date)}</Text>
         {/* Shrinks and wraps at large text sizes instead of running off the screen. */}
@@ -114,6 +106,7 @@ function SkeletonRows() {
 
 export default function Week() {
   const { color } = useTheme();
+  const tabSpace = useTabBarSpace(); // the tab bar floats on glass; the list scrolls under it
   const router = useRouter();
   const app = useAppState();
   const params = useLocalSearchParams<{ state?: string; motion?: string }>();
@@ -280,13 +273,12 @@ export default function Week() {
             showTheMove();
           }}
         >
-          {week.map((day, i) => {
+          {week.map((day) => {
             const inline = suggestion !== null && day.date === suggestion.fromDate;
             return (
               <Fragment key={day.date}>
                 <Row
                   day={day}
-                  divider={i < week.length - 1 && !inline}
                   hideSlot={hidden.includes(day.date)}
                   onRow={(e) => record(day.date, { y: e.nativeEvent.layout.y, h: e.nativeEvent.layout.height })}
                   onSlot={(e) => record(day.date, { slot: e.nativeEvent.layout.y })}
@@ -298,10 +290,7 @@ export default function Week() {
                       block.current = { y: e.nativeEvent.layout.y, h: e.nativeEvent.layout.height };
                       showTheMove();
                     }}
-                    style={[
-                      styles.inline,
-                      i < week.length - 1 ? { borderBottomWidth: size.hairline, borderBottomColor: color.stroke.hairline } : undefined,
-                    ]}
+                    style={styles.inline}
                   >
                     {suggestionBody}
                   </View>
@@ -327,7 +316,7 @@ export default function Week() {
           viewHeight.current = e.nativeEvent.layout.height;
           showTheMove();
         }}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, { paddingBottom: space.lg + tabSpace }]}
       >
         <View style={styles.header}>{header}</View>
         {body}
@@ -348,6 +337,6 @@ const styles = StyleSheet.create({
   hidden: { opacity: 0 },
   marker: { position: 'absolute', left: 0, right: 0 },
   state: { gap: space.sm, alignItems: 'flex-start' },
-  // The suggestion belongs to the day above it: space and a hairline, no card (5.5 #1).
+  // The suggestion belongs to the day above it: space only, no card and no divider.
   inline: { paddingTop: space.xs, paddingBottom: space.md, gap: space.xs },
 });

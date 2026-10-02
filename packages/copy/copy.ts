@@ -405,6 +405,7 @@ const base = {
       app: 'App size, on the plan field',
       small: 'Widget and watch sizes, on the canvas',
       extremes: 'Score extremes',
+      edgeScores: 'Caps at 0, 1, 51, 99 and 100 (app size)',
       forecastFor: (date: string) => `Forecast for ${date}`,
     },
     range: {

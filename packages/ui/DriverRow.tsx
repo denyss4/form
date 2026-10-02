@@ -1,5 +1,6 @@
 // Layout plan. Job: explain one part of the score. Focal element: the label with its signed value. Quiet: the basis caption.
-// Direction is a glyph, a sign and words, never colour (5.1). No card: space first, then a hairline (5.2).
+// Direction is a glyph, a sign and words, never colour. No card and no divider: space alone groups the rows (white-space guideline,
+// space as connector; REDESIGN-PROMPT §2.1).
 import { StyleSheet, View } from 'react-native';
 import ArrowDown from 'lucide-react-native/icons/arrow-down';
 import ArrowUp from 'lucide-react-native/icons/arrow-up';
@@ -12,7 +13,7 @@ import { Text } from './Text';
 import { useTheme } from './theme';
 import { useIconSize } from './useIconSize';
 
-export function DriverRow({ driver, divider = true }: { driver: FormDriver; divider?: boolean }) {
+export function DriverRow({ driver }: { driver: FormDriver }) {
   const { color } = useTheme();
   const Arrow = driver.direction === 'up' ? ArrowUp : ArrowDown;
   const basis = copy.basis[driver.basis];
@@ -24,7 +25,6 @@ export function DriverRow({ driver, divider = true }: { driver: FormDriver; divi
       accessibilityLabel={copy.driver.a11y(driver.label, driver.direction, driver.magnitude, basis)}
       style={[
         styles.row,
-        divider ? { borderBottomWidth: size.hairline, borderBottomColor: color.stroke.hairline } : undefined,
       ]}
     >
       <Arrow color={color.text.primary} size={iconPx} strokeWidth={size.outline} />
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: space.sm,
-    paddingVertical: space.sm,
+    paddingVertical: space.xs, // 16 between rows
   },
   text: { flex: 1 },
 });

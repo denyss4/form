@@ -27,26 +27,31 @@ Goal: a demo-quality app for a 2-person hackathon, 3–4 Oct 2026. It must show 
 - UI contract: `{score, range:[lo,hi], confidence, drivers:[{id,label,direction,basis,magnitude}], plan, skippedInputs}`. `toFormResult()` adapts one to the other. Render only these fields.
 - Do not add model facts. Never claim sleep as a top driver. Never write "gets sharper as you log".
 
-## Colour (`packages/tokens`)
+## Colour (`packages/tokens`): dark "Lichen"
 
-Colour rules were removed on 1 Oct 2026 (user decision, see `DECISIONS.md`): tokens are preferred but not required, new colours and gradients need no approval. The table is the current token set, not a limit.
+Dark "Lichen" is the app theme (`docs/prompts/REDESIGN-PROMPT.md` §1, approved 1 Oct 2026; D0a). Under the redesign prompt, colour is tokens-first again: use tokens, measure contrast, and get approval for a new colour. The old light palette stays for the gallery only, unmaintained.
 
-| Token | Hex |
-|---|---|
-| canvas "Dawn" | `#F3F6FA` |
-| raised | `#FFFFFF` |
-| text primary "Ink" | `#13263A` (also the primary button fill, Dawn text) |
-| text secondary | `#4A5B6C` |
-| control stroke | `#6B7C8D` (needs ≥ 3:1) |
-| hairline | `#C9D3DD` (decorative only) |
-| plan hard "Ember" / field | `#B83A1B` / `#FBE8E1` |
-| plan light "Ochre" / field | `#8A5A10` / `#FAF0DA` |
-| plan recover "Tide" / field | `#1F6280` / `#E1EEF4` |
-| plan deep-work "Iris" / field | `#51479E` / `#ECE9F7` |
+| Role | Token | Hex | Contrast (WCAG 2.2) |
+|---|---|---|---|
+| Canvas (Surface 100) | `bg.canvas` | `#16181A` | — |
+| Raised (Surface 200) | `bg.raised` | `#232528` | 1.16:1 vs canvas: separate with space plus a hairline |
+| Sunken | `bg.sunken` | `#1d1f22` | inputs, pressed rows |
+| Text High | `text.primary` | `#F5F5F7` | 16.35:1; 6.05:1 on glass at worst |
+| Text Muted | `text.secondary` | `#8E9298` | 5.69:1; **never on glass** (2.11:1 worst) |
+| Control stroke | `stroke.control` | `#7d828a` | 4.60:1: input borders, outlined pills, the dial track |
+| Hairline | `stroke.hairline` | `#2e3135` | decorative only |
+| Sage (Brand Accent) | `action.primary`, `focus.ring`, `state.selected`, `status.success` | `#b3be8b` | 9.03:1; pressed `#9ba47a`; text on it is canvas |
+| Status Over | `status.attention` | `#C87A65` | 5.45:1: errors, destructive text; always with an icon and words |
+| Data Muted | `chart.neutral` | `#94A8B6` | non-plan charts only, never next to Iris |
+| Train hard (Marigold) | `plan.hard` | `#faab3f` | 9.29:1 (accepted 2 Oct) |
+| Train light (Butter) | `plan.light` | `#eada78` | 12.54:1 (accepted 2 Oct) |
+| Recover (Sea glass) | `plan.recover` | `#75d1c5` | 9.90:1 |
+| Deep-work day (Iris) | `plan.deepwork` | `#b0a6ed` | 8.07:1 |
 
-- Dark is the app theme (`DECISIONS.md`, 1 Oct 2026): canvas `#0E1B2A`, raised `#172A3E`, text `#E8EEF5`, secondary `#9DB0C3`, control stroke `#6B7C8D` (GAPS G9), plans `#FF8A66` `#F2BE5C` `#6FB9DB` `#A99BF2`. Dark plan fields equal the canvas: no field on Today.
-- Current button styles: primary = text-primary solid; secondary = outline; destructive = text-only with confirmation.
-- Never colour alone: every plan has a glyph and a label (accessibility).
+- Sage appears at most once per screen as an action; never a plan colour, never decoration. Primary button: sage fill, canvas text; secondary: control-stroke outline, Text High; destructive: text-only with confirmation.
+- Never colour alone: every plan has a glyph and a label (accessibility; under tritanopia Iris sits close to sage and Data Muted).
+- Glass (`expo-blur`) only on floating layers (tab bar, sheets, morph modal), canvas tint ≥ 0.70, Text High only. Reduce Transparency and Android: solid raised.
+- One ambient glow per screen at most: Today's plan glow behind the dial (`opacity.glow` 0.16). No other glow, no neon, no gradient text.
 
 ## Spacing, type, shape
 
@@ -66,7 +71,7 @@ Colour rules were removed on 1 Oct 2026 (user decision, see `DECISIONS.md`): tok
 | caption | Source Sans 3 | 13 / 18 | 400 |
 
 - Manrope never in paragraphs or italic. Dynamic Type stays on; text wraps, never truncates. Score caps at 1.3× inside the dial.
-- Radius: 10 controls and inputs, 20 sheets and the raised surface, full for toggles and pills. Two elevation levels; only bottom sheets get `shadow.sheet`. Cards get no shadow.
+- Radius: 12 controls and inputs, 16 the content surface, 24 sheets (top corners), full for toggles and pills. Two elevation levels; only bottom sheets get `shadow.sheet`. Cards get no shadow.
 
 Before each screen write a 3-line layout plan: the job, the one focal element, what stays quiet.
 

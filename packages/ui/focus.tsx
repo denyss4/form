@@ -20,7 +20,7 @@ export function FocusRing({ visible, radius = radii.control }: { visible: boolea
   return (
     <View
       pointerEvents="none"
-      style={[styles.ring, { borderColor: color.text.primary, borderRadius: radius + size.focusOffset }]}
+      style={[styles.ring, { borderColor: color.focus.ring, borderRadius: radius + size.focusOffset }]}
     />
   );
 }

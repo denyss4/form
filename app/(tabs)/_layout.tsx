@@ -1,5 +1,6 @@
-// Three tabs on the platform's own bottom bar (Jakob's law: navigation and back behaviour stay native).
-// Active is not colour alone: the label goes semibold too.
+// Three tabs on the platform's own bottom bar (Jakob's law: navigation and back behaviour stay native), floating on glass
+// (REDESIGN-PROMPT §2.2). Glass carries Text High only, so both labels are Text High; active is the sage icon (3.34:1 at the glass's
+// worst case, above 3:1 for graphics) plus a semibold label, never colour alone. Tab screens reserve useTabBarSpace() at the bottom.
 import { Tabs } from 'expo-router';
 import CalendarDays from 'lucide-react-native/icons/calendar-days';
 import Sun from 'lucide-react-native/icons/sun';
@@ -7,17 +8,18 @@ import TrendingUp from 'lucide-react-native/icons/trending-up';
 
 import { copy } from '@copy';
 import { chromeMaxFontScale, font, size } from '@tokens';
-import { Text, useTheme } from '@ui';
+import { GlassBar, Text, useTabBarSpace, useTheme } from '@ui';
 
 export default function TabsLayout() {
   const { color } = useTheme();
+  const barHeight = useTabBarSpace();
 
   const label = (title: string) =>
     function TabLabel({ focused }: { focused: boolean }) {
       return (
         <Text
           variant="caption"
-          tone={focused ? 'primary' : 'secondary'}
+          tone="primary"
           maxFontSizeMultiplier={chromeMaxFontScale}
           style={focused ? { fontFamily: font.body600 } : undefined}
         >
@@ -31,12 +33,14 @@ export default function TabsLayout() {
       initialRouteName="today"
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: color.text.primary,
-        tabBarInactiveTintColor: color.text.secondary,
+        tabBarActiveTintColor: color.state.selected,
+        tabBarInactiveTintColor: color.text.primary,
+        tabBarBackground: () => <GlassBar />,
         tabBarStyle: {
-          backgroundColor: color.bg.canvas,
-          // Minimalist: no rule above the bar; the bar sits on the same canvas as the screen.
-          borderTopWidth: 0,
+          position: 'absolute',
+          height: barHeight,
+          backgroundColor: 'transparent',
+          borderTopWidth: 0, // the glass draws its own hairline edge
           elevation: 0,
           shadowOpacity: 0,
         },

@@ -52,7 +52,7 @@ export default function DriversGallery() {
           </Text>
         ) : (
           drivers.map((driver, i) => (
-            <DriverRow key={driver.id} driver={driver} divider={i < drivers.length - 1} />
+            <DriverRow key={driver.id} driver={driver} />
           ))
         )}
       </Section>

@@ -1,6 +1,8 @@
 // Layout plan. Job: one clear action. Focal element: the label. Quiet: everything else, no icons, no shadow.
-// One primary per screen (5.5 #8): Ink solid, Dawn text. Secondary: Ink outline. Text-only: for low-emphasis and destructive actions.
+// One primary per screen: the sage action fill with canvas text (Lichen). Secondary: control-stroke outline. Text-only: for low-emphasis and
+// destructive actions.
 // States: default, pressed, focused, disabled, loading (MASTER_PROMPT §6). Press = scale 0.97 + opacity, 100 ms, transform and opacity only.
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
@@ -38,11 +40,12 @@ export function Button({
 }: ButtonProps) {
   const { color } = useTheme();
   const press = usePress(forceState === 'pressed');
+  const [pressed, setPressed] = useState(forceState === 'pressed');
   const focus = useFocus();
   const inactive = disabled || loading;
 
   const labelTone = variant === 'primary' ? 'inverse' : 'primary';
-  const labelColor = variant === 'primary' ? color.bg.canvas : color.text.primary;
+  const labelColor = variant === 'primary' ? color.action.onPrimary : color.text.primary;
 
   return (
     <Pressable
@@ -53,8 +56,22 @@ export function Button({
       aria-busy={loading}
       disabled={inactive}
       onPress={onPress}
-      onPressIn={forceState ? undefined : press.onPressIn}
-      onPressOut={forceState ? undefined : press.onPressOut}
+      onPressIn={
+        forceState
+          ? undefined
+          : () => {
+              setPressed(true);
+              press.onPressIn();
+            }
+      }
+      onPressOut={
+        forceState
+          ? undefined
+          : () => {
+              setPressed(false);
+              press.onPressOut();
+            }
+      }
       onFocus={focus.onFocus}
       onBlur={focus.onBlur}
       style={[
@@ -65,9 +82,10 @@ export function Button({
       <Animated.View
         style={[
           styles.base,
-          variant === 'primary' ? { backgroundColor: color.text.primary } : undefined,
+          // Primary: the sage fill (Lichen), darker while pressed. Secondary: a control-stroke outline with Text High.
+          variant === 'primary' ? { backgroundColor: pressed ? color.action.pressed : color.action.primary } : undefined,
           variant === 'secondary'
-            ? { borderWidth: size.outline, borderColor: color.text.primary }
+            ? { borderWidth: size.outline, borderColor: color.stroke.control }
             : undefined,
           variant === 'text' ? styles.textOnly : undefined,
           press.style,

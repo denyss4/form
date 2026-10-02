@@ -26,6 +26,7 @@ import {
   Skeleton,
   Text,
   useFontScale,
+  useTabBarSpace,
   useTheme,
 } from '@ui';
 
@@ -94,6 +95,7 @@ function SkeletonBody() {
 
 export default function Progress() {
   const { color } = useTheme();
+  const tabSpace = useTabBarSpace(); // the tab bar floats on glass; the list scrolls under it
   const router = useRouter();
   const params = useLocalSearchParams<{ state?: string }>();
   const scenario = oneOf(params.state, progressScenarios, 'default');
@@ -184,7 +186,7 @@ export default function Progress() {
 
   return (
     <SafeAreaView edges={['top']} style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: space.lg + tabSpace }]}>
         {header}
         {body}
       </ScrollView>
