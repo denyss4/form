@@ -31,7 +31,7 @@ export function ProfileHeader({ name, email, photo }: { name: string; email: str
   const arc = `M 0 ${ARC_HEIGHT} Q ${ARC_WIDTH / 2} 0 ${ARC_WIDTH} ${ARC_HEIGHT}`;
 
   return (
-    <View accessible accessibilityLabel={copy.profile.nameA11y(name, email)} style={styles.wrap}>
+    <View accessible accessibilityLabel={name.trim() ? copy.profile.nameA11y(name, email) : email} style={styles.wrap}>
       <View pointerEvents="none" style={styles.backdrop}>
         <View style={[styles.horizon, { opacity: opacity.horizon }]}>
           <WelcomeHorizon plans={week.map((d) => d.plan)} progress={settled} glow={false} />
@@ -71,7 +71,7 @@ export function ProfileHeader({ name, email, photo }: { name: string; email: str
         ) : (
           // Manrope 600 at the title size (REDESIGN-PROMPT §5: initials in Manrope 600).
           <Text variant="title" style={styles.initials}>
-            {initials(name)}
+            {initials(name, email)}
           </Text>
         )}
       </View>

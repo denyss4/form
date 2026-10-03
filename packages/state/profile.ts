@@ -63,8 +63,10 @@ export function displaySession(profile: Profile, calendarName: string): string {
   return profile.sessions.find((s) => s.source === calendarName)?.name ?? calendarName;
 }
 
-export function initials(name: string): string {
+/** Up to two initials; with no name (it is optional, first-launch plan, 3 Oct), the email's first letter. */
+export function initials(name: string, email = ''): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return email.trim().charAt(0).toUpperCase();
   return parts
     .slice(0, 2)
     .map((p) => p[0]?.toUpperCase() ?? '')

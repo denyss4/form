@@ -152,9 +152,8 @@ export const pl: Omit<Copy, 'dev'> = {
   welcome: {
     wordmark: 'Form',
     tagline: 'Planuj tydzień pod to, jak będziesz się czuć.',
-    createAccount: 'Załóż konto',
-    signIn: 'Zaloguj się',
-    guest: 'Kontynuuj bez konta',
+    start: 'Zaczynamy',
+    haveAccount: 'Mam już konto',
     legal: 'Regulamin i prywatność',
     a11y: 'Form. Planuj tydzień pod to, jak będziesz się czuć. Przykładowy tydzień planów wschodzi nad horyzontem.',
   },
@@ -171,22 +170,11 @@ export const pl: Omit<Copy, 'dev'> = {
   },
 
   intro: {
-    skip: 'Pomiń',
-    next: 'Dalej',
     done: 'Kontynuuj',
-    page: (n: number, total: number) => `Strona ${n} z ${total}`,
     chipA11y: (plan: string, score: number, lo: number, hi: number) => `Przykład: ${plan}. Wynik Form ${score}. Prawdopodobnie od ${lo} do ${hi}.`,
-    weekA11y: 'Przykład: tydzień planów, jeden symbol na dzień.',
-    logRows: ['Jak ciężko było', 'Alkohol', 'Coś nietypowego'],
-    logA11y: 'Przykład: wieczorny wpis, trzy pytania, wszystkie z odpowiedzią.',
-    slides: [
-      { title: 'Jeden plan na dzień, z uzasadnieniem.', body: 'Każdego ranka Form zamienia wczorajszy wpis w plan i prawdopodobny zakres.' },
-      {
-        title: 'Zobacz, gdzie w tygodniu pasują mocne sesje.',
-        body: 'Kalendarz wyznacza typ każdego dnia, a Form podpowiada, gdzie mocna sesja pasuje lepiej.',
-      },
-      { title: 'Wieczorny wpis w trzech stuknięciach.', body: 'Jak ciężko było, alkohol, coś nietypowego. Tyle wystarczy na jutrzejszy plan.' },
-    ],
+    // One screen (first-launch plan, 3 Oct, item 4): slides 2 and 3 are gone.
+    title: 'Jeden plan na dzień, z uzasadnieniem.',
+    body: 'Każdego ranka Form zamienia wczorajszy wpis w plan i prawdopodobny zakres.',
   },
 
   stepper: {
@@ -221,6 +209,7 @@ export const pl: Omit<Copy, 'dev'> = {
     signUpTitle: 'Załóż konto',
     signInTitle: 'Zaloguj się',
     name: 'Imię',
+    nameOptional: 'Imię (opcjonalnie)',
     email: 'E-mail',
     password: 'Hasło',
     passwordHint: 'Co najmniej 8 znaków.',
@@ -259,7 +248,6 @@ export const pl: Omit<Copy, 'dev'> = {
     signInBody: 'Zaloguj się na swoje konto.',
     signUpTitle: 'Załóż konto',
     signUpBody: 'Twój plan i wpisy zostają na tym telefonie.',
-    remember: 'Zapamiętaj mnie na tym telefonie',
     strength: {
       label: (words: string) => `Siła hasła: ${words}`,
       levels: ['Bardzo słabe', 'Słabe', 'Średnie', 'Dobre', 'Silne'],
@@ -267,13 +255,7 @@ export const pl: Omit<Copy, 'dev'> = {
     },
     errors: {
       weak: 'Wybierz silniejsze hasło: spełnij co najmniej 3 punkty poniżej.',
-      code: 'Wpisz 6 cyfr z e-maila.',
     },
-    verifyTitle: 'Sprawdź skrzynkę',
-    verifyBody: (email: string) => `Wysłaliśmy 6-cyfrowy kod na adres ${email}. Demo: działa dowolne 6 cyfr, nic nie jest wysyłane.`,
-    code: 'Kod',
-    verify: 'Potwierdź e-mail',
-    backToDetails: 'Wróć do danych',
     doneTitle: 'Konto założone',
     doneBody: 'Twoje konto jest gotowe. Demo: istnieje na tym telefonie do zamknięcia aplikacji.',
     start: 'Zaczynamy',
@@ -303,7 +285,7 @@ export const pl: Omit<Copy, 'dev'> = {
     trainingTime: (time: string) => `Zwykle o ${time}`,
     sessions: (names: string) => `Sesje: ${names}`,
     noSessions: 'Brak sesji',
-    trainingNote: 'Form odczytuje treningi z kalendarza. Te ustawienia jeszcze nie zmieniają planów.',
+    trainingNote: 'Form odczytuje treningi z kalendarza.',
     work: 'Rytm pracy',
     workDays: (days: string) => `Dni pracy: ${days}`,
     noWorkDays: 'Brak stałych dni pracy',

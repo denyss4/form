@@ -1,14 +1,14 @@
 // Layout plan. Job: sign in or create an account in one place (D5, the user's pick 6B: their premium-auth code rebuilt for the phone).
 // Focal element: the fields and the one primary. Quiet: the tabs and the strength meter.
 // From the original: sign in and sign up as two tabs (the app's slide tabs, 1A), a leading icon in each field, a password strength meter
-// with what is still missing, remember me and forgot password on sign in, terms on sign up, a 6-digit email code step, a done step, and
-// the password reset view. The user removed the confirm-password field and the "Already have an account?" switch (the tabs do that).
+// with what is still missing, forgot password on sign in, terms on sign up, a done step, and the password reset view. The user removed
+// the confirm-password field and the "Already have an account?" switch (the tabs do that); then (first-launch plan, 3 Oct) the email
+// code step and "Remember me" (mocked auth gains nothing from them), and the name became optional.
 // Changed for Form:
 // - Labels stay above the fields (the original uses placeholders as labels; they vanish as you type).
 // - No phone number: Form has no use for it (GDPR Art. 5(1)(c)).
 // - The strength meter is neutral: Text High segments and the words, not the original's red-to-green colours (never colour alone).
-// - Mocked like the rest of the demo: nothing is sent and any 6 digits pass. The screen around the panel creates the account (when the
-//   code is confirmed) and signs in; "Remember me" changes nothing yet [GAP G58: nothing is kept between launches].
+// - Mocked like the rest of the demo: nothing is sent. The screen around the panel creates the account and signs in.
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import CircleCheck from 'lucide-react-native/icons/circle-check';
@@ -24,7 +24,7 @@ import { announce, Button, Checkbox, FieldError, haptic, InlineMessage, SlideTab
 
 export type AuthMode = 'signIn' | 'signUp' | 'reset';
 type Mode = AuthMode;
-type Step = 'details' | 'verify' | 'done';
+type Step = 'details' | 'done';
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function strength(password: string) {
@@ -82,7 +82,7 @@ export function AuthPanel({
   initialMode?: Mode;
   /** The screen titles itself from the mode. */
   onModeChange?: (mode: Mode) => void;
-  /** The code is confirmed: create the account. */
+  /** Create the account. The name may be empty: it is optional. */
   onCreate?: (account: { name: string; email: string }) => void;
   /** Sign in; false when no account uses this email. */
   onSignIn?: (email: string) => boolean;
@@ -103,13 +103,10 @@ export function AuthPanel({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [code, setCode] = useState('');
   const [terms, setTerms] = useState(false);
-  const [remember, setRemember] = useState(false);
   const [tried, setTried] = useState(false);
 
   const errors = {
-    name: mode === 'signUp' && !name.trim() ? copy.auth.errors.name : null,
     email: !EMAIL.test(email.trim()) ? copy.auth.errors.email : null,
     password:
       mode === 'reset'
@@ -120,7 +117,6 @@ export function AuthPanel({
             ? copy.authPanel.errors.weak
             : null,
     terms: mode === 'signUp' && !terms ? copy.auth.errors.terms : null,
-    code: !/^\d{6}$/.test(code) ? copy.authPanel.errors.code : null,
   };
   const show = (e: string | null) => (tried ? e : null);
 
@@ -146,7 +142,7 @@ export function AuthPanel({
       if (!errors.email) later(() => setNotice(copy.authPanel.resetSent));
       return;
     }
-    const fields = mode === 'signUp' ? [errors.name, errors.email, errors.password, errors.terms] : [errors.email, errors.password];
+    const fields = mode === 'signUp' ? [errors.email, errors.password, errors.terms] : [errors.email, errors.password];
     setUnknown(false);
     if (fields.some(Boolean)) {
       haptic.warning();
@@ -164,8 +160,12 @@ export function AuthPanel({
         if (onDone) onDone();
         else announce(copy.authPanel.signedIn);
       } else {
+        // No email code (first-launch plan, 3 Oct, item 1): mocked auth gains nothing from it. The account is created at once.
+        onCreate?.({ name: name.trim(), email: email.trim() });
+        haptic.success();
+        announce(copy.auth.created);
         setTried(false);
-        setStep('verify');
+        setStep('done');
       }
     });
   };
@@ -179,44 +179,6 @@ export function AuthPanel({
           {copy.authPanel.doneBody}
         </Text>
         <Button label={copy.authPanel.start} fullWidth onPress={() => (onDone ? onDone() : switchTo('signIn'))} />
-      </View>
-    );
-  }
-
-  if (mode === 'signUp' && step === 'verify') {
-    return (
-      <View style={styles.panel}>
-        <Mail color={color.text.primary} size={bigIcon} strokeWidth={size.outline} />
-        <Text variant="heading">{copy.authPanel.verifyTitle}</Text>
-        <Text variant="body" tone="secondary">
-          {copy.authPanel.verifyBody(email.trim())}
-        </Text>
-        <TextField
-          label={copy.authPanel.code}
-          value={code}
-          onChangeText={(v) => setCode(v.replace(/\D/g, '').slice(0, 6))}
-          keyboardType="number-pad"
-          textContentType="oneTimeCode"
-          autoComplete="one-time-code"
-          error={show(errors.code)}
-        />
-        <Button
-          label={copy.authPanel.verify}
-          fullWidth
-          loading={loading}
-          disabled={code.length !== 6}
-          onPress={() => {
-            setTried(true);
-            if (!errors.code)
-              later(() => {
-                onCreate?.({ name: name.trim(), email: email.trim() });
-                haptic.success();
-                announce(copy.auth.created);
-                setStep('done');
-              });
-          }}
-        />
-        <Button variant="subtle" label={copy.authPanel.backToDetails} fullWidth onPress={() => setStep('details')} />
       </View>
     );
   }
@@ -259,7 +221,7 @@ export function AuthPanel({
           {signUp ? copy.authPanel.signUpBody : copy.authPanel.signInBody}
         </Text>
       </View>
-      {signUp ? <TextField label={copy.auth.name} icon={User} value={name} onChangeText={setName} autoComplete="name" error={show(errors.name)} /> : null}
+      {signUp ? <TextField label={copy.auth.nameOptional} icon={User} value={name} onChangeText={setName} autoComplete="name" /> : null}
       <TextField label={copy.auth.email} icon={Mail} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoComplete="email" error={show(errors.email)} />
       <View style={styles.field}>
         <TextField label={copy.auth.password} icon={Lock} value={password} onChangeText={setPassword} secure autoComplete={signUp ? 'new-password' : 'current-password'} error={show(errors.password)} />
@@ -274,12 +236,7 @@ export function AuthPanel({
           {show(errors.terms) ? <FieldError message={errors.terms!} /> : null}
         </View>
       ) : (
-        <View style={styles.row}>
-          <Checkbox checked={remember} onChange={setRemember} label={copy.authPanel.remember}>
-            <Text variant="body">{copy.authPanel.remember}</Text>
-          </Checkbox>
-          <Button variant="text" label={copy.auth.forgot} onPress={() => switchTo('reset')} />
-        </View>
+        <Button variant="text" label={copy.auth.forgot} onPress={() => switchTo('reset')} />
       )}
       {notice ? (
         <Text variant="body" accessibilityLiveRegion="polite">

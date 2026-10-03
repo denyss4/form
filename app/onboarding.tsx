@@ -110,10 +110,10 @@ export default function Welcome() {
         </Pressable>
 
         <Animated.View style={[styles.actions, actions]} pointerEvents={playing ? 'none' : 'auto'}>
-          {/* Liquid metal (D5, the user's picks 4B and 10): the real WebGL shader in the rim of a dark pill; the screen's one action. */}
-          <LiquidMetalButton label={copy.welcome.createAccount} onPress={() => startAccount('signup')} />
-          <Button variant="text" label={copy.welcome.signIn} fullWidth onPress={() => startAccount('signin')} />
-          <Button variant="text" label={copy.welcome.guest} fullWidth onPress={startGuest} />
+          {/* Guest first (first-launch plan, 3 Oct, C6): the liquid metal button starts without an account; an account is offered later.
+              "I already have an account" opens Sign in. */}
+          <LiquidMetalButton label={copy.welcome.start} onPress={startGuest} />
+          <Button variant="text" label={copy.welcome.haveAccount} fullWidth onPress={() => startAccount('signin')} />
         </Animated.View>
       </ScrollView>
 

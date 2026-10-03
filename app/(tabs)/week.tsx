@@ -174,7 +174,9 @@ export default function Week() {
             )}
           </Text>
         ) : null}
-        <Button label={copy.suggestion.move(weekdayName(suggestion.toDate))} fullWidth disabled={move !== null} onPress={accept} />
+        {/* Always the full sage primary (first-launch plan, 3 Oct, item 17): while the move plays it shows its loading state, never the
+            dimmed disabled look. */}
+        <Button label={copy.suggestion.move(weekdayName(suggestion.toDate))} fullWidth loading={move !== null} onPress={accept} />
         <Button
           variant="text"
           label={copy.suggestion.keep(weekdayName(suggestion.fromDate))}

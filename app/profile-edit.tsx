@@ -57,6 +57,8 @@ const timeOptions = (current: string) =>
   current && !halfHours.some((o) => o.value === current) ? [{ value: current, label: current }, ...halfHours] : halfHours;
 
 const SAVED_MS = 700; // "Saved." stays long enough to read before Profile returns
+// Training days, the usual time and work days return when the plan engine reads them (GAP G55). Sessions stay: Week and the log show them.
+const ENGINE_READS_PROFILE = false;
 const days = [0, 1, 2, 3, 4, 5, 6];
 
 // Seven equal columns in one row, about 48 pt each at 390 pt (iPhone, 3 Oct: "Nd" wrapped onto a second line in Polish). From 1.3x text
@@ -147,7 +149,7 @@ export default function EditProfile() {
   const sessionError = (s: SessionEntry, i: number) =>
     !s.name.trim() ? copy.editProfile.errors.session : lower.indexOf(lower[i] ?? '') !== i ? copy.editProfile.errors.duplicate : null;
   const errors = {
-    name: signedIn && !name.trim() ? copy.editProfile.errors.name : null,
+    name: null, // optional, as at sign-up (first-launch plan, 3 Oct, item 11)
     time: validTime(trainingTime) ? null : copy.editProfile.errors.time,
     sessions: sessions.map(sessionError),
   };
@@ -250,7 +252,7 @@ export default function EditProfile() {
                 {photo ? (
                   <Image source={{ uri: photo }} style={styles.photo} accessibilityIgnoresInvertColors />
                 ) : (
-                  <Text variant="heading">{initials(name || (app.account?.name ?? ''))}</Text>
+                  <Text variant="heading">{initials(name || (app.account?.name ?? ''), app.account?.email ?? '')}</Text>
                 )}
               </View>
               <View style={styles.photoActions}>
@@ -260,7 +262,7 @@ export default function EditProfile() {
             </View>
             {photoError ? <InlineMessage title={copy.editProfile.photo} body={copy.editProfile.photoError} /> : null}
             <TextField
-              label={copy.auth.name}
+              label={copy.auth.nameOptional}
               value={name}
               onChangeText={setName}
               onBlur={() => touch('name')}
@@ -272,6 +274,8 @@ export default function EditProfile() {
           </View>
         ) : null}
 
+        {/* Hidden until the engine reads them (first-launch plan, 3 Oct, item 16; GAP G55). The values stay as they are. */}
+        {ENGINE_READS_PROFILE ? (
         <Section title={copy.profile.training}>
           <SnappySlider
             label={copy.editProfile.trainingDays}
@@ -298,6 +302,7 @@ export default function EditProfile() {
             {show('time') && errors.time ? <FieldError message={errors.time} /> : null}
           </View>
         </Section>
+        ) : null}
 
         <Section title={copy.editProfile.sessions} note={copy.editProfile.sessionsHint}>
           {sessions.map((s, i) => (
@@ -348,6 +353,7 @@ export default function EditProfile() {
           />
         </Section>
 
+        {ENGINE_READS_PROFILE ? (
         <Section title={copy.editProfile.workDays} note={copy.editProfile.workDaysHint}>
           <View style={[styles.days, dayFill ? styles.daysFill : undefined]} accessibilityRole="none">
             {days.map((d) => (
@@ -361,6 +367,7 @@ export default function EditProfile() {
             ))}
           </View>
         </Section>
+        ) : null}
       </ScrollView>
 
       {/* Save and Cancel sit together at the bottom, in the thumb's reach (user, 2 Oct, from the phone recording). Save is the screen's

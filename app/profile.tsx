@@ -12,7 +12,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Pencil from 'lucide-react-native/icons/pencil';
 
 import { copy, languageNames, languages, setLanguage } from '@copy';
-import { formatDays } from '@format';
 import { LegalSheet } from '@features/LegalSheet';
 import { ProfileHeader } from '@features/ProfileHeader';
 import { WeekCapsules } from '@features/WeekCapsules';
@@ -106,8 +105,8 @@ export default function Profile() {
               {copy.profile.guestBody}
             </Text>
             <View style={styles.actions}>
-              <Button label={copy.welcome.createAccount} fullWidth onPress={() => router.push('/sign-up')} />
-              <Button variant="text" label={copy.welcome.signIn} onPress={() => router.push('/sign-in')} />
+              <Button label={copy.auth.create} fullWidth onPress={() => router.push('/sign-up')} />
+              <Button variant="text" label={copy.auth.signIn} onPress={() => router.push('/sign-in')} />
             </View>
             <Text variant="caption" tone="secondary">
               {copy.profile.guestNote}
@@ -117,18 +116,10 @@ export default function Profile() {
 
         <WeekCapsules />
 
+        {/* Sessions only (first-launch plan, 3 Oct, item 16): training days, the usual time and work days are hidden until the engine
+            reads them [GAP G55]. The names here are the ones Week and the evening log show. */}
         <Section title={copy.profile.training} note={copy.profile.trainingNote}>
-          <View style={styles.lines}>
-            <Text variant="body">{copy.profile.trainingDays(profile.trainingDays)}</Text>
-            <Text variant="body">{copy.profile.trainingTime(profile.trainingTime)}</Text>
-            <Text variant="body">{sessions ? copy.profile.sessions(sessions) : copy.profile.noSessions}</Text>
-          </View>
-        </Section>
-
-        <Section title={copy.profile.work}>
-          <Text variant="body">
-            {profile.workDays.length ? copy.profile.workDays(formatDays(profile.workDays)) : copy.profile.noWorkDays}
-          </Text>
+          <Text variant="body">{sessions ? copy.profile.sessions(sessions) : copy.profile.noSessions}</Text>
         </Section>
 
         <Section title={copy.profile.connections}>

@@ -10,7 +10,7 @@ export function HeaderProfile() {
   const { account, photo } = useAppState();
   return (
     <ProfileButton
-      initials={account ? initials(account.name) : null}
+      initials={account ? initials(account.name, account.email) : null}
       photo={photo}
       onPress={() => router.push('/profile')}
     />

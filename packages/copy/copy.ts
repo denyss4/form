@@ -130,9 +130,8 @@ export const en = {
   welcome: {
     wordmark: 'Form',
     tagline: "Plan your week around how you'll feel.",
-    createAccount: 'Create account',
-    signIn: 'Sign in',
-    guest: 'Continue without an account',
+    start: 'Get started',
+    haveAccount: 'I already have an account',
     legal: 'Terms and privacy',
     a11y: "Form. Plan your week around how you'll feel. A sample week of plans rises over a horizon.",
   },
@@ -150,21 +149,13 @@ export const en = {
     back: 'Back',
   },
 
-  // Carousel: three slides, slide 1 carries the whole value on its own.
+  // Intro: one screen, the value on its own (first-launch plan, 3 Oct).
   intro: {
-    skip: 'Skip',
-    next: 'Next',
     done: 'Continue',
-    page: (n: number, total: number) => `Page ${n} of ${total}`,
     chipA11y: (plan: string, score: number, lo: number, hi: number) => `Example: ${plan}. Form score ${score}. Likely ${lo} to ${hi}.`,
-    weekA11y: 'Example: a week of plans, one glyph per day.',
-    logRows: ['How hard it felt', 'Alcohol', 'Anything unusual'],
-    logA11y: 'Example: the evening log, three questions, all answered.',
-    slides: [
-      { title: 'One plan for your day, with the reasons.', body: "Each morning Form turns last night's log into a plan and a likely range." },
-      { title: 'See where your hard sessions fit the week.', body: "Your calendar sets each day's type, and Form suggests where a hard session sits better." },
-      { title: 'Log tonight in three taps.', body: "How hard it felt, alcohol, anything unusual. That is all tomorrow's plan needs." },
-    ],
+    // One screen (first-launch plan, 3 Oct, item 4): slides 2 and 3 are gone.
+    title: 'One plan for your day, with the reasons.',
+    body: "Each morning Form turns last night's log into a plan and a likely range.",
   },
 
   stepper: {
@@ -200,6 +191,7 @@ export const en = {
     signUpTitle: 'Create your account',
     signInTitle: 'Sign in',
     name: 'Name',
+    nameOptional: 'Name (optional)',
     email: 'Email',
     password: 'Password',
     passwordHint: 'At least 8 characters.',
@@ -240,7 +232,6 @@ export const en = {
     signInBody: 'Sign in to your account.',
     signUpTitle: 'Create your account',
     signUpBody: 'Your plan and logs stay on this phone.',
-    remember: 'Remember me on this phone',
     strength: {
       label: (words: string) => `Password strength: ${words}`,
       levels: ['Very weak', 'Weak', 'Fair', 'Good', 'Strong'],
@@ -248,13 +239,7 @@ export const en = {
     },
     errors: {
       weak: 'Choose a stronger password: meet at least 3 of the points below.',
-      code: 'Enter the 6 digits from the email.',
     },
-    verifyTitle: 'Check your email',
-    verifyBody: (email: string) => `We sent a 6-digit code to ${email}. Demo: any 6 digits work, nothing is sent.`,
-    code: 'Code',
-    verify: 'Verify email',
-    backToDetails: 'Back to the details',
     doneTitle: 'Account created',
     doneBody: 'Your account is ready. Demo: it lives on this phone until the app closes.',
     start: 'Get started',
@@ -286,7 +271,7 @@ export const en = {
     trainingTime: (time: string) => `Usually ${time}`,
     sessions: (names: string) => `Sessions: ${names}`,
     noSessions: 'No sessions yet',
-    trainingNote: 'Form reads your training from the calendar. These settings do not change plans yet.',
+    trainingNote: 'Form reads your training from the calendar.',
     work: 'Work pattern',
     workDays: (days: string) => `Work days: ${days}`,
     noWorkDays: 'No usual work days',
