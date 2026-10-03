@@ -36,6 +36,11 @@ const cap = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 // The calendar's event labels arrive in English (fixtures); here in the accusative, after "masz" (you have).
 const eventLabel: Record<string, string> = { dinner: 'kolację', flight: 'lot' };
 const event = (what: string) => eventLabel[what] ?? what;
+// Ratings read out of 10, with a decimal comma (Polish): "6,5 z 10" (first-launch plan, 3 Oct, item 15; GAP G62).
+const tenths = (felt: number) => {
+  const n = Math.round(felt) / 10;
+  return (Number.isInteger(n) ? String(n) : n.toFixed(1)).replace('.', ',');
+};
 const list = (items: string[]) => (items.length <= 1 ? (items[0] ?? '') : `${items.slice(0, -1).join(', ')} i ${items[items.length - 1]}`);
 
 export const pl: Omit<Copy, 'dev'> = {
@@ -403,6 +408,7 @@ export const pl: Omit<Copy, 'dev'> = {
     intro: 'Wybierz dla każdego z osobna. Każdy wybór zmienisz później w Profilu.',
     allow: 'Zezwól',
     decline: 'Nie teraz',
+    whatThisMeans: 'Co to oznacza',
     purposes: {
       scoring: {
         name: 'Wynik i plan',
@@ -510,21 +516,13 @@ export const pl: Omit<Copy, 'dev'> = {
         `Plan pasował w ${fit} z ${answered} ${plural(answered, 'dnia', 'dni', 'dni')}.` +
         (notFollowed > 0 ? ` ${notFollowed} ${dni(notFollowed)} poza planem.` : ''),
       source: 'Z twoich odpowiedzi na „Czy plan pasował?”.',
-      legend: 'Wypełnione: plan pasował. Obrys: był za ciężki albo za lekki.',
+      legend: 'Wypełnione: plan pasował. Obrys: za ciężki albo za lekki. Linia przerywana: brak odpowiedzi albo poza planem.',
       tooFew: (n: number) => (n === 1 ? 'Na razie jeden dzień. Za mało, by wiele wyczytać.' : `Na razie ${n} ${dni(n)}. Za mało, by wiele wyczytać.`),
       status: { yes: 'Pasował', tooHard: 'Za ciężki', tooEasy: 'Za lekki', other: 'Poza planem', none: 'Brak odpowiedzi' },
       day: (day: string, plan: string, status: string) => `${day}, ${plan}, ${status}`,
     },
     logging: (days: number, of: number) => `Wpisy w ${days} z ostatnich ${of} dni.`,
-    bento: {
-      big: (fit: number, answered: number) => `${fit} z ${answered}`,
-      line: (_answered: number, notFollowed: number) =>
-        `dni z dopasowanym planem.${notFollowed > 0 ? ` ${notFollowed} ${dni(notFollowed)} poza planem.` : ''}`,
-      mornings: (n: number) => `${n} ${plural(n, 'ranek', 'ranki', 'ranków')}`,
-      count: (n: number, of: number) => `${n} z ${of}`,
-      logged: 'dni z wpisem',
-      inside: 'w prawdopodobnym zakresie',
-    },
+
     felt: { title: 'Odczucie a prognoza', note: 'Twoja poranna ocena obok prognozy Form.' },
     tabs: { label: 'Widoki postępów', fit: 'Dopasowanie', felt: 'Odczucie' },
     empty: {
@@ -538,21 +536,23 @@ export const pl: Omit<Copy, 'dev'> = {
   feltVsForecast: {
     title: 'Odczucie a prognoza',
     intro: 'Każdego ranka oceniasz, jak się czujesz. Tutaj ta ocena stoi obok prognozy Form z poprzedniego wieczoru.',
-    scale: 'Obie są w skali od 0 do 100.',
+    scale: 'Twoja poranna ocena jest w skali do 10. Na linii pokazujemy ją ×10, obok prognozy 0–100.',
     chart: {
       title: 'Samopoczucie każdego ranka',
-      a11y: (bars: string) => `Wykres słupkowy, samopoczucie każdego ranka, od 0 do 100. ${bars}.`,
-      bar: (day: string, felt: number) => `${day} ${felt}`,
+      a11y: (bars: string) => `Wykres słupkowy, samopoczucie każdego ranka, w skali do 10. ${bars}.`,
+      bar: (day: string, felt: number) => `${day} ${tenths(felt)} z 10`,
+      value: (felt: number) => `${tenths(felt)} z 10`,
+      pill: (felt: number) => tenths(felt),
       dayCaption: 'Ranek',
       hint: 'Stuknij lub przesuń palcem po słupkach, by zobaczyć dany ranek.',
     },
     legend: { forecast: 'Prognoza', felt: 'Odczucie', range: 'Prawdopodobny zakres' },
-    row: (felt: number, forecast: number, lo: number, hi: number) => `Odczucie ${felt}, prognoza ${forecast}, prawdopodobnie ${lo}–${hi}`,
+    row: (felt: number, forecast: number, lo: number, hi: number) => `Odczucie ${tenths(felt)} z 10, prognoza ${forecast}, prawdopodobnie ${lo}–${hi}`,
     summary: (inside: number, days: number) =>
       `W ${inside} z ${days} ${plural(days, 'dnia', 'dni', 'dni')} odczucie mieściło się w prawdopodobnym zakresie.`,
     outside: 'Poza prawdopodobnym zakresem',
     a11y: (day: string, felt: number, forecast: number, lo: number, hi: number, inside: boolean) =>
-      `${day}: odczucie ${felt}, prognoza ${forecast}, prawdopodobnie od ${lo} do ${hi}. ${inside ? 'W prawdopodobnym zakresie' : 'Poza prawdopodobnym zakresem'}.`,
+      `${day}: odczucie ${tenths(felt)} z 10, prognoza ${forecast}, prawdopodobnie od ${lo} do ${hi}. ${inside ? 'W prawdopodobnym zakresie' : 'Poza prawdopodobnym zakresem'}.`,
     labelled: (n: number, of: number) => `Dni z oceną do tej pory: ${n} z ${of}.`,
     learning: 'W 21. dniu Form sprawdza, czy twój własny wzorzec przewiduje cię lepiej niż typowy.',
     tooFew: 'Za mało dni, by wiele wyczytać.',

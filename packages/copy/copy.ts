@@ -7,6 +7,13 @@ import { getLanguage, type Language } from './locale.ts';
 import { pl } from './pl.ts';
 import { pseudoLocalise, pseudoRequested } from './pseudo.ts';
 
+// Felt vs forecast keeps ratings on 0-100 internally (×10); people read them out of 10 (first-launch plan, 3 Oct, item 15). Whole
+// numbers stay whole; fixture ratings such as 65 read "6.5" until the fixtures hold whole 0-10 values (GAP G62).
+const tenths = (felt: number) => {
+  const n = Math.round(felt) / 10;
+  return Number.isInteger(n) ? String(n) : n.toFixed(1);
+};
+
 export const en = {
   // "A, B and C"
   list: (items: string[]) => (items.length <= 1 ? (items[0] ?? '') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`),
@@ -389,6 +396,7 @@ export const en = {
     intro: 'Choose for each one. You can change any of them later in Profile.',
     allow: 'Allow',
     decline: 'Not now',
+    whatThisMeans: 'What this means',
     purposes: {
       scoring: {
         name: 'Score and plan',
@@ -499,22 +507,13 @@ export const en = {
         `${fit} of ${answered} ${answered === 1 ? 'day' : 'days'} fit.` +
         (notFollowed > 0 ? ` ${notFollowed} ${notFollowed === 1 ? 'day' : 'days'} not followed.` : ''),
       source: 'From your own answers to "Did the plan fit?".',
-      legend: 'Filled: the plan fit. Outlined: it was too hard or too easy.',
+      legend: 'Filled: the plan fit. Outlined: too hard or too easy. Dashed: no answer, or not followed.',
       tooFew: (n: number) => (n === 1 ? 'One day so far. Too few to read much.' : `${n} days so far. Too few to read much.`),
       status: { yes: 'Fit', tooHard: 'Too hard', tooEasy: 'Too easy', other: 'Not followed', none: 'No answer' },
       day: (day: string, plan: string, status: string) => `${day}, ${plan}, ${status}`,
     },
     logging: (days: number, of: number) => `You logged on ${days} of the last ${of} days.`,
-    // The overview tiles (D5, 8B). Counts only, the same ones as the sentences: nothing here is a score to beat.
-    bento: {
-      big: (fit: number, answered: number) => `${fit} of ${answered}`,
-      line: (answered: number, notFollowed: number) =>
-        `${answered === 1 ? 'day' : 'days'} fit the plan.${notFollowed > 0 ? ` ${notFollowed} not followed.` : ''}`,
-      mornings: (n: number) => (n === 1 ? '1 morning' : `${n} mornings`),
-      count: (n: number, of: number) => `${n} of ${of}`,
-      logged: 'days logged',
-      inside: 'inside the likely range',
-    },
+
     felt: { title: 'Felt vs forecast', note: 'Your morning rating next to what Form forecast.' },
     // Slide tabs (D3): the two Progress views on one screen.
     tabs: { label: 'Progress views', fit: 'Plan fit', felt: 'Felt vs forecast' },
@@ -529,22 +528,24 @@ export const en = {
   feltVsForecast: {
     title: 'Felt vs forecast',
     intro: 'Each morning you rate how you feel. Here it is next to what Form forecast the evening before.',
-    scale: 'Both are on a 0 to 100 scale.',
+    scale: 'Your morning rating is out of 10. On the line it is shown ×10, next to the 0–100 forecast.',
     // Bar chart (D3): one bar per morning, the felt rating only. Data Muted: not a plan, never next to Iris.
     chart: {
       title: 'How you felt each morning',
-      a11y: (bars: string) => `Bar chart, how you felt each morning, 0 to 100. ${bars}.`,
-      bar: (day: string, felt: number) => `${day} ${felt}`,
+      a11y: (bars: string) => `Bar chart, how you felt each morning, out of 10. ${bars}.`,
+      bar: (day: string, felt: number) => `${day} ${tenths(felt)} of 10`,
+      value: (felt: number) => `${tenths(felt)} of 10`,
+      pill: (felt: number) => tenths(felt),
       // The trace chart (D5, 3B): one morning picked at a time.
       dayCaption: 'Morning',
       hint: 'Tap or drag across the bars to see a morning.',
     },
     legend: { forecast: 'Forecast', felt: 'Felt', range: 'Likely range' },
-    row: (felt: number, forecast: number, lo: number, hi: number) => `Felt ${felt}, forecast ${forecast}, likely ${lo}–${hi}`,
+    row: (felt: number, forecast: number, lo: number, hi: number) => `Felt ${tenths(felt)} of 10, forecast ${forecast}, likely ${lo}–${hi}`,
     summary: (inside: number, days: number) => `${inside} of ${days} ${days === 1 ? 'day' : 'days'} landed inside the likely range.`,
     outside: 'Outside the likely range',
     a11y: (day: string, felt: number, forecast: number, lo: number, hi: number, inside: boolean) =>
-      `${day}: felt ${felt}, forecast ${forecast}, likely ${lo} to ${hi}. ${inside ? 'Inside' : 'Outside'} the likely range.`,
+      `${day}: felt ${tenths(felt)} of 10, forecast ${forecast}, likely ${lo} to ${hi}. ${inside ? 'Inside' : 'Outside'} the likely range.`,
     labelled: (n: number, of: number) => `Labelled days so far: ${n} of ${of}.`,
     learning: 'On day 21 Form checks whether your own pattern predicts you better than the typical one.',
     tooFew: 'Too few days to read much.',

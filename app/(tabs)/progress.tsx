@@ -14,9 +14,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { copy } from '@copy';
 import { formatDay } from '@format';
 import { FeltBody } from '@features/FeltBody';
+import { FitStrip } from '@features/FitStrip';
 import { HeaderProfile } from '@features/HeaderProfile';
 import { progressScenarios, useProgress } from '@features/useProgress';
-import { fitSummary, insideRange } from '@planner/progress';
+import { addDays } from '@planner/dates';
+import { fitSummary } from '@planner/progress';
 import { buildStamp, showBuildStamp } from '@state/build';
 import { size, space } from '@tokens';
 import {
@@ -28,13 +30,12 @@ import {
   ScreenHeader,
   Skeleton,
   SlideTabs,
-  StatsBento,
   Text,
   useTabBarSpace,
   useTheme,
 } from '@ui';
 
-const WINDOW = 7; // the ring covers the last week of answers
+const WINDOW = 7; // the meter covers the last week
 const FEW_DAYS = 3; // fewer answered days than this are flagged as too few to read much [GAP G33: a proposal]
 
 function SkeletonBody() {
@@ -97,26 +98,20 @@ export default function Progress() {
     } else {
       body = (
         <>
-          {/* The overview tiles (D5, the user's pick 8B, "let's try"): plans that fit, how each morning felt, days logged, mornings inside
-              the likely range. The same counts as before, as tiles; counts only, no score to beat. */}
+          {/* One headline and the 7-day meter (first-launch plan, 3 Oct, item 14): the 8B tiles and the hatch are gone, and "inside the
+              likely range" lives only on Felt vs forecast. */}
           <View style={styles.group} aria-live="polite">
-            <StatsBento
-              data={{
-                chip: copy.progress.fit.title,
-                big: copy.progress.bento.big(summary.fit, summary.answered),
-                line: copy.progress.bento.line(summary.answered, summary.notFollowed),
-                barsLabel: copy.feltVsForecast.chart.title,
-                barsValue: copy.progress.bento.mornings(data.pairs.length),
-                bars: data.pairs.slice(-WINDOW).map((p) => p.felt),
-                small: [
-                  { value: copy.progress.bento.count(data.logged.days, data.logged.of), label: copy.progress.bento.logged },
-                  {
-                    value: copy.progress.bento.count(data.pairs.filter(insideRange).length, data.pairs.length),
-                    label: copy.progress.bento.inside,
-                  },
-                ],
-              }}
+            <Text variant="heading">{copy.progress.fit.headline(summary.fit, summary.answered, summary.notFollowed)}</Text>
+            <FitStrip
+              days={shown}
+              end={addDays(data.from, WINDOW - 1)}
+              fit={summary.fit}
+              answered={summary.answered}
+              label={copy.progress.fit.headline(summary.fit, summary.answered, summary.notFollowed)}
             />
+            <Text variant="caption" tone="secondary">
+              {copy.progress.fit.legend}
+            </Text>
             <Text variant="caption" tone="secondary">
               {copy.progress.fit.source}
             </Text>

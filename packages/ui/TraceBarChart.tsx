@@ -32,7 +32,25 @@ const DOT = space.xs - size.outline; // 6 pt dot at the right end of the line
 const BAR_SHARE = 0.56;
 const SPRING = { stiffness: 110, damping: 20 }; // the original's spring
 
-export function TraceBarChart({ title, dayCaption, hint, bars, max }: { title: string; dayCaption: string; hint: string; bars: TraceBar[]; max: number }) {
+export function TraceBarChart({
+  title,
+  dayCaption,
+  hint,
+  bars,
+  max,
+  formatValue = String,
+  formatPill = String,
+}: {
+  title: string;
+  dayCaption: string;
+  hint: string;
+  bars: TraceBar[];
+  max: number;
+  /** How the picked value reads in the header and to screen readers (Felt vs forecast: "6.5 of 10"). */
+  formatValue?: (value: number) => string;
+  /** The short form in the pill on the line ("6.5"). */
+  formatPill?: (value: number) => string;
+}) {
   const { color } = useTheme();
   const reduceMotion = useReducedMotion();
   const [width, setWidth] = useState(0);
@@ -81,7 +99,7 @@ export function TraceBarChart({ title, dayCaption, hint, bars, max }: { title: s
             {title}
           </Text>
           <Text variant="title" tabular>
-            {shown}
+            {formatValue(shown)}
           </Text>
         </View>
         <View style={styles.right}>
@@ -97,7 +115,7 @@ export function TraceBarChart({ title, dayCaption, hint, bars, max }: { title: s
         accessibilityRole="adjustable"
         accessibilityLabel={title}
         accessibilityHint={hint}
-        accessibilityValue={{ text: `${bar.spoken}, ${bar.value}` }}
+        accessibilityValue={{ text: `${bar.spoken}, ${formatValue(bar.value)}` }}
         accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
         onAccessibilityAction={(e) => pick(index + (e.nativeEvent.actionName === 'increment' ? 1 : -1))}
         // box-only: touches land on this view, so locationX is measured from its left edge, not from a bar's.
@@ -128,7 +146,7 @@ export function TraceBarChart({ title, dayCaption, hint, bars, max }: { title: s
         <Animated.View style={[styles.trace, lineStyle]}>
           <View style={[styles.pill, { backgroundColor: color.text.primary }]}>
             <Text variant="caption" tone="inverse" tabular maxFontSizeMultiplier={chromeMaxFontScale}>
-              {target}
+              {formatPill(target)}
             </Text>
           </View>
           <Svg style={styles.grow} height={PILL}>

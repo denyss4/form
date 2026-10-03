@@ -1,17 +1,21 @@
-// Layout plan. Job: show the answered days at a glance. Focal element: the segments. Quiet: nothing else.
-// One solid segment per followed day, up to a week, oldest on the left. Filled = the plan fit. Outlined = it did not (too hard or too easy).
-// A 'Did something else' day has no segment (spec R1).
-// Shape carries it, never colour: a fill against an outline. Dashes are never used here: a dashed outline means "Estimated" and only that.
+// Layout plan. Job: show the last 7 days of Plan fit at a glance (first-launch plan, 3 Oct, item 14 and Q9). Focal element: the segments.
+// Quiet: nothing else. One segment per day, oldest on the left: filled = the plan fit; a 2 pt outline = too hard or too easy; a dashed
+// hairline = no answer, or a "Did something else" day (not followed). The headline above counts followed days only (spec R1).
+// Shape carries it, never colour: fill, outline, dashes. (Dashes no longer mean "Estimated": that is a hollow ring under a muted glyph.)
 // Segments are thin full-radius pills (5.4: full for segmented pills). At the control radius and icon height they read as buttons.
 import { StyleSheet, View } from 'react-native';
 
 import { copy } from '@copy';
+import { addDays } from '@planner/dates';
 import type { FitDay } from '@planner/progress';
 import { radius, size, space } from '@tokens';
 import { useTheme } from '@ui';
 
-export function FitStrip({ days, fit, label }: { days: FitDay[]; fit: number; label: string }) {
+const WINDOW = 7;
+
+export function FitStrip({ days, end, fit, answered, label }: { days: FitDay[]; end: string; fit: number; answered: number; label: string }) {
   const { color } = useTheme();
+  const dates = Array.from({ length: WINDOW }, (_, i) => addDays(end, i - (WINDOW - 1)));
   return (
     <View
       accessible
@@ -19,24 +23,20 @@ export function FitStrip({ days, fit, label }: { days: FitDay[]; fit: number; la
       accessibilityLabel={copy.progress.fit.title}
       // aria-value* rather than accessibilityValue: react-native-web drops the latter, and both map to the native value on iOS.
       aria-valuemin={0}
-      aria-valuemax={days.length}
+      aria-valuemax={answered}
       aria-valuenow={fit}
       aria-valuetext={label}
       style={styles.strip}
     >
-      {days.map((day) => {
-        const didFit = day.fit === 'yes';
-        return (
-          <View
-            key={day.date}
-            style={[
-              styles.segment,
-              didFit
-                ? { backgroundColor: color.text.primary, borderColor: color.text.primary }
-                : { backgroundColor: 'transparent', borderColor: color.text.primary },
-            ]}
-          />
-        );
+      {dates.map((date) => {
+        const answer = days.find((d) => d.date === date)?.fit ?? null;
+        const shape =
+          answer === 'yes'
+            ? { backgroundColor: color.text.primary, borderColor: color.text.primary }
+            : answer === 'tooHard' || answer === 'tooEasy'
+              ? { borderColor: color.text.primary }
+              : [styles.open, { borderColor: color.stroke.control }];
+        return <View key={date} style={[styles.segment, shape]} />;
       })}
     </View>
   );
@@ -45,4 +45,5 @@ export function FitStrip({ days, fit, label }: { days: FitDay[]; fit: number; la
 const styles = StyleSheet.create({
   strip: { flexDirection: 'row', gap: space.xxs },
   segment: { flex: 1, height: size.segment, borderRadius: radius.full, borderWidth: size.outline },
+  open: { borderWidth: size.hairline, borderStyle: 'dashed' },
 });

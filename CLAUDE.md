@@ -48,6 +48,7 @@ Dark "Lichen" is the app theme (`docs/prompts/REDESIGN-PROMPT.md` §1, approved 
 | Recover (Sea glass) | `plan.recover` | `#75d1c5` | 10.42:1 |
 | Deep-work day (Iris) | `plan.deepwork` | `#b0a6ed` | 8.50:1 |
 
+- A chosen option (choice pills, checkbox, stepper, day toggles) is raised #1E1E1E + a 1.5 pt Text High stroke (`size.selectedStroke`) + a check, never sage (first-launch plan, 3 Oct, C3). `state.selected` (sage) remains only for the active tab icon and the Week move outline.
 - Sage appears at most once per screen as an action; never a plan colour, never decoration (the one exception: Welcome's first-light glow). Primary button: sage fill, canvas text; secondary: control-stroke outline, Text High; destructive: text-only with confirmation.
 - Never colour alone: every plan has a glyph and a label (accessibility; under tritanopia Iris sits close to sage and Data Muted).
 - Glass (`expo-blur`) only on floating layers (tab bar, sheets, morph modal), canvas tint ≥ 0.70, Text High only. Reduce Transparency and Android: solid raised.

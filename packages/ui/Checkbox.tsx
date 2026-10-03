@@ -1,6 +1,7 @@
 // Layout plan. Job: one explicit yes, given by a tap (v-checkbox-6). Focal element: the box. Quiet: nothing else.
-// Unchecked by default, always: a preselected box is not consent (GDPR Art. 7). Checked: sage fill with a canvas check, so the state is a
-// shape (the check), not only a colour. The whole row is the target, at least 48 tall.
+// Unchecked by default, always: a preselected box is not consent (GDPR Art. 7). Checked: the raised fill, a 1.5 pt Text High edge and a
+// Text High check, like every chosen option (first-launch plan, 3 Oct, C3): sage stays the screen's one action. The whole row is the
+// target, at least 48 tall.
 // v-checkbox-6 (D3): the check draws itself in one stroke (motion.quick, 180 ms). Reduce Motion: it appears at once.
 import { useEffect, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -63,7 +64,7 @@ export function Checkbox({
   const { color } = useTheme();
   const press = usePress();
   const focus = useFocus();
-  const border = error ? color.status.attention : checked ? color.action.primary : color.stroke.control;
+  const border = error ? color.status.attention : checked ? color.text.primary : color.stroke.control;
 
   return (
     <View style={styles.row}>
@@ -87,11 +88,11 @@ export function Checkbox({
         <Animated.View
           style={[
             styles.box,
-            { borderColor: border, backgroundColor: checked ? color.action.primary : 'transparent' },
+            { borderColor: border, backgroundColor: checked ? color.bg.raised : 'transparent', borderWidth: checked ? size.selectedStroke : size.outline },
             press.style,
           ]}
         >
-          <CheckMark checked={checked} color={color.action.onPrimary} />
+          <CheckMark checked={checked} color={color.text.primary} />
           <FocusRing visible={focus.focused} radius={radius.control / 2} />
         </Animated.View>
       </Pressable>

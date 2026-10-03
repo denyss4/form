@@ -1,8 +1,10 @@
 // Layout plan. Job: one explicit answer per question. Focal element: the two options, side by side. Quiet: nothing else.
 // Equal weight before an answer: neither option is filled, neither is preselected (GDPR: no defaults). At most 4 options (Hick).
-// Selected = the sage fill with canvas text (D5, no check), cross-faded over `motion.quick` (opacity only), with a selection haptic (MASTER_PROMPT §6).
+// Selected = the raised fill, a 1.5 pt Text High stroke and a check (first-launch plan, 3 Oct, C3): sage stays the screen's one action.
+// Cross-faded over `motion.quick` (opacity only), with a selection haptic (MASTER_PROMPT §6).
 import { useEffect, useState } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import Check from 'lucide-react-native/icons/check';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -20,6 +22,8 @@ import { useTextScale } from './textScale';
 import { useTheme } from './theme';
 import { useFontScale } from './useFontScale';
 import { usePress } from './usePress';
+
+const CHECK = 16; // pt: small enough that the longest two-column label still fits
 
 export interface Choice<T extends string> {
   value: T;
@@ -73,10 +77,10 @@ function Option({
         <FocusRing visible={focus.focused} radius={radius.full} />
         <Animated.View
           pointerEvents="none"
-          style={[styles.fill, { backgroundColor: color.state.selected }, shown]}
+          style={[styles.fill, { backgroundColor: color.bg.raised, borderColor: color.text.primary }, shown]}
         />
-        {/* Selected is the solid sage fill with canvas text; unselected is the outline (Figma, D5: no check mark). Fill versus outline is the
-            non-colour cue, and the radio state is announced. */}
+        {/* Selected: raised, a Text High stroke and a check; the check is the non-colour cue, and the radio state is announced. The label
+            stays Text High in both states. */}
         <View>
           <Animated.View style={hidden}>
             <Text
@@ -88,8 +92,9 @@ function Option({
               {label}
             </Text>
           </Animated.View>
-          <Animated.View pointerEvents="none" style={[styles.overlay, shown]}>
-            <Text variant="bodyStrong" tone="inverse" style={styles.labelText}>
+          <Animated.View pointerEvents="none" style={[styles.overlay, styles.checked, shown]}>
+            <Check color={color.text.primary} size={CHECK} strokeWidth={size.outline} />
+            <Text variant="bodyStrong" style={styles.labelText}>
               {label}
             </Text>
           </Animated.View>
@@ -156,7 +161,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // The fill covers the border too, so a selected option reads as one solid pill.
+  // The selected layer covers the 2 pt control stroke, so a selected option shows only its 1.5 pt Text High edge.
   fill: {
     position: 'absolute',
     top: -size.outline,
@@ -164,7 +169,10 @@ const styles = StyleSheet.create({
     right: -size.outline,
     bottom: -size.outline,
     borderRadius: radius.full,
+    borderWidth: size.selectedStroke,
   },
   labelText: { textAlign: 'center' },
   overlay: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
+  // The check sits before the label and may run a little past the label's own width; the pill's padding takes it.
+  checked: { flexDirection: 'row', gap: space.xxs, left: -CHECK, right: -CHECK },
 });

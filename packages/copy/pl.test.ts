@@ -56,3 +56,14 @@ test('Polish copy keeps the health-language rules', () => {
   }
   setLanguage('en');
 });
+
+test('felt ratings read out of 10: whole numbers stay whole, fixtures keep one decimal (Polish: a comma)', () => {
+  setLanguage('en');
+  assert.equal(copy.feltVsForecast.chart.value(80), '8 of 10');
+  assert.equal(copy.feltVsForecast.chart.value(65), '6.5 of 10');
+  assert.equal(copy.feltVsForecast.row(65, 53, 36, 70), 'Felt 6.5 of 10, forecast 53, likely 36–70');
+  setLanguage('pl');
+  assert.equal(copy.feltVsForecast.chart.value(80), '8 z 10');
+  assert.equal(copy.feltVsForecast.chart.value(65), '6,5 z 10');
+  setLanguage('en');
+});

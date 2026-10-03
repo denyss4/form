@@ -8,10 +8,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { copy } from '@copy';
 import { useOnboardingStep } from '@features/onboardingSteps';
+import { PurposeChoice } from '@features/PurposeChoice';
 import { purposes, useAppState } from '@state';
-import { answerOptions } from '@state/answers';
 import { space } from '@tokens';
-import { Button, ChoiceGroup, ScreenHeader, Stepper, Text, useTheme } from '@ui';
+import { Button, ScreenHeader, Stepper, Text, useTheme } from '@ui';
 
 export default function Consent() {
   const { color } = useTheme();
@@ -43,21 +43,9 @@ export default function Consent() {
           {copy.consent.intro}
         </Text>
 
+        {/* One line per purpose, details behind "What this means" (first-launch plan, 3 Oct, item 12). */}
         {purposes.map((purpose) => (
-          <View key={purpose} style={styles.group}>
-            <Text variant="heading" accessibilityRole="header" level={2}>
-              {copy.consent.purposes[purpose].name}
-            </Text>
-            <Text variant="caption" tone="secondary">
-              {copy.consent.purposes[purpose].what}
-            </Text>
-            <ChoiceGroup
-              label={copy.consent.purposes[purpose].name}
-              options={answerOptions}
-              value={app.consents[purpose]}
-              onChange={(answer) => app.setConsent(purpose, answer)}
-            />
-          </View>
+          <PurposeChoice key={purpose} purpose={purpose} />
         ))}
 
         <Text variant="caption" tone="secondary">
@@ -85,6 +73,6 @@ const styles = StyleSheet.create({
     paddingBottom: space.lg,
     gap: space.md,
   },
-  group: { marginTop: space.md, gap: space.sm },
+
   actions: { paddingHorizontal: space.margin, paddingBottom: space.md, gap: space.xs },
 });

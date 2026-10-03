@@ -62,6 +62,10 @@ export function FeltBody({ data, retry }: { data: ReturnType<typeof useProgress>
       <Text variant="body" tone="secondary">
         {copy.feltVsForecast.intro}
       </Text>
+      {/* Before the numbers: the rating reads out of 10 and sits ×10 on the forecast's 0-100 line (first-launch plan, 3 Oct, item 15). */}
+      <Text variant="caption" tone="secondary">
+        {copy.feltVsForecast.scale}
+      </Text>
       {/* The trace chart (D5, 3B): one morning picked at a time, the highest first; tap or drag to pick another. Screen readers adjust it
           morning by morning and hear the date and the rating. */}
       <TraceBarChart
@@ -69,6 +73,8 @@ export function FeltBody({ data, retry }: { data: ReturnType<typeof useProgress>
         dayCaption={copy.feltVsForecast.chart.dayCaption}
         hint={copy.feltVsForecast.chart.hint}
         max={SCALE_MAX}
+        formatValue={copy.feltVsForecast.chart.value}
+        formatPill={copy.feltVsForecast.chart.pill}
         bars={data.pairs.map((p) => ({
           key: p.date,
           label: `${dayLetter(p.date)}\n${dateNumber(p.date)}`,
@@ -88,9 +94,6 @@ export function FeltBody({ data, retry }: { data: ReturnType<typeof useProgress>
         ))}
       </View>
       <View style={styles.notes}>
-        <Text variant="caption" tone="secondary">
-          {copy.feltVsForecast.scale}
-        </Text>
         <View style={[styles.rule, { borderTopColor: color.stroke.hairline }]} />
         <Text variant="bodyStrong">{copy.feltVsForecast.labelled(n, LEARNING_DAYS)}</Text>
         {n < FEW_DAYS ? (

@@ -89,14 +89,15 @@ function DayToggle({ day, on, onChange, fill }: { day: number; on: boolean; onCh
           fill ? styles.dayFill : undefined,
           on
             ? {
-                backgroundColor: color.state.selected,
-                borderColor: color.state.selected,
+                backgroundColor: color.bg.raised,
+                borderColor: color.text.primary,
+                borderWidth: size.selectedStroke,
               }
             : { borderColor: color.stroke.control },
           press.style,
         ]}
       >
-        <Text variant="bodyStrong" tone={on ? 'inverse' : 'primary'}>
+        <Text variant="bodyStrong" tone="primary">
           {weekdayShort(day)}
         </Text>
         <FocusRing visible={focus.focused} radius={radius.full} />

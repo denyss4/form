@@ -3,6 +3,7 @@ export const size = {
   touch: 48, // covers 44 pt on iOS and 48 dp on Android
   hairline: 1,
   outline: 2, // secondary button border and the focus ring
+  selectedStroke: 1.5, // a chosen option: raised fill + this Text High stroke + a check, not sage (first-launch plan, 3 Oct, C3)
   focusOffset: 2, // gap between a control and its focus ring
   icon: 24,
   iconSm: 20,

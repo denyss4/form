@@ -55,7 +55,5 @@ export { ItemList } from './ItemList';
 export type { ListItem } from './ItemList';
 export { LiquidMetalButton } from './LiquidMetalButton';
 export { SheenPill } from './SheenPill';
-export { StatsBento } from './StatsBento';
-export type { BentoData } from './StatsBento';
 export { TraceBarChart } from './TraceBarChart';
 export type { TraceBar } from './TraceBarChart';

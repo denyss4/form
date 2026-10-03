@@ -1,8 +1,8 @@
 // Layout plan. Job: say where the person is in onboarding (account, consent, calendar, notifications). Focal element: none; it is quiet
 // chrome above the screen's own title. Screen readers hear "Step 2 of 4, Calendar".
-// D5 (the user's pick 2B): numbered circles joined by a line, each step's name under its circle. Done: a sage circle with a canvas check
-// and the line after it in sage. Current: a sage ring with its number in sage. To come: a control-stroke ring, the number in Text Muted.
-// Sage is state here (state.selected), not an action. Fill, check and ring carry the progress, so it never rests on colour alone.
+// D5 (the user's pick 2B): numbered circles joined by a line, each step's name under its circle. Done: a Text High circle with a canvas
+// check and the line after it in Text High. Current: a Text High ring with its number. To come: a control-stroke ring, the number in Text
+// Muted. Not sage (first-launch plan, 3 Oct, C3): sage stays the screen's one action, Continue. Fill, check and ring carry the progress.
 // From 1.3x text, four names no longer fit under their circles without breaking a word ("Powiadomienia"), so the names go and one line
 // under the circles says "Step 2 of 4, Calendar" instead.
 import { StyleSheet, View } from 'react-native';
@@ -38,21 +38,21 @@ export function Stepper({ step, total, name, names }: { step: number; total: num
         {Array.from({ length: total }, (_, i) => {
           const done = i < current;
           const active = i === current;
-          const ring = done || active ? color.state.selected : color.stroke.control;
+          const ring = done || active ? color.text.primary : color.stroke.control;
           return (
             <View key={i} style={styles.item}>
               <View style={styles.line}>
-                <View style={[styles.circle, { borderColor: ring, backgroundColor: done ? color.state.selected : 'transparent' }]}>
+                <View style={[styles.circle, { borderColor: ring, backgroundColor: done ? color.text.primary : 'transparent' }]}>
                   {done ? (
                     <Check color={color.action.onPrimary} size={size.iconSm - space.xxs} strokeWidth={size.outline} />
                   ) : (
-                    <Text variant="caption" tabular maxFontSizeMultiplier={1.3} style={{ color: active ? color.state.selected : color.text.secondary }}>
+                    <Text variant="caption" tabular maxFontSizeMultiplier={1.3} style={{ color: active ? color.text.primary : color.text.secondary }}>
                       {i + 1}
                     </Text>
                   )}
                 </View>
                 {i < total - 1 ? (
-                  <View style={[styles.connector, { backgroundColor: done ? color.state.selected : color.stroke.hairline }]} />
+                  <View style={[styles.connector, { backgroundColor: done ? color.text.primary : color.stroke.hairline }]} />
                 ) : null}
               </View>
               {titled ? (
