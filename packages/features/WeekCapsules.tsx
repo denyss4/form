@@ -58,11 +58,12 @@ export function WeekCapsules() {
 
 const styles = StyleSheet.create({
   wrap: { gap: space.sm },
-  // Capsules share the row, so at large text the (capped) glyph still fits inside one.
+  // Capsules hug their glyph, left-aligned (Figma, D5); at large text the capsule grows with the (capped) glyph.
   row: { flexDirection: 'row', gap: space.xxs },
-  cell: { flex: 1, alignItems: 'center', gap: space.xxs },
+  cell: { alignItems: 'center', gap: space.xxs },
   capsule: {
-    alignSelf: 'stretch',
+    minWidth: size.avatar.weekCapsule,
+    paddingHorizontal: space.xxs,
     minHeight: size.avatar.weekCapsule * 1.5,
     borderRadius: radius.full,
     borderWidth: size.hairline,

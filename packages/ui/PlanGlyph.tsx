@@ -20,7 +20,7 @@ export function PlanGlyph({ plan, small = false, estimated = false }: { plan: Pl
   const Icon = icons[plan];
   const px = useIconSize(small ? size.iconSm : size.icon);
   return (
-    // Estimated (no events, so the weekday decided): a solid glyph in Text Muted (5.69:1 on canvas, 4.91:1 on raised). The dashed
+    // Estimated (no events, so the weekday decided): a solid glyph in Text Muted (5.99:1 on canvas, 5.33:1 on raised). The dashed
     // outline read as a loading spinner (critique, 1 Oct). The non-colour cue is the hollow ring the Week strip draws under it, plus the
     // word "Estimated" wherever there is room.
     <Icon color={estimated ? color.text.secondary : color.plan[plan].base} size={px} strokeWidth={size.outline} />

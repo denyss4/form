@@ -17,19 +17,21 @@ export function DriverRow({ driver }: { driver: FormDriver }) {
   const { color } = useTheme();
   const Arrow = driver.direction === 'up' ? ArrowUp : ArrowDown;
   const basis = copy.basis[driver.basis];
+  // By id, in the current language: results made earlier (the fixtures) carry an English label (D5).
+  const label = copy.drivers[driver.id] ?? driver.label;
   const iconPx = useIconSize(size.icon);
 
   return (
     <View
       accessible
-      accessibilityLabel={copy.driver.a11y(driver.label, driver.direction, driver.magnitude, basis)}
+      accessibilityLabel={copy.driver.a11y(label, driver.direction, driver.magnitude, basis)}
       style={[
         styles.row,
       ]}
     >
       <Arrow color={color.text.primary} size={iconPx} strokeWidth={size.outline} />
       <View style={styles.text}>
-        <Text variant="bodyStrong">{driver.label}</Text>
+        <Text variant="bodyStrong">{label}</Text>
         <Text variant="caption" tone="secondary">
           {basis}
         </Text>

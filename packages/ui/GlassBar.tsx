@@ -1,5 +1,5 @@
 // Glass for floating layers only (REDESIGN-PROMPT §2.2): the tab bar today; sheets and the morph modal later.
-// A blur under a canvas tint of at least 0.70, so Text High stays 6.05:1 even over pure white behind it. Text Muted never sits on glass.
+// A blur under a canvas tint of at least 0.70, so Text High stays 6.43:1 even over pure white behind it. Text Muted never sits on glass.
 // Edge: a 1 pt hairline on top. Fallbacks: Reduce Transparency on, or Android, gives the solid raised surface.
 import { BlurView } from 'expo-blur';
 import { useEffect, useState } from 'react';

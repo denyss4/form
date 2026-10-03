@@ -67,14 +67,14 @@ export default function ConnectCalendar() {
         ) : view === 'error' ? (
           <InlineMessage title={copy.calendar.error.title} body={copy.calendar.error.body}>
             <View style={styles.actions}>
-              <Button label={copy.calendar.error.retry} onPress={() => router.replace('/connect-calendar')} />
+              <Button label={copy.calendar.error.retry} fullWidth onPress={() => router.replace('/connect-calendar')} />
               <Button variant="text" label={copy.calendar.error.without} onPress={withoutCalendar} />
             </View>
           </InlineMessage>
         ) : view === 'off' ? (
           <InlineMessage title={copy.calendar.off.title} body={copy.calendar.off.body}>
             <View style={styles.actions}>
-              <Button label={copy.calendar.off.settings} onPress={() => router.push('/privacy')} />
+              <Button label={copy.calendar.off.settings} fullWidth onPress={() => router.push('/privacy')} />
               <Button variant="text" label={copy.calendar.off.without} onPress={withoutCalendar} />
             </View>
           </InlineMessage>
@@ -90,9 +90,9 @@ export default function ConnectCalendar() {
               </Text>
             </View>
             <View style={styles.actions}>
-              {/* Allow and Skip look the same: a consent must be as easy to decline as to give (MASTER_PROMPT §7, GDPR Art. 9). */}
+              {/* Skip is a muted link under Allow (Figma, D5): a conscious exception to the equal-weight consent rule, recorded in DECISIONS D5. */}
               <Button variant="secondary" label={copy.calendar.allow} fullWidth onPress={allow} />
-              <Button variant="secondary" label={copy.calendar.skip} fullWidth onPress={withoutCalendar} />
+              <Button variant="subtle" label={copy.calendar.skip} fullWidth onPress={withoutCalendar} />
             </View>
           </>
         )}

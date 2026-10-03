@@ -7,11 +7,11 @@ import type { ScoreBand } from '../planner/plan.ts';
 import type { PlanId } from '../tokens/color.ts';
 import { copy } from './copy.ts';
 
-const joinList = (items: string[]) =>
-  items.length <= 1 ? (items[0] ?? '') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+/** A driver's name in the current language. Results made earlier (the fixtures) carry an English label; the id finds the right one. */
+export const driverLabel = (d: Pick<FormDriver, 'id' | 'label'>) => copy.drivers[d.id] ?? d.label;
 
 // "Training load and alcohol": the first label keeps its capital, the rest run on in lower case.
-const phrase = (drivers: FormDriver[]) => joinList(drivers.map((d, i) => (i === 0 ? d.label : d.label.toLowerCase())));
+const phrase = (drivers: FormDriver[]) => copy.list(drivers.map((d, i) => (i === 0 ? driverLabel(d) : driverLabel(d).toLowerCase())));
 
 export interface PlanContext {
   band: ScoreBand;

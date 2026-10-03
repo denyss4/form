@@ -23,7 +23,7 @@ import { WeekStrip } from '@features/WeekStrip';
 import { radius, size, space, titleMaxFontScale } from '@tokens';
 import { announce, Button, PlanLabel, Text, useIconSize, useTheme } from '@ui';
 
-const slides = copy.intro.slides;
+
 const today = martaWeek.meta.demoToday;
 const example = martaWeek.days.find((d) => d.forecastFor === today) ?? martaWeek.days[martaWeek.days.length - 1];
 
@@ -80,6 +80,7 @@ function LogSample() {
 const illustrations = [ResultChip, WeekSample, LogSample];
 
 export default function Intro() {
+  const slides = copy.intro.slides; // read while rendering, so it follows the language (D5)
   const { color } = useTheme();
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -178,6 +179,6 @@ const styles = StyleSheet.create({
   scoreRow: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm, flexWrap: 'wrap' },
   logRow: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   bottom: { paddingHorizontal: space.margin, paddingBottom: space.md, gap: space.lg },
-  dots: { flexDirection: 'row', gap: space.xs },
+  dots: { flexDirection: 'row', gap: space.xs, justifyContent: 'center' }, // centred (Figma, D5)
   dot: { width: space.xs, height: space.xs, borderRadius: radius.full, borderWidth: size.hairline },
 });

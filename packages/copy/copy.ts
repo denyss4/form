@@ -1,9 +1,15 @@
-// Every user-facing string lives here (DECISIONS.md #6). English only.
+// Every user-facing string lives here (DECISIONS.md #6): English below, Polish in pl.ts, same shape (D5).
 // Keep strings short enough to survive +30% for Polish (P5 pseudo-localisation test).
 // Wording rules: MASTER_PROMPT §7. Explanations may cite only drivers the model returned.
+// `copy` always answers in the current language (locale.ts): read it while rendering, never once at module load, or a language change
+// will not reach that string.
+import { getLanguage, type Language } from './locale.ts';
+import { pl } from './pl.ts';
 import { pseudoLocalise, pseudoRequested } from './pseudo.ts';
 
-const base = {
+export const en = {
+  // "A, B and C"
+  list: (items: string[]) => (items.length <= 1 ? (items[0] ?? '') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`),
   range: (lo: number, hi: number) => `Likely ${lo}–${hi}`,
   inputsBasis: (used: number, total: number) => `Based on ${used} of ${total} inputs`,
   basis: {
@@ -66,9 +72,11 @@ const base = {
     // The pre-reveal step (spec R2). Asked once, before the score is seen; never asked again that day.
     rating: {
       title: 'How do you feel this morning?',
-      scale: '0 is very low, 10 is very high.',
+      scale: '1 is very low, 10 is very high.',
       skip: 'Skip to my plan',
-      spoken: 'How do you feel this morning? Rating from 0 to 10, not rated',
+      spoken: 'How do you feel this morning? Rating from 1 to 10, not rated yet',
+      value: (n: number) => `${n} of 10. Double-tap to save.`,
+      hint: 'Swipe up or down to choose, then double-tap to save.',
     },
   },
 
@@ -114,6 +122,9 @@ const base = {
     exampleA11y: (score: number, lo: number, hi: number) => `Example: Form score ${score}. Likely ${lo} to ${hi}.`,
     notice: "Form is for planning. It doesn't diagnose or treat anything.",
   },
+
+  // Launch screen (D5): the logo alone; read as the app's name while it loads.
+  launch: { label: 'Form, loading' },
 
   // Welcome (REDESIGN-PROMPT §4.1, concept A "Dawn over the week").
   welcome: {
@@ -221,6 +232,40 @@ const base = {
     forgotBack: 'Back to sign in',
   },
 
+  // The registration option (D5, 6B, the user's premium-auth code): one panel for sign in, sign up, reset, and a mocked email code.
+  // Review only until chosen. No phone number: Form has no use for it (GDPR Art. 5(1)(c), data minimisation).
+  authPanel: {
+    tabs: { label: 'Sign in or create an account', signIn: 'Sign in', signUp: 'Create account' },
+    signInTitle: 'Welcome back',
+    signInBody: 'Sign in to your account.',
+    signUpTitle: 'Create your account',
+    signUpBody: 'Your plan and logs stay on this phone.',
+    remember: 'Remember me on this phone',
+    strength: {
+      label: (words: string) => `Password strength: ${words}`,
+      levels: ['Very weak', 'Weak', 'Fair', 'Good', 'Strong'],
+      needs: { length: 'At least 8 characters', upper: 'One capital letter', lower: 'One small letter', number: 'One number', special: 'One symbol' },
+    },
+    errors: {
+      weak: 'Choose a stronger password: meet at least 3 of the points below.',
+      code: 'Enter the 6 digits from the email.',
+    },
+    verifyTitle: 'Check your email',
+    verifyBody: (email: string) => `We sent a 6-digit code to ${email}. Demo: any 6 digits work, nothing is sent.`,
+    code: 'Code',
+    verify: 'Verify email',
+    backToDetails: 'Back to the details',
+    doneTitle: 'Account created',
+    doneBody: 'Your account is ready. Demo: it lives on this phone until the app closes.',
+    start: 'Get started',
+    resetTitle: 'Reset your password',
+    resetBody: "Enter your email. We'll send a link to set a new password.",
+    resetSend: 'Send link',
+    resetSent: 'If an account uses this email, a link is on its way. In this demo nothing is sent.',
+    backToSignIn: 'Back to sign in',
+    signedIn: 'Signed in (preview: no account changed).',
+  },
+
   // Profile and the user page (REDESIGN-PROMPT §5). Every field here has a stated use (GDPR Art. 5(1)(c)).
   profile: {
     title: 'Profile',
@@ -270,9 +315,9 @@ const base = {
     about: 'About',
     legal: 'Terms and privacy',
     version: (v: string) => `Version ${v}`,
-    language: 'Language: English',
-    // [GAP G57: Polish strings are not written. The copy lives in one file, so it is ready for them.]
-    languageNote: 'Polish is planned.',
+    language: 'Language',
+    // [GAP G57: the language is kept in memory only, like the other demo settings.]
+    languageNote: 'Changes every screen at once.',
   },
 
   editProfile: {
@@ -289,6 +334,10 @@ const base = {
     trainingDaysValue: (n: number) => `${n} of 7`,
     trainingTime: 'Usual training time',
     trainingTimeHint: 'For example 18:00.',
+    // The time picker (D5, 12B): a list of half hours with a search line.
+    timePlaceholder: 'Choose a time',
+    timeSearch: 'Search times, for example 18',
+    timeEmpty: 'No time matches.',
     sessions: 'My sessions',
     sessionsHint: 'The names Form shows in Week and in the evening log.',
     sessionName: (n: number) => `Session ${n}`,
@@ -449,6 +498,7 @@ const base = {
     licences: 'Licences',
     fonts: 'Fonts: Manrope and Source Sans 3, under the SIL Open Font License 1.1.',
     model: 'The model is trained on PMData (Simula, CC BY 4.0).',
+    shaders: 'Liquid metal: powered by Paper Shaders (shaders.paper.design), Apache License 2.0.',
     connections: 'Connections',
     healthRow: { label: 'Health data', status: 'Preview, not connected' },
     calendarWriteRow: { label: 'Calendar changes', status: 'Preview, off' },
@@ -470,6 +520,16 @@ const base = {
       day: (day: string, plan: string, status: string) => `${day}, ${plan}, ${status}`,
     },
     logging: (days: number, of: number) => `You logged on ${days} of the last ${of} days.`,
+    // The overview tiles (D5, 8B). Counts only, the same ones as the sentences: nothing here is a score to beat.
+    bento: {
+      big: (fit: number, answered: number) => `${fit} of ${answered}`,
+      line: (answered: number, notFollowed: number) =>
+        `${answered === 1 ? 'day' : 'days'} fit the plan.${notFollowed > 0 ? ` ${notFollowed} not followed.` : ''}`,
+      mornings: (n: number) => (n === 1 ? '1 morning' : `${n} mornings`),
+      count: (n: number, of: number) => `${n} of ${of}`,
+      logged: 'days logged',
+      inside: 'inside the likely range',
+    },
     felt: { title: 'Felt vs forecast', note: 'Your morning rating next to what Form forecast.' },
     // Slide tabs (D3): the two Progress views on one screen.
     tabs: { label: 'Progress views', fit: 'Plan fit', felt: 'Felt vs forecast' },
@@ -490,6 +550,9 @@ const base = {
       title: 'How you felt each morning',
       a11y: (bars: string) => `Bar chart, how you felt each morning, 0 to 100. ${bars}.`,
       bar: (day: string, felt: number) => `${day} ${felt}`,
+      // The trace chart (D5, 3B): one morning picked at a time.
+      dayCaption: 'Morning',
+      hint: 'Tap or drag across the bars to see a morning.',
     },
     legend: { forecast: 'Forecast', felt: 'Felt', range: 'Likely range' },
     row: (felt: number, forecast: number, lo: number, hi: number) => `Felt ${felt}, forecast ${forecast}, likely ${lo}–${hi}`,
@@ -693,7 +756,36 @@ const base = {
   },
 } as const;
 
-// The Polish-length test swaps in a grown copy of every string (see pseudo.ts). A normal run uses the real one.
-export const copy: typeof base = pseudoRequested() ? pseudoLocalise(base) : base;
+// Every string becomes `string` (the English literals are not the type), so Polish fits the same shape.
+type Widen<T> = T extends string
+  ? string
+  : T extends (...args: infer A) => infer R
+    ? (...args: A) => Widen<R>
+    : T extends object
+      ? { readonly [K in keyof T]: Widen<T[K]> }
+      : T;
+export type Copy = Widen<typeof en>;
 
-export type InputId = keyof typeof base.inputs;
+// Dev-only screens (the gallery) stay in English.
+const tables: Record<Language, Copy> = { en, pl: { ...pl, dev: en.dev } };
+
+// The Polish-length test swaps in a grown copy of every string (see pseudo.ts). A normal run uses the real one.
+const pseudo = pseudoRequested();
+const grown = new Map<Language, Copy>();
+function table(): Copy {
+  const language = getLanguage();
+  if (!pseudo) return tables[language];
+  if (!grown.has(language)) grown.set(language, pseudoLocalise(tables[language]));
+  return grown.get(language)!;
+}
+
+/** The copy for the current language, looked up on every read. */
+export const copy: Copy = new Proxy(en as Copy, {
+  get: (_target, key) => Reflect.get(table(), key),
+  has: (_target, key) => Reflect.has(table(), key),
+  ownKeys: () => Reflect.ownKeys(table()),
+  getOwnPropertyDescriptor: (_target, key) => Reflect.getOwnPropertyDescriptor(table(), key),
+});
+
+export type InputId = keyof typeof en.inputs;
+export { getLanguage, languageNames, languages, setLanguage, subscribeLanguage, type Language } from './locale.ts';

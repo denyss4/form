@@ -33,20 +33,20 @@ Dark "Lichen" is the app theme (`docs/prompts/REDESIGN-PROMPT.md` §1, approved 
 
 | Role | Token | Hex | Contrast (WCAG 2.2) |
 |---|---|---|---|
-| Canvas (Surface 100) | `bg.canvas` | `#16181A` | — |
-| Raised (Surface 200) | `bg.raised` | `#232528` | 1.16:1 vs canvas: separate with space plus a hairline |
-| Sunken | `bg.sunken` | `#1d1f22` | inputs, pressed rows |
-| Text High | `text.primary` | `#F5F5F7` | 16.35:1; 6.05:1 on glass at worst |
-| Text Muted | `text.secondary` | `#8E9298` | 5.69:1; **never on glass** (2.11:1 worst) |
-| Control stroke | `stroke.control` | `#7d828a` | 4.60:1: input borders, outlined pills, the dial track |
-| Hairline | `stroke.hairline` | `#2e3135` | decorative only |
-| Sage (Brand Accent) | `action.primary`, `focus.ring`, `state.selected`, `status.success` | `#b3be8b` | 9.03:1; pressed `#9ba47a`; text on it is canvas |
-| Status Over | `status.attention` | `#C87A65` | 5.45:1: errors, destructive text; always with an icon and words |
-| Data Muted | `chart.neutral` | `#94A8B6` | non-plan charts only, never next to Iris |
-| Train hard (Marigold) | `plan.hard` | `#faab3f` | 9.29:1 (accepted 2 Oct) |
-| Train light (Butter) | `plan.light` | `#eada78` | 12.54:1 (accepted 2 Oct) |
-| Recover (Sea glass) | `plan.recover` | `#75d1c5` | 9.90:1 |
-| Deep-work day (Iris) | `plan.deepwork` | `#b0a6ed` | 8.07:1 |
+| Canvas (Surface 100) | `bg.canvas` | `#121212` | — |
+| Raised (Surface 200) | `bg.raised` | `#1E1E1E` | 1.12:1 vs canvas: separate with space plus a hairline |
+| Sunken | `bg.sunken` | `#181818` | inputs, pressed rows |
+| Text High | `text.primary` | `#F5F5F7` | 17.21:1; 6.43:1 on glass at worst |
+| Text Muted | `text.secondary` | `#8E9298` | 5.99:1; **never on glass** (2.24:1 worst) |
+| Control stroke | `stroke.control` | `#808080` | 4.74:1: input borders, outlined pills, the dial track |
+| Hairline | `stroke.hairline` | `#2C2C2C` | decorative only |
+| Sage (Brand Accent) | `action.primary`, `focus.ring`, `state.selected`, `status.success` | `#b3be8b` | 9.51:1; pressed `#9ba47a`; text on it is canvas |
+| Status Over | `status.attention` | `#C87A65` | 5.73:1 (5.10:1 on raised): errors, destructive text; always with an icon and words |
+| Data Muted | `chart.neutral` | `#94A8B6` | 7.61:1: non-plan charts only, never next to Iris |
+| Train hard (Marigold) | `plan.hard` | `#faab3f` | 9.78:1 (accepted 2 Oct) |
+| Train light (Butter) | `plan.light` | `#eada78` | 13.20:1 (accepted 2 Oct) |
+| Recover (Sea glass) | `plan.recover` | `#75d1c5` | 10.42:1 |
+| Deep-work day (Iris) | `plan.deepwork` | `#b0a6ed` | 8.50:1 |
 
 - Sage appears at most once per screen as an action; never a plan colour, never decoration (the one exception: Welcome's first-light glow). Primary button: sage fill, canvas text; secondary: control-stroke outline, Text High; destructive: text-only with confirmation.
 - Never colour alone: every plan has a glyph and a label (accessibility; under tritanopia Iris sits close to sage and Data Muted).

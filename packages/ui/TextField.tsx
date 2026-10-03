@@ -2,7 +2,7 @@
 // it). Focal element: the field. Quiet: the hint. An error replaces the hint, in plain words with an icon (never colour alone).
 // States: default, focused (the sage focus ring), error (Status Over border, icon and words), disabled. Secure fields get a show/hide
 // toggle, a 48 pt target inside the field.
-import { useState } from 'react';
+import { useState, type ComponentType } from 'react';
 import { Platform, Pressable, StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
 import CircleAlert from 'lucide-react-native/icons/circle-alert';
 import Eye from 'lucide-react-native/icons/eye';
@@ -27,6 +27,8 @@ export interface TextFieldProps
   error?: string | null;
   secure?: boolean;
   disabled?: boolean;
+  /** A leading icon inside the box (D5, the registration option 6B), Text Muted. The label above stays: the icon never replaces it. */
+  icon?: ComponentType<{ color?: string; size?: number; strokeWidth?: number }>;
 }
 
 /** An inline error: Status Over words with an icon, never colour alone. Announced politely as it appears. */
@@ -43,7 +45,7 @@ export function FieldError({ message }: { message: string }) {
   );
 }
 
-export function TextField({ label, value, onChangeText, onBlur, hint, error, secure = false, disabled = false, ...input }: TextFieldProps) {
+export function TextField({ label, value, onChangeText, onBlur, hint, error, secure = false, disabled = false, icon: Icon, ...input }: TextFieldProps) {
   const { color } = useTheme();
   const devScale = useTextScale();
   const scale = Platform.OS === 'web' ? devScale : 1;
@@ -67,6 +69,11 @@ export function TextField({ label, value, onChangeText, onBlur, hint, error, sec
           },
         ]}
       >
+        {Icon ? (
+          <View style={styles.lead} pointerEvents="none">
+            <Icon color={color.text.secondary} size={iconPx} strokeWidth={size.outline} />
+          </View>
+        ) : null}
         <TextInput
           accessibilityLabel={label}
           accessibilityHint={error ?? hint}
@@ -86,6 +93,7 @@ export function TextField({ label, value, onChangeText, onBlur, hint, error, sec
           style={[
             type.body,
             styles.input,
+            Icon ? styles.afterIcon : undefined,
             { color: color.text.primary },
             // The web preview stands in for system text size; native scales itself.
             scale === 1 ? undefined : { fontSize: (type.body.fontSize ?? 0) * scale, lineHeight: (type.body.lineHeight ?? 0) * scale },
@@ -125,6 +133,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.control,
   },
   input: { flex: 1, minHeight: size.touch, paddingHorizontal: space.sm, paddingVertical: space.sm },
+  lead: { paddingLeft: space.sm },
+  afterIcon: { paddingLeft: space.xs },
   toggle: { width: size.touch, minHeight: size.touch, alignItems: 'center', justifyContent: 'center' },
   error: { flexDirection: 'row', alignItems: 'flex-start', gap: space.xs },
   grow: { flex: 1 },

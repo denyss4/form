@@ -38,7 +38,7 @@ export const insideRange = (p: Pair) => p.felt >= p.range[0] && p.felt <= p.rang
 export const LEARNING_DAYS = 21;
 
 /**
- * Check-in completion: the mornings the person gave the 0-10 rating, out of the mornings looked at. A process measure to watch, never a score,
+ * Check-in completion: the mornings the person gave the morning rating, out of the mornings looked at. A process measure to watch, never a score,
  * and nothing is rewarded for it. The numerator is also the count of pairs behind "Labelled days so far" on Felt vs forecast.
  */
 export function checkinCompletion(dates: string[], rated: (date: string) => boolean) {

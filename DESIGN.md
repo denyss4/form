@@ -2,13 +2,13 @@
 name: Form
 description: Plan your week around how you'll feel.
 colors:
-  surface-100: "#16181A"
-  surface-200: "#232528"
-  sunken: "#1d1f22"
+  surface-100: "#121212"
+  surface-200: "#1E1E1E"
+  sunken: "#181818"
   text-high: "#F5F5F7"
   text-muted: "#8E9298"
-  control-stroke: "#7d828a"
-  hairline: "#2e3135"
+  control-stroke: "#808080"
+  hairline: "#2C2C2C"
   sage: "#b3be8b"
   sage-pressed: "#9ba47a"
   status-over: "#C87A65"
@@ -156,7 +156,7 @@ Dark Lichen is the app theme (approved 1 Oct 2026). The previous light palette i
 Dark stone with off-white text, one sage accent, and four plan hues that each mean exactly one plan.
 
 ### Primary
-- **Sage** (#b3be8b): the primary button fill (canvas text on it, 9.03:1), its pressed state (#9ba47a), focus rings, selected choice pills, the active tab icon, the outline on the two days a move would change. At most once per screen as an action. Never a plan colour, never decoration.
+- **Sage** (#b3be8b): the primary button fill (canvas text on it, 9.51:1), its pressed state (#9ba47a), focus rings, selected choice pills, the active tab icon, the outline on the two days a move would change. At most once per screen as an action. Never a plan colour, never decoration.
 
 ### Secondary
 The four plan hues. Each is the colour of one plan and nothing else.
@@ -170,13 +170,13 @@ The four plan hues. Each is the colour of one plan and nothing else.
 - **Data Muted** (#94A8B6): non-plan chart data only, never next to Iris in one chart.
 
 ### Neutral
-- **Surface 100** (#16181A): the canvas behind every screen.
-- **Surface 200** (#232528): the one raised level: sheets, the selected Week column, the day detail, the tab bar's solid fallback.
-- **Sunken** (#1d1f22): input fills and pressed rows.
+- **Surface 100** (#121212): the canvas behind every screen.
+- **Surface 200** (#1E1E1E): the one raised level: sheets, the selected Week column, the day detail, the tab bar's solid fallback.
+- **Sunken** (#181818): input fills and pressed rows.
 - **Text High** (#F5F5F7): text, icons, filled Plan Fit segments, the today underline; the only text on glass.
 - **Text Muted** (#8E9298): secondary text, captions, estimated plans. Never on glass.
-- **Control Stroke** (#7d828a): outlined pills, secondary button outlines, the dial track, the empty Day 1 dial.
-- **Hairline** (#2e3135): decorative edges only (the glass bar's top edge).
+- **Control Stroke** (#808080): outlined pills, secondary button outlines, the dial track, the empty Day 1 dial.
+- **Hairline** (#2C2C2C): decorative edges only (the glass bar's top edge).
 
 ### Named Rules
 **The Plan Owns Its Colour Rule.** A plan hue appears only where that plan is shown: the dial arc and range band, Today's title, the plan glyph, and the Today glow. In lists and details the plan's word is plain text.
@@ -185,7 +185,7 @@ The four plan hues. Each is the colour of one plan and nothing else.
 
 **The Never Alone Rule.** A plan is never colour alone: every plan shows its glyph (Dumbbell, Footprints, Moon, Focus) and its label. Estimated days add a hollow ring and the word "Estimated".
 
-**The Glass Carries Text High Rule.** Glass sits at a canvas tint of at least 0.70, and only Text High goes on it (6.05:1 at the worst case). Text Muted on glass drops to 2.11:1.
+**The Glass Carries Text High Rule.** Glass sits at a canvas tint of at least 0.70, and only Text High goes on it (6.43:1 at the worst case). Text Muted on glass drops to 2.11:1.
 
 ## Typography
 

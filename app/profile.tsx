@@ -11,7 +11,7 @@ import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pencil from 'lucide-react-native/icons/pencil';
 
-import { copy } from '@copy';
+import { copy, languageNames, languages, setLanguage } from '@copy';
 import { formatDays } from '@format';
 import { LegalSheet } from '@features/LegalSheet';
 import { ProfileHeader } from '@features/ProfileHeader';
@@ -32,6 +32,7 @@ import {
   useFocus,
   useIconSize,
   usePress,
+  useLanguage,
   useTheme,
 } from '@ui';
 
@@ -65,6 +66,7 @@ export default function Profile() {
   const { color } = useTheme();
   const router = useRouter();
   const app = useAppState();
+  const language = useLanguage();
   const [legal, setLegal] = useState(false);
   const params = useLocalSearchParams<{ as?: string }>();
 
@@ -209,19 +211,28 @@ export default function Profile() {
           </Section>
         ) : null}
 
+        {/* D5: English or Polish. Each language is named in itself; the switch redraws every screen at once, the stack stays. */}
+        <Section title={copy.profile.language} note={copy.profile.languageNote}>
+          <ChoiceGroup
+            label={copy.profile.language}
+            options={languages.map((l) => ({ value: l, label: languageNames[l] }))}
+            value={language}
+            onChange={setLanguage}
+          />
+        </Section>
+
         <Section title={copy.profile.about}>
           <Button variant="text" label={copy.profile.legal} onPress={() => setLegal(true)} />
           <View style={styles.lines}>
             <Text variant="body">{copy.profile.version(Constants.expoConfig?.version ?? '1.0.0')}</Text>
-            <Text variant="body">{copy.profile.language}</Text>
-            <Text variant="caption" tone="secondary">
-              {copy.profile.languageNote}
-            </Text>
             <Text variant="caption" tone="secondary">
               {copy.settings.fonts}
             </Text>
             <Text variant="caption" tone="secondary">
               {copy.settings.model}
+            </Text>
+            <Text variant="caption" tone="secondary">
+              {copy.settings.shaders}
             </Text>
           </View>
         </Section>

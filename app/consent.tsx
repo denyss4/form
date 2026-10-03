@@ -48,7 +48,7 @@ export default function Consent() {
             <Text variant="heading" accessibilityRole="header" level={2}>
               {copy.consent.purposes[purpose].name}
             </Text>
-            <Text variant="body" tone="secondary">
+            <Text variant="caption" tone="secondary">
               {copy.consent.purposes[purpose].what}
             </Text>
             <ChoiceGroup

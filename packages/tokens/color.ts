@@ -44,37 +44,37 @@ export const lightColor: ColorTokens = {
   },
 };
 
-// Dark "Lichen". Ratios are WCAG 2.2, verified 1 Oct 2026 (REDESIGN Step 1 B).
+// Dark "Lichen". Ratios are WCAG 2.2. Surfaces moved to neutral greys on 2 Oct 2026 (user decision, DECISIONS D5); re-measured then.
 export const darkColor: ColorTokens = {
   bg: {
-    canvas: '#16181A', // Surface 100
-    raised: '#232528', // Surface 200: 1.16:1 vs canvas, so separate with space plus a hairline
-    sunken: '#1d1f22', // Text High 15.17:1, Text Muted 5.28:1
-    scrim: '#16181A',
+    canvas: '#121212', // Surface 100
+    raised: '#1E1E1E', // Surface 200: 1.12:1 vs canvas, so separate with space plus a hairline
+    sunken: '#181818', // Text High 16.31:1, Text Muted 5.68:1
+    scrim: '#121212',
   },
   text: {
-    primary: '#F5F5F7', // Text High: 16.35:1 on canvas, 14.11:1 on raised, 6.05:1 on glass at its worst case
-    secondary: '#8E9298', // Text Muted: 5.69:1 on canvas, 4.91:1 on raised. Never on glass (2.11:1 worst case)
+    primary: '#F5F5F7', // Text High: 17.21:1 on canvas, 15.31:1 on raised, 6.43:1 on glass at its worst case
+    secondary: '#8E9298', // Text Muted: 5.99:1 on canvas, 5.33:1 on raised. Never on glass (2.24:1 worst case)
   },
   stroke: {
-    control: '#7d828a', // 4.60:1 on canvas, 3.97:1 on raised: input borders, outlined pills, the dial track
-    hairline: '#2e3135', // 1.36:1, decorative only
+    control: '#808080', // 4.74:1 on canvas, 4.22:1 on raised: input borders, outlined pills, the dial track
+    hairline: '#2C2C2C', // 1.34:1, decorative only
   },
   action: {
-    primary: '#b3be8b', // Brand Accent (sage): 9.03:1 on canvas
-    pressed: '#9ba47a', // canvas text on it 6.77:1
-    onPrimary: '#16181A', // canvas text on sage 9.03:1
+    primary: '#b3be8b', // Brand Accent (sage): 9.51:1 on canvas
+    pressed: '#9ba47a', // canvas text on it 7.12:1
+    onPrimary: '#121212', // canvas text on sage 9.51:1
   },
   focus: { ring: '#b3be8b' },
   state: { selected: '#b3be8b' },
-  status: { success: '#b3be8b', attention: '#C87A65' }, // Status Over: 5.45:1 on canvas
-  chart: { neutral: '#94A8B6' }, // Data Muted: 7.24:1 on canvas
+  status: { success: '#b3be8b', attention: '#C87A65' }, // Status Over: 5.73:1 on canvas, 5.10:1 on raised (the lowest text pair)
+  chart: { neutral: '#94A8B6' }, // Data Muted: 7.61:1 on canvas
   // Fields equal the canvas: there is no field on Today in dark. The plan glow (opacity.glow) is drawn behind the dial instead.
   plan: {
-    hard: { base: '#faab3f', field: '#16181A' }, // Marigold 9.29:1 (Q1 accepted 2 Oct after the D0a phone check)
-    light: { base: '#eada78', field: '#16181A' }, // Butter 12.54:1 (Q1 accepted 2 Oct)
-    recover: { base: '#75d1c5', field: '#16181A' }, // Sea glass 9.90:1
-    deepwork: { base: '#b0a6ed', field: '#16181A' }, // Iris 8.07:1
+    hard: { base: '#faab3f', field: '#121212' }, // Marigold 9.78:1 (Q1 accepted 2 Oct after the D0a phone check)
+    light: { base: '#eada78', field: '#121212' }, // Butter 13.20:1 (Q1 accepted 2 Oct)
+    recover: { base: '#75d1c5', field: '#121212' }, // Sea glass 10.42:1
+    deepwork: { base: '#b0a6ed', field: '#121212' }, // Iris 8.50:1
   },
 };
 
@@ -86,7 +86,7 @@ export const opacity = {
   // The one ambient glow on Today: the plan colour at its centre, fading to nothing. 0.16 keeps the dial track at 3.11:1 or more against
   // it for all four plans (0.22 drops it below 3:1) and the score at 11:1 or more (measured 1 Oct 2026).
   glow: 0.16,
-  // Glass (expo-blur): the canvas tint over the blur. At 0.70 Text High is 6.05:1 over pure white behind it, the worst case.
+  // Glass (expo-blur): the canvas tint over the blur. At 0.70 Text High is 6.43:1 over pure white behind it, the worst case.
   glassTint: 0.7,
   // Welcome (REDESIGN-PROMPT §4.1): the horizon line, the week's glyphs at rest, and the sage first-light glow. Decorative only; nothing
   // is read from them (the screen's text is Text High on the canvas).

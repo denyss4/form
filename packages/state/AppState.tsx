@@ -21,7 +21,7 @@ export type OnboardingPath = 'guest' | 'account';
 export type NotificationsAnswer = 'allowed' | 'declined';
 
 /**
- * This morning's 0-10 rating (spec R2). It is the model's training label, so it is only ever collected before the score is seen:
+ * This morning's 1-10 rating (spec R2, slider since D5). It is the model's training label, so it is only ever collected before the score is seen:
  * beforeReveal is always true, and a day with no rating has no entry. Missing data beats anchored data.
  */
 export interface MorningRating {

@@ -1,7 +1,7 @@
 // Layout plan. Job: show a value per day over the week (REDESIGN-PROMPT §6 bar chart, rebuilt in react-native-svg). Focal element: the
 // bars. Quiet: the axis and its gridlines.
 // One bar per data point, flat tops, a vertical axis with three labelled gridlines (min, middle, max), day letters under the bars.
-// Bars are Data Muted (chart.neutral, 7.24:1 on canvas): non-plan data only, never next to Iris (CLAUDE.md). Gridlines are hairlines.
+// Bars are Data Muted (chart.neutral, 7.61:1 on canvas): non-plan data only, never next to Iris (CLAUDE.md). Gridlines are hairlines.
 // Screen readers hear the whole chart as one sentence with every value, so nothing is only visual.
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';

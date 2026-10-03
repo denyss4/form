@@ -1,9 +1,9 @@
-// Layout plan. Job: show whether the plans fit, in the person's own words. Focal element: the Plan Fit sentence and its segments.
-// Quiet: the day list (one line a day, plan glyph in colour, plan word in body text) and the logging line. No score, no streak, no
-// reward: a process measure (MASTER_PROMPT §2).
+// Layout plan. Job: show whether the plans fit, in the person's own words. Focal element: the large tile, plans that fit (D5, the user's
+// pick 8B: the overview as tiles). Quiet: the day list (D5, 9B: a glyph tile, the plan, the answer, the day). No score, no streak, no
+// reward: a process measure (MASTER_PROMPT §2); the tiles are counts the person's own answers produce.
 // Slide tabs (D3, REDESIGN-PROMPT §6): "Plan fit" and "Felt vs forecast" are the two views of this screen; the second shows FeltBody,
 // with its bar chart. `?tab=felt` opens it for review.
-// A Recover day that fit counts the same as a training day that fit. The meter shows followed days only, never more than was answered;
+// A Recover day that fit counts the same as a training day that fit. The count includes followed days only, never more than was answered;
 // a 'Did something else' day is listed as "Not followed" and left out of the counts (spec R1).
 // States: default, loading, no feedback yet, partial, low confidence, error. `?state=` holds one for review.
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -14,70 +14,28 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { copy } from '@copy';
 import { formatDay } from '@format';
 import { FeltBody } from '@features/FeltBody';
-import { FitStrip } from '@features/FitStrip';
 import { HeaderProfile } from '@features/HeaderProfile';
 import { progressScenarios, useProgress } from '@features/useProgress';
-import { fitSummary, type FitDay } from '@planner/progress';
+import { fitSummary, insideRange } from '@planner/progress';
 import { buildStamp, showBuildStamp } from '@state/build';
 import { size, space } from '@tokens';
 import {
   Button,
   InlineMessage,
+  ItemList,
   oneOf,
-  PlanLabel,
+  PlanGlyph,
   ScreenHeader,
   Skeleton,
   SlideTabs,
+  StatsBento,
   Text,
-  useFontScale,
   useTabBarSpace,
   useTheme,
 } from '@ui';
 
 const WINDOW = 7; // the ring covers the last week of answers
 const FEW_DAYS = 3; // fewer answered days than this are flagged as too few to read much [GAP G33: a proposal]
-
-function FitRow({ day, divider, compact }: { day: FitDay; divider: boolean; compact: boolean }) {
-  const { color } = useTheme();
-  const status = copy.progress.fit.status[day.fit ?? 'none'];
-  const statusVariant = day.fit === 'yes' ? 'body' : 'bodyStrong'; // the exception is what to notice
-  return (
-    <View
-      accessible
-      accessibilityLabel={copy.progress.fit.day(formatDay(day.date), copy.plan[day.plan], status)}
-      style={[
-        styles.row,
-        divider ? { borderBottomWidth: size.hairline, borderBottomColor: color.stroke.hairline } : undefined,
-      ]}
-    >
-      {compact ? (
-        <View style={styles.oneLine}>
-          <Text variant="bodyStrong" style={styles.dayColumn}>
-            {formatDay(day.date)}
-          </Text>
-          <View style={styles.planColumn}>
-            <PlanLabel plan={day.plan} quiet />
-          </View>
-          <Text variant={statusVariant} tone={day.fit === 'yes' ? 'secondary' : 'primary'} style={styles.noShrink}>
-            {status}
-          </Text>
-        </View>
-      ) : (
-        <>
-          <View style={styles.line}>
-            <Text variant="bodyStrong" style={styles.noShrink}>
-              {formatDay(day.date)}
-            </Text>
-            <Text variant={statusVariant} tone={day.fit === 'yes' ? 'secondary' : 'primary'}>
-              {status}
-            </Text>
-          </View>
-          <PlanLabel plan={day.plan} quiet />
-        </>
-      )}
-    </View>
-  );
-}
 
 function SkeletonBody() {
   return (
@@ -105,7 +63,6 @@ export default function Progress() {
   const [tab, setTab] = useState(oneOf(params.tab, ['fit', 'felt'] as const, 'fit'));
   const scenario = oneOf(params.state, progressScenarios, 'default');
   const data = useProgress(scenario);
-  const compact = useFontScale() < 1.5; // one line per day; larger text puts the plan on its own line
 
   const header = (
     <ScreenHeader
@@ -134,45 +91,59 @@ export default function Progress() {
           <Text variant="body" tone="secondary">
             {copy.progress.empty.body}
           </Text>
-          <Button label={copy.progress.empty.action} onPress={() => router.replace('/today')} />
+          <Button label={copy.progress.empty.action} fullWidth onPress={() => router.replace('/today')} />
         </View>
       );
     } else {
       body = (
         <>
-          <View style={styles.group}>
-            <View style={styles.summary} aria-live="polite">
-              <Text variant="heading">{copy.progress.fit.headline(summary.fit, summary.answered, summary.notFollowed)}</Text>
+          {/* The overview tiles (D5, the user's pick 8B, "let's try"): plans that fit, how each morning felt, days logged, mornings inside
+              the likely range. The same counts as before, as tiles; counts only, no score to beat. */}
+          <View style={styles.group} aria-live="polite">
+            <StatsBento
+              data={{
+                chip: copy.progress.fit.title,
+                big: copy.progress.bento.big(summary.fit, summary.answered),
+                line: copy.progress.bento.line(summary.answered, summary.notFollowed),
+                barsLabel: copy.feltVsForecast.chart.title,
+                barsValue: copy.progress.bento.mornings(data.pairs.length),
+                bars: data.pairs.slice(-WINDOW).map((p) => p.felt),
+                small: [
+                  { value: copy.progress.bento.count(data.logged.days, data.logged.of), label: copy.progress.bento.logged },
+                  {
+                    value: copy.progress.bento.count(data.pairs.filter(insideRange).length, data.pairs.length),
+                    label: copy.progress.bento.inside,
+                  },
+                ],
+              }}
+            />
+            <Text variant="caption" tone="secondary">
+              {copy.progress.fit.source}
+            </Text>
+            {summary.answered < FEW_DAYS ? (
               <Text variant="caption" tone="secondary">
-                {copy.progress.fit.source}
+                {copy.progress.fit.tooFew(summary.answered)}
               </Text>
-              {summary.answered < FEW_DAYS ? (
-                <Text variant="caption" tone="secondary">
-                  {copy.progress.fit.tooFew(summary.answered)}
-                </Text>
-              ) : null}
-              <View style={styles.strip}>
-                {/* Followed days only: a 'Did something else' day has no segment. The meter speaks the headline's exact text. */}
-                <FitStrip
-                  days={shown.filter((d) => d.fit !== null && d.fit !== 'other')}
-                  fit={summary.fit}
-                  label={copy.progress.fit.headline(summary.fit, summary.answered, summary.notFollowed)}
-                />
-                <Text variant="caption" tone="secondary">
-                  {copy.progress.fit.legend}
-                </Text>
-              </View>
-            </View>
+            ) : null}
           </View>
 
+          {/* The day list (D5, 9B): a plan glyph tile, the plan, the answer under it, the day on the right, hairlines between. A day that
+              did not fit keeps its emphasis (the exception is what to notice). */}
           <View style={styles.group}>
-            <View>
-              {/* No dividers: the rows are grouped by spacing alone (white-space guideline 2.4, critique D4). */}
-              {shown.map((day) => (
-                <FitRow key={day.date} day={day} divider={false} compact={compact} />
-              ))}
-            </View>
-            <Text variant="body">{copy.progress.logging(data.logged.days, data.logged.of)}</Text>
+            <ItemList
+              items={shown.map((day) => {
+                const status = copy.progress.fit.status[day.fit ?? 'none'];
+                return {
+                  key: day.date,
+                  media: <PlanGlyph plan={day.plan} small />,
+                  title: copy.plan[day.plan],
+                  description: status,
+                  emphasis: day.fit !== 'yes',
+                  note: formatDay(day.date),
+                  spoken: copy.progress.fit.day(formatDay(day.date), copy.plan[day.plan], status),
+                };
+              })}
+            />
           </View>
         </>
       );

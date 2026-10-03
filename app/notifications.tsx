@@ -97,7 +97,7 @@ export default function NotificationsPrompt() {
 
         {phase === 'error' ? (
           <InlineMessage title={copy.notifications.error.title} body={copy.notifications.error.body}>
-            <Button label={copy.notifications.error.continue} onPress={later} />
+            <Button label={copy.notifications.error.continue} fullWidth onPress={later} />
           </InlineMessage>
         ) : null}
 
@@ -111,7 +111,7 @@ export default function NotificationsPrompt() {
       {phase === 'error' ? null : (
         <View style={styles.actions}>
           <Button label={copy.notifications.allow} fullWidth loading={phase === 'loading'} onPress={allow} />
-          <Button variant="text" label={copy.notifications.later} fullWidth disabled={phase === 'loading'} onPress={later} />
+          <Button variant="subtle" label={copy.notifications.later} fullWidth disabled={phase === 'loading'} onPress={later} />
         </View>
       )}
     </SafeAreaView>

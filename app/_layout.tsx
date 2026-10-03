@@ -1,16 +1,23 @@
 import { useFonts } from 'expo-font';
 import { Stack, useGlobalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import { Platform, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Platform, StyleSheet, View } from 'react-native';
 
+import { setLanguage } from '@copy';
+import { LaunchScreen } from '@features/LaunchScreen';
 import { AppStateProvider } from '@state';
 import { darkColor, lightColor, size } from '@tokens';
-import { oneOf, TextScaleContext, ThemeProvider } from '@ui';
+import { LanguageKey, oneOf, TextScaleContext, ThemeProvider } from '@ui';
 
 export default function RootLayout() {
-  // Review only, web preview: ?scale=2 imitates a larger system text size on any screen; ?theme=light shows the light theme.
-  const { scale, theme } = useGlobalSearchParams<{ scale?: string; theme?: string }>();
+  // Review only, web preview: ?scale=2 imitates a larger system text size on any screen; ?theme=light shows the light theme;
+  // ?launch=0.4 holds the launch screen at 40% of its assembly; ?lang=pl opens the app in Polish.
+  const { scale, theme, launch, lang } = useGlobalSearchParams<{ scale?: string; theme?: string; launch?: string; lang?: string }>();
+  useEffect(() => {
+    if (lang === 'pl' || lang === 'en') setLanguage(lang);
+  }, [lang]);
+  const hold = launch === undefined || Number.isNaN(Number(launch)) ? undefined : Math.min(Math.max(Number(launch), 0), 1);
   const textScale = oneOf(scale, [1, 1.5, 2, 3], 1);
   const scheme = oneOf(theme, ['light', 'dark'] as const, 'dark');
   const palette = scheme === 'light' ? lightColor : darkColor;
@@ -37,11 +44,10 @@ export default function RootLayout() {
   }, [palette]);
 
   if (error) console.warn('Font load failed, falling back to system fonts:', error);
-
-  // Hold on the canvas colour until the fonts are ready, so text never flashes in a fallback face.
-  if (!loaded && !error) {
-    return <View style={{ flex: 1, backgroundColor: palette.bg.canvas }} />;
-  }
+  const ready = loaded || !!error;
+  // The launch screen (D5) covers the start: the logo assembles while the fonts load, then it fades into the app. The app mounts only once
+  // the fonts are ready, so text never flashes in a fallback face; the launch screen stays mounted across that switch, so it plays once.
+  const [launching, setLaunching] = useState(true);
 
   // Dark is the app theme (user decision, 1 Oct 2026). The gallery layers its own dev theme on top.
   return (
@@ -49,14 +55,25 @@ export default function RootLayout() {
       <ThemeProvider scheme={scheme}>
         <TextScaleContext.Provider value={textScale}>
           <StatusBar style={scheme === 'light' ? 'dark' : 'light'} />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: palette.bg.canvas },
-            }}
-          />
+          <View style={[styles.root, { backgroundColor: palette.bg.canvas }]}>
+            {ready ? (
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: palette.bg.canvas },
+                }}
+                // Each screen redraws in the new language when it changes on Profile (D5), without losing the navigation stack.
+                screenLayout={({ children }) => <LanguageKey>{children}</LanguageKey>}
+              />
+            ) : null}
+            {launching ? <LaunchScreen ready={ready} hold={hold} onDone={() => setLaunching(false)} /> : null}
+          </View>
         </TextScaleContext.Provider>
       </ThemeProvider>
     </AppStateProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+});

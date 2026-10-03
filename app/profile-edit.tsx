@@ -15,6 +15,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ArrowDown from 'lucide-react-native/icons/arrow-down';
 import ArrowUp from 'lucide-react-native/icons/arrow-up';
 import CircleCheck from 'lucide-react-native/icons/circle-check';
+import Sun from 'lucide-react-native/icons/sun';
+import Sunrise from 'lucide-react-native/icons/sunrise';
+import Sunset from 'lucide-react-native/icons/sunset';
 import X from 'lucide-react-native/icons/x';
 
 import { copy } from '@copy';
@@ -25,6 +28,8 @@ import { radius, size, space } from '@tokens';
 import {
   announce,
   Button,
+  Combobox,
+  FieldError,
   FocusRing,
   haptic,
   IconButton,
@@ -34,10 +39,21 @@ import {
   SnappySlider,
   Text,
   TextField,
+  type ComboOption,
   useFocus,
   usePress,
   useTheme,
 } from '@ui';
+
+// The usual training time (D5, 12B): every half hour from 05:00 to 22:00, each with a time-of-day icon. A UI list, not data. A saved
+// time that is not on a half hour (typed before D5) is kept at the top, so nothing the person chose disappears.
+const halfHours: ComboOption[] = Array.from({ length: 35 }, (_, i) => {
+  const minutes = 5 * 60 + i * 30;
+  const time = `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${minutes % 60 ? '30' : '00'}`;
+  return { value: time, label: time, icon: minutes < 12 * 60 ? Sunrise : minutes < 17 * 60 ? Sun : Sunset };
+});
+const timeOptions = (current: string) =>
+  current && !halfHours.some((o) => o.value === current) ? [{ value: current, label: current }, ...halfHours] : halfHours;
 
 const SAVED_MS = 700; // "Saved." stays long enough to read before Profile returns
 const days = [0, 1, 2, 3, 4, 5, 6];
@@ -203,11 +219,6 @@ export default function EditProfile() {
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: color.bg.canvas }]}>
-      <View style={styles.bar}>
-        <Button variant="text" label={copy.editProfile.cancel} onPress={() => (dirty ? setAsking(true) : leave())} />
-        {/* Save is the screen's one action, so it is the primary (critique D4); Cancel stays a text button. */}
-        <Button label={copy.editProfile.save} onPress={save} />
-      </View>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Text variant="title" accessibilityRole="header">
           {copy.editProfile.title}
@@ -264,15 +275,22 @@ export default function EditProfile() {
             max={7}
             valueText={copy.editProfile.trainingDaysValue(trainingDays)}
           />
-          <TextField
-            label={copy.editProfile.trainingTime}
-            value={trainingTime}
-            onChangeText={setTrainingTime}
-            onBlur={() => touch('time')}
-            hint={copy.editProfile.trainingTimeHint}
-            error={show('time') ? errors.time : null}
-            keyboardType="numbers-and-punctuation"
-          />
+          <View>
+            <Combobox
+              label={copy.editProfile.trainingTime}
+              placeholder={copy.editProfile.timePlaceholder}
+              searchPlaceholder={copy.editProfile.timeSearch}
+              emptyText={copy.editProfile.timeEmpty}
+              options={timeOptions(app.profile.trainingTime)}
+              value={trainingTime}
+              clearable={false}
+              onChange={(time) => {
+                setTrainingTime(time);
+                touch('time');
+              }}
+            />
+            {show('time') && errors.time ? <FieldError message={errors.time} /> : null}
+          </View>
         </Section>
 
         <Section title={copy.editProfile.sessions} note={copy.editProfile.sessionsHint}>
@@ -338,6 +356,13 @@ export default function EditProfile() {
         </Section>
       </ScrollView>
 
+      {/* Save and Cancel sit together at the bottom, in the thumb's reach (user, 2 Oct, from the phone recording). Save is the screen's
+          one action, so it is the primary (critique D4); Cancel is the text button under it. */}
+      <View style={[styles.bar, { borderTopColor: color.stroke.hairline }]}>
+        <Button label={copy.editProfile.save} fullWidth onPress={save} />
+        <Button variant="text" label={copy.editProfile.cancel} fullWidth onPress={() => (dirty ? setAsking(true) : leave())} />
+      </View>
+
       <Sheet visible={asking} onClose={() => setAsking(false)} title={copy.editProfile.discardTitle}>
         <Text variant="body">{copy.editProfile.discardBody}</Text>
         <View style={styles.sheetActions}>
@@ -352,15 +377,14 @@ export default function EditProfile() {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   bar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: space.margin,
-    paddingTop: space.xxs,
+    paddingTop: space.sm,
+    gap: space.xxs,
+    borderTopWidth: size.hairline,
   },
   content: {
     paddingHorizontal: space.margin,
-    paddingTop: space.xs,
+    paddingTop: space.lg,
     paddingBottom: space.xxl,
     gap: space.xl,
   },

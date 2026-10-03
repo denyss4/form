@@ -1,5 +1,5 @@
 // Layout plan. Job: turn one setting on or off. Focal element: the label. Quiet: the caption.
-// The platform switch, in Form's colours: sage track when on, control stroke when off (4.60:1 on canvas). The switch's own shape and
+// The platform switch, in Form's colours: sage track when on, control stroke when off (4.74:1 on canvas). The switch's own shape and
 // position say on or off, so colour is never alone. At least 48 tall.
 import { Platform, StyleSheet, Switch, View } from 'react-native';
 

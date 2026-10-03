@@ -7,13 +7,13 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { copy } from '@copy';
-import { dateNumber, dayLetter, spokenDate } from '@format';
+import { dateNumber, dayLetter, formatDay, spokenDate } from '@format';
 import { PairRow } from '@features/PairRow';
 import { RangeLegend } from '@features/RangeBar';
 import type { useProgress } from '@features/useProgress';
 import { insideRange, LEARNING_DAYS } from '@planner/progress';
 import { size, space } from '@tokens';
-import { BarChart, Button, InlineMessage, Skeleton, Text, useTheme } from '@ui';
+import { Button, InlineMessage, Skeleton, Text, TraceBarChart, useTheme } from '@ui';
 
 const FEW_DAYS = 3; // same threshold as Progress [GAP G33]
 const SCALE_MAX = 100; // felt and forecast share the 0-100 scale
@@ -51,26 +51,32 @@ export function FeltBody({ data, retry }: { data: ReturnType<typeof useProgress>
         <Text variant="body" tone="secondary">
           {copy.feltVsForecast.empty.body}
         </Text>
-        <Button label={copy.feltVsForecast.empty.action} onPress={() => router.replace('/today')} />
+        <Button label={copy.feltVsForecast.empty.action} fullWidth onPress={() => router.replace('/today')} />
       </View>
     );
   }
 
   const n = data.pairs.length;
-  const spoken = data.pairs.map((p) => copy.feltVsForecast.chart.bar(spokenDate(p.date), p.felt)).join(', ');
   return (
     <View style={styles.body}>
       <Text variant="body" tone="secondary">
         {copy.feltVsForecast.intro}
       </Text>
-      <View style={styles.chart}>
-        <Text variant="bodyStrong">{copy.feltVsForecast.chart.title}</Text>
-        <BarChart
-          bars={data.pairs.map((p) => ({ key: p.date, label: `${dayLetter(p.date)}\n${dateNumber(p.date)}`, value: p.felt }))}
-          max={SCALE_MAX}
-          a11yLabel={copy.feltVsForecast.chart.a11y(spoken)}
-        />
-      </View>
+      {/* The trace chart (D5, 3B): one morning picked at a time, the highest first; tap or drag to pick another. Screen readers adjust it
+          morning by morning and hear the date and the rating. */}
+      <TraceBarChart
+        title={copy.feltVsForecast.chart.title}
+        dayCaption={copy.feltVsForecast.chart.dayCaption}
+        hint={copy.feltVsForecast.chart.hint}
+        max={SCALE_MAX}
+        bars={data.pairs.map((p) => ({
+          key: p.date,
+          label: `${dayLetter(p.date)}\n${dateNumber(p.date)}`,
+          day: formatDay(p.date),
+          spoken: spokenDate(p.date),
+          value: p.felt,
+        }))}
+      />
       <Text variant="bodyStrong" aria-live="polite">
         {copy.feltVsForecast.summary(data.pairs.filter(insideRange).length, n)}
       </Text>

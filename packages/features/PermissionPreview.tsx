@@ -79,19 +79,19 @@ export function PermissionPreview({
             <Text variant="body" tone="secondary">
               {copy.done.body}
             </Text>
-            <Button label={copy.done.action} onPress={leave} />
+            <Button label={copy.done.action} fullWidth onPress={leave} />
           </View>
         ) : view === 'error' ? (
           <InlineMessage title={copy.error.title} body={copy.error.body}>
             <View style={styles.actions}>
-              <Button label={copy.error.retry} onPress={() => router.replace(route)} />
+              <Button label={copy.error.retry} fullWidth onPress={() => router.replace(route)} />
               <Button variant="text" label={copy.error.without} onPress={leave} />
             </View>
           </InlineMessage>
         ) : view === 'off' ? (
           <InlineMessage title={copy.off.title} body={copy.off.body}>
             <View style={styles.actions}>
-              <Button label={copy.off.settings} onPress={() => router.replace('/privacy')} />
+              <Button label={copy.off.settings} fullWidth onPress={() => router.replace('/privacy')} />
             </View>
           </InlineMessage>
         ) : (

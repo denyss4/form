@@ -13,10 +13,12 @@ import { space } from '@tokens';
 import { announce, Button, ChoiceGroup, CompletionRing, haptic, InlineMessage, Sheet, Text } from '@ui';
 import { formatDay } from '@format';
 
-const yesNo = [
-  { value: 'no', label: copy.log.alcohol.no },
-  { value: 'yes', label: copy.log.alcohol.yes },
-] as const;
+// Read while rendering, so the labels follow the language (D5).
+const yesNo = () =>
+  [
+    { value: 'no', label: copy.log.alcohol.no },
+    { value: 'yes', label: copy.log.alcohol.yes },
+  ] as const;
 
 export function EveningLog({
   visible,
@@ -110,12 +112,12 @@ export function EveningLog({
 
       <View style={styles.question}>
         <Text variant="bodyStrong">{copy.log.alcohol.question}</Text>
-        <ChoiceGroup label={copy.log.alcohol.question} options={[...yesNo]} value={alcohol} onChange={setAlcohol} />
+        <ChoiceGroup label={copy.log.alcohol.question} options={[...yesNo()]} value={alcohol} onChange={setAlcohol} />
       </View>
 
       <View style={styles.question}>
         <Text variant="bodyStrong">{copy.log.unusual.question}</Text>
-        <ChoiceGroup label={copy.log.unusual.question} options={[...yesNo]} value={unusual} onChange={setUnusual} />
+        <ChoiceGroup label={copy.log.unusual.question} options={[...yesNo()]} value={unusual} onChange={setUnusual} />
       </View>
 
       {hasPlan ? (

@@ -1,5 +1,5 @@
 // Layout plan. Job: decide today's session. Focal element: the ScoreDial on the plan-coloured field. Quiet: the drivers.
-// Spec R2: on the first open of a morning, a full-screen 0-10 rating comes first (MorningRating), with nothing of the forecast behind it.
+// Spec R2: on the first open of a morning, a full-screen 1-10 rating comes first (D5) (MorningRating), with nothing of the forecast behind it.
 // The plan label leads the field, then the reason, then the dial (Review 1 finding 3). The range line is body size, not caption (finding 1).
 // The field: in light, the plan's field colour fills the area behind the dial (5.1). In dark, the app theme since 1 Oct 2026, the field
 // equals the canvas (user decision: minimalist, no field), so the plan shows in the title, its glyph and the dial arc.
@@ -40,6 +40,7 @@ import {
   Button,
   DayTypes,
   DriverRow,
+  GradientSurface,
   haptic,
   InlineMessage,
   oneOf,
@@ -294,10 +295,13 @@ export default function Today() {
 
     below = (
       <>
+        {/* The gradient surface (D5, the user's pick 7B, style only): the heading, a hairline, then the drivers. */}
         <View style={styles.section}>
+          <GradientSurface enter={false}>
           <Text variant="heading" accessibilityRole="header" level={2}>
             {copy.whyHeading}
           </Text>
+          <View style={[styles.rule, { backgroundColor: color.stroke.hairline }]} />
           <View>
             {result.drivers.length === 0 ? (
               <Text variant="body" tone="secondary">
@@ -314,14 +318,14 @@ export default function Today() {
               {copy.today.notUsed(
                 skipped
                   .slice(0, 2)
-                  .map((s) => s.label.toLowerCase())
+                  .map((s) => (copy.inputs[s.id] ?? s.label).toLowerCase())
                   .join(', '),
                 skipped.length - 2,
               )}
             </Text>
           ) : null}
+          </GradientSurface>
         </View>
-
       </>
     );
 
@@ -394,6 +398,7 @@ export default function Today() {
 }
 
 const styles = StyleSheet.create({
+  rule: { height: size.hairline },
   screen: { flex: 1 },
   content: { paddingBottom: space.lg },
   strip: { position: 'absolute', top: 0, left: 0, right: 0 },

@@ -1,44 +1,129 @@
-// Layout plan. Job: one honest 0-10 rating before the forecast is seen (spec R2). Focal element: the eleven numbers.
-// Quiet: the date, the scale note and "Skip to my plan". No score, plan or plan colour exists on this screen, so nothing anchors the answer.
-// No default value and no confirm button: one tap stores {rating, timestamp, beforeReveal: true} and the reveal starts. Skip stores nothing,
-// and the rating is not asked again that day (missing data beats anchored data).
-// Targets: two rows, 0-5 and 6-10, every column the same width and the second row left-aligned. At 390 pt with a 20 pt margin and 8 pt gaps
-// each target is (350 - 5 x 8) / 6 = 51.7 x 48 pt, above 44 x 44 pt and 48 dp. The numbers stop growing at 2x text so they never wrap.
-import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import Animated from 'react-native-reanimated';
+// Layout plan. Job: one rating before the forecast is seen (spec R2, changed in D5). Focal element: the slider. Quiet: the date, the scale
+// note and "Skip to my plan". No score, plan or plan colour exists on this screen.
+// D5 (user decision, 2 Oct, Figma): a 1-10 slider whose thumb rests on 3. Kept from R2: nothing is stored until the person moves or taps
+// the slider, and the value is saved when they let go; the reveal then starts. Skip stores nothing, and the rating is not asked again
+// that day. Screen readers: swipe up or down to adjust, double-tap to confirm (the activate action), so adjusting never saves by itself.
+// The track is the shared slider look (SliderTrack, the user's pick 11B): a thick sunken track, Text High up to the ringed thumb, a
+// bubble with the number while the finger is down; the numbers 1-10 sit under their detents, the chosen one in Text High. The touch
+// area is 48 pt tall, the whole width.
+import { useEffect, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, View, type GestureResponderEvent } from 'react-native';
+import { useReducedMotion, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { copy } from '@copy';
-import { radius, size, space, titleMaxFontScale } from '@tokens';
-import { announce, Button, FocusRing, haptic, Text, useFocus, usePress, useTheme } from '@ui';
+import { motion, size, space, titleMaxFontScale } from '@tokens';
+import { announce, Button, FocusRing, haptic, SLIDER_THUMB, SliderTrack, Text, useFocus } from '@ui';
 
-const PER_ROW = 6;
-const MAX_TEXT_SCALE = 2;
-const values = Array.from({ length: 11 }, (_, i) => i);
+const MIN = 1;
+const MAX = 10;
+const RESTING = 3; // where the thumb rests before the first touch (Figma); not a stored value
+const THUMB = SLIDER_THUMB;
+const NUMBER_MAX_SCALE = 2;
 
-function Target({ value, width, onPress }: { value: number; width: number; onPress: () => void }) {
-  const { color } = useTheme();
-  const press = usePress();
+function RatingSlider({ onRate }: { onRate: (rating: number) => void }) {
   const focus = useFocus();
+  const reduceMotion = useReducedMotion();
+  const [width, setWidth] = useState(0);
+  const [value, setValue] = useState(RESTING);
+  const [touched, setTouched] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const last = useRef(RESTING);
+  const span = Math.max(width - THUMB, 1);
+  const at = (v: number) => ((v - MIN) / (MAX - MIN)) * span;
+  const x = useSharedValue(0);
+
+  useEffect(() => {
+    if (width === 0) return;
+    x.set(reduceMotion ? at(value) : withSpring(at(value), motion.standard));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, width, reduceMotion]);
+
+  const clamp = (v: number) => Math.min(MAX, Math.max(MIN, v));
+  const nearest = (px: number) => clamp(Math.round((px / span) * (MAX - MIN)) + MIN);
+  const pos = (e: GestureResponderEvent) => Math.min(span, Math.max(0, e.nativeEvent.locationX - THUMB / 2));
+  const follow = (e: GestureResponderEvent) => {
+    const px = pos(e);
+    x.set(px);
+    const over = nearest(px);
+    setTouched(true);
+    setDragging(true);
+    if (over !== last.current) {
+      last.current = over;
+      setValue(over);
+      haptic.selection();
+    }
+  };
+  const release = (e: GestureResponderEvent) => {
+    const v = nearest(pos(e));
+    setDragging(false);
+    setValue(v);
+    onRate(v);
+  };
+  const adjust = (by: 1 | -1) => {
+    const v = clamp(value + by);
+    setTouched(true);
+    last.current = v;
+    setValue(v);
+    haptic.selection();
+  };
+
+  const spoken = touched ? copy.today.rating.value(value) : copy.today.rating.spoken;
+
   return (
-    <Pressable
-      accessibilityRole="radio"
-      accessibilityLabel={String(value)}
-      aria-checked={false}
-      onPress={onPress}
-      onPressIn={press.onPressIn}
-      onPressOut={press.onPressOut}
+    <View
+      accessible
+      accessibilityRole="adjustable"
+      accessibilityLabel={copy.today.rating.title}
+      accessibilityHint={copy.today.rating.hint}
+      accessibilityValue={{ min: MIN, max: MAX, now: touched ? value : undefined, text: spoken }}
+      aria-valuetext={spoken}
+      accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }, { name: 'activate' }]}
+      onAccessibilityAction={(e) => {
+        const name = e.nativeEvent.actionName;
+        if (name === 'increment') adjust(1);
+        else if (name === 'decrement') adjust(-1);
+        else if (name === 'activate' && touched) onRate(value);
+      }}
+      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
       onFocus={focus.onFocus}
       onBlur={focus.onBlur}
-      style={{ width }}
+      focusable
+      // Web keyboards: arrows adjust, Enter confirms.
+      {...({
+        onKeyDown: (e: { key: string; preventDefault?: () => void }) => {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowUp') adjust(1);
+          else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') adjust(-1);
+          else if (e.key === 'Enter' && touched) onRate(value);
+          else return;
+          e.preventDefault?.();
+        },
+      } as object)}
+      onStartShouldSetResponder={() => true}
+      onMoveShouldSetResponder={() => true}
+      onResponderTerminationRequest={() => false}
+      onResponderGrant={follow}
+      onResponderMove={follow}
+      onResponderRelease={release}
+      onResponderTerminate={() => setDragging(false)}
+      style={styles.touch}
     >
-      <Animated.View style={[styles.target, { borderColor: color.stroke.control }, press.style]}>
-        <Text variant="bodyStrong" tabular maxFontSizeMultiplier={MAX_TEXT_SCALE}>
-          {value}
-        </Text>
-        <FocusRing visible={focus.focused} />
-      </Animated.View>
-    </Pressable>
+      <FocusRing visible={focus.focused} />
+      <SliderTrack x={x} bubble={dragging ? String(value) : null} />
+      <View pointerEvents="none" style={styles.numbers}>
+        {Array.from({ length: MAX - MIN + 1 }, (_, i) => MIN + i).map((n) => (
+          <Text
+            key={n}
+            variant="caption"
+            tone={touched && n === value ? 'primary' : 'secondary'}
+            tabular
+            maxFontSizeMultiplier={NUMBER_MAX_SCALE}
+            style={[styles.number, { left: at(n) + THUMB / 2 - size.touch / 2 }]}
+          >
+            {n}
+          </Text>
+        ))}
+      </View>
+    </View>
   );
 }
 
@@ -55,17 +140,13 @@ export function MorningRating({
   onRate: (rating: number) => void;
   onSkip: () => void;
 }) {
-  const [width, setWidth] = useState(0);
-  // Rounded down, so six cells always fit on one row whatever the pixel rounding.
-  const cell = width > 0 ? Math.floor((width - (PER_ROW - 1) * space.xs) / PER_ROW) : 0;
-
   // VoiceOver hears the question, the scale and that nothing is rated yet.
   useEffect(() => {
     announce(copy.today.rating.spoken);
   }, []);
 
   return (
-    // Scrolls, so at the largest text sizes the numbers and Skip stay reachable.
+    // Scrolls, so at the largest text sizes the slider and Skip stay reachable.
     <ScrollView contentContainerStyle={[styles.wrap, { paddingTop: topInset + space.md, paddingBottom: space.lg + bottomInset }]}>
       <Text variant="caption" tone="secondary">
         {dateCaption}
@@ -78,27 +159,8 @@ export function MorningRating({
           {copy.today.rating.scale}
         </Text>
       </View>
-      <View
-        accessibilityRole="radiogroup"
-        accessibilityLabel={copy.today.rating.spoken}
-        onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
-        style={styles.grid}
-      >
-        {cell > 0
-          ? values.map((value) => (
-              <Target
-                key={value}
-                value={value}
-                width={cell}
-                onPress={() => {
-                  haptic.selection();
-                  onRate(value);
-                }}
-              />
-            ))
-          : null}
-      </View>
-      <Button variant="text" label={copy.today.rating.skip} onPress={onSkip} />
+      <RatingSlider onRate={onRate} />
+      <Button variant="text" label={copy.today.rating.skip} fullWidth onPress={onSkip} />
     </ScrollView>
   );
 }
@@ -106,12 +168,7 @@ export function MorningRating({
 const styles = StyleSheet.create({
   wrap: { paddingHorizontal: space.margin, gap: space.lg },
   question: { gap: space.xs, marginTop: space.lg },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', columnGap: space.xs, rowGap: space.xs },
-  target: {
-    minHeight: size.touch,
-    borderRadius: radius.control,
-    borderWidth: size.outline,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  touch: { minHeight: size.touch + space.lg, marginTop: space.md }, // room above for the bubble
+  numbers: { minHeight: space.lg },
+  number: { position: 'absolute', width: size.touch, textAlign: 'center' },
 });

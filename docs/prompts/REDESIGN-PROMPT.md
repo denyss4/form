@@ -49,30 +49,32 @@ If sources conflict, quote both passages and ask. Never resolve a conflict silen
 
 ### 1.1 Core tokens (from the user)
 
+Updated 2 Oct 2026 (user decision, DECISIONS D5): the surfaces moved to neutral greys (canvas #121212, raised #1E1E1E, sunken #181818, hairline #2C2C2C, control stroke #808080). Accents, text and plan colours are unchanged. Every ratio below is re-measured on the new surfaces (`npm run colours`).
+
 | User token | Hex | Form token | Verified contrast |
 |---|---|---|---|
-| Surface 100 | `#16181A` | `color.bg.canvas` | — |
-| Surface 200 | `#232528` | `color.bg.raised` | 1.16:1 vs canvas, so separate surfaces with space plus a hairline |
-| Brand Accent | `#b3be8b` | `color.action.primary`, `color.focus.ring`, `color.state.selected`, `color.status.success` | 9.03:1 on canvas, 7.80:1 on raised |
-| Data Muted | `#94A8B6` | `color.chart.neutral` (non-plan chart data only) | 7.24:1 on canvas, 6.25:1 on raised |
-| Status Over | `#C87A65` | `color.status.attention` (errors, destructive text, over-limit states) | 5.45:1 on canvas, 4.70:1 on raised |
-| Text High | `#F5F5F7` | `color.text.primary` | 16.35:1 on canvas, 14.11:1 on raised |
-| Text Muted | `#8E9298` | `color.text.secondary` | 5.69:1 on canvas, 4.91:1 on raised |
+| Surface 100 | `#121212` | `color.bg.canvas` | — |
+| Surface 200 | `#1E1E1E` | `color.bg.raised` | 1.12:1 vs canvas, so separate surfaces with space plus a hairline |
+| Brand Accent | `#b3be8b` | `color.action.primary`, `color.focus.ring`, `color.state.selected`, `color.status.success` | 9.51:1 on canvas, 8.46:1 on raised |
+| Data Muted | `#94A8B6` | `color.chart.neutral` (non-plan chart data only) | 7.61:1 on canvas, 6.78:1 on raised |
+| Status Over | `#C87A65` | `color.status.attention` (errors, destructive text, over-limit states) | 5.73:1 on canvas, 5.10:1 on raised |
+| Text High | `#F5F5F7` | `color.text.primary` | 17.21:1 on canvas, 15.31:1 on raised |
+| Text Muted | `#8E9298` | `color.text.secondary` | 5.99:1 on canvas, 5.33:1 on raised |
 
 ### 1.2 Derived tokens
 
 | Name | Hex | Form token | Verified contrast |
 |---|---|---|---|
-| Sunken | `#1d1f22` | `color.bg.sunken` (input fill, pressed rows) | Text High 15.17:1, Text Muted 5.28:1 |
-| Hairline | `#2e3135` | `color.stroke.hairline`, **decorative only** | 1.36:1 |
-| Control stroke | `#7d828a` | `color.stroke.control` (input borders, outlined pills, empty dial track) | 4.60:1 on canvas, 3.97:1 on raised |
-| Accent pressed | `#9ba47a` | `color.action.pressed` | Surface 100 text on it 6.77:1 |
+| Sunken | `#181818` | `color.bg.sunken` (input fill, pressed rows) | Text High 16.31:1, Text Muted 5.68:1 |
+| Hairline | `#2C2C2C` | `color.stroke.hairline`, **decorative only** | 1.34:1 |
+| Control stroke | `#808080` | `color.stroke.control` (input borders, outlined pills, empty dial track) | 4.74:1 on canvas, 4.22:1 on raised |
+| Accent pressed | `#9ba47a` | `color.action.pressed` | Surface 100 text on it 7.12:1 |
 
 ### 1.3 Rules for the core tokens
-- **Primary button:** a Brand Accent fill with Surface 100 text (9.03:1). Pressed: Accent pressed. Secondary: a control-stroke outline with Text High. Focus ring: 2 px Brand Accent with a 2 px offset.
+- **Primary button:** a Brand Accent fill with Surface 100 text (9.51:1). Pressed: Accent pressed. Secondary: a control-stroke outline with Text High. Focus ring: 2 px Brand Accent with a 2 px offset.
 - **Sage appears at most once per screen** as an action. It is never a plan colour and never decoration.
 - **Status Over** is the single attention colour (errors, destructive text, over-limit states). It is always paired with an icon and words, never colour alone. Destructive actions are text-only and confirmed.
-- **Text Muted never sits on glass:** even at 88% tint it reaches only 4.0:1. Glass carries Text High only, with a tint of at least **0.70** (6.05:1 worst case over white).
+- **Text Muted never sits on glass:** even at 88% tint it reaches only 4.34:1. Glass carries Text High only, with a tint of at least **0.70** (6.43:1 worst case over white).
 - **Welcome horizon glow:** Brand Accent at very low opacity ("first light"). **Today glow:** the plan colour at low opacity.
 
 ### 1.4 Plan colours
@@ -80,10 +82,10 @@ Plan colours must stay distinct from Brand Accent, Data Muted and Status Over, i
 
 | Plan | Hex | On canvas |
 |---|---|---|
-| Train hard (Marigold) | `#faab3f` | 9.29:1 |
-| Train light (Butter) | `#eada78` | 12.54:1 |
-| Recover (Sea glass) | `#75d1c5` | 9.90:1 |
-| Deep-work day (Iris) | `#b0a6ed` | 8.07:1 |
+| Train hard (Marigold) | `#faab3f` | 9.78:1 |
+| Train light (Butter) | `#eada78` | 13.20:1 |
+| Recover (Sea glass) | `#75d1c5` | 10.42:1 |
+| Deep-work day (Iris) | `#b0a6ed` | 8.50:1 |
 
 The closest pair is Iris against Data Muted under deuteranopia, at ΔE 7.5. ΔE is the OKLab distance × 100, and around 5 is noticeable.
 
@@ -109,7 +111,7 @@ Source: `white-space-guidelines.md`. It contains no numbers, so **all spacing co
 ### 2.2 Glass (`expo-blur`, dark tint)
 - **Allowed:** the floating tab bar, the top bar when content scrolls under it, bottom sheets (evening log, legal), and the centre morph modal.
 - **Not allowed:** content surfaces, rows, the dial, glass on glass, or more than two blurred surfaces visible at once.
-- **Tint opacity:** glass carries **Text High only**, with a canvas tint of at least **0.70** (6.05:1 over pure white behind the blur, the worst case). **Text Muted never sits on glass**: at 0.88 it still reaches only 4.0:1.
+- **Tint opacity:** glass carries **Text High only**, with a canvas tint of at least **0.70** (6.43:1 over pure white behind the blur, the worst case). **Text Muted never sits on glass**: at 0.88 it still reaches only 4.34:1.
 - **Fallbacks:** with `isReduceTransparencyEnabled` on, use a solid `color.bg.raised`. On Android, use a solid surface whenever blur drops below 60 fps.
 - **Edges:** a 1 px `color.stroke.hairline` border plus an optional 1 px top inner highlight at 6–8% foreground. No outer glow.
 

@@ -4,11 +4,13 @@
   "main": "expo-router/entry",
   "dependencies": {
     "@expo/metro-runtime": "~57.0.16",
+    "@paper-design/shaders": "^0.0.81",
     "eslint-config-expo": "~57.0.2",
     "expo": "~57.0.26",
     "expo-blur": "~57.0.3",
     "expo-constants": "~57.0.20",
     "expo-font": "~57.0.4",
+    "expo-gl": "~57.0.2",
     "expo-haptics": "~57.0.3",
     "expo-image-picker": "~57.0.20",
     "expo-linking": "~57.0.11",
@@ -42,10 +44,11 @@
     "test:model": "node --test packages/model/adapter.test.ts",
     "verify:model": "node packages/model/verify.mjs",
     "fixtures": "node fixtures/build.mjs",
-    "test": "node --test packages/model/adapter.test.ts packages/planner/planner.test.ts packages/planner/tonight.test.ts packages/planner/progress.test.ts packages/copy/pseudo.test.ts",
+    "test": "node --test packages/model/adapter.test.ts packages/planner/planner.test.ts packages/planner/tonight.test.ts packages/planner/progress.test.ts packages/copy/pseudo.test.ts packages/copy/pl.test.ts",
     "demo": "node scripts/demo.mjs",
     "colours": "node scripts/colour-test.mjs",
-    "demo:path": "node scripts/demo-path.mts"
+    "demo:path": "node scripts/demo-path.mts",
+    "icons": "node scripts/app-icons.mjs"
   },
   "private": true
 }

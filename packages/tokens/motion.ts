@@ -27,6 +27,14 @@ export const motion = {
     duration: 1600,
     easing: [0.42, 0, 0.58, 1], // ease-in-out
   },
+  // Launch screen (D5): the logo assembles stroke by stroke, centred, then the screen fades into the app. Once per launch; Reduce Motion
+  // shows the finished logo and fades out under 150 ms. hold keeps the finished logo still for a beat before the fade.
+  launch: {
+    duration: 900,
+    easing: [0.215, 0.61, 0.355, 1], // ease-out cubic
+    hold: 250,
+    out: 280,
+  },
   // Welcome, 'Dawn over the week' (REDESIGN-PROMPT §4.1): the wordmark assembles and the week's glyphs rise, in 1.2 s at most, once per
   // launch (GAP G52: once per install needs storage). Tap skips to the end state; Reduce Motion shows it static.
   welcome: {

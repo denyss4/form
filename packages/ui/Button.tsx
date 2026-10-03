@@ -15,8 +15,11 @@ import { Text } from './Text';
 import { useTheme } from './theme';
 import { usePress } from './usePress';
 
-/** destructive: text-only in Status Over (5.45:1 on canvas), always behind a confirmation (CLAUDE.md). The words carry the meaning. */
-export type ButtonVariant = 'primary' | 'secondary' | 'text' | 'destructive';
+/** destructive: text-only in Status Over (5.73:1 on canvas), always behind a confirmation (CLAUDE.md). The words carry the meaning. */
+// subtle (D5, Figma): a muted text button for the lesser way out ("Not now", "I already have an account"). Text Muted is 5.99:1 on canvas.
+// No underline on any button (user, 2 Oct): text buttons are told apart by their weight (bodyStrong), their own line and the 48 pt target;
+// none sits inside running text, so WCAG 1.4.1 (links in a paragraph) does not apply.
+export type ButtonVariant = 'primary' | 'secondary' | 'text' | 'subtle' | 'destructive';
 
 export interface ButtonProps {
   label: string;
@@ -52,10 +55,16 @@ export function Button({
   const [sweep, setSweep] = useState(0);
   const sweeps = variant === 'primary' || variant === 'secondary';
 
-  const labelTone = variant === 'primary' ? 'inverse' : 'primary';
+  const labelTone = variant === 'primary' ? 'inverse' : variant === 'subtle' ? 'secondary' : 'primary';
   const labelColor =
-    variant === 'primary' ? color.action.onPrimary : variant === 'destructive' ? color.status.attention : color.text.primary;
-  const textOnly = variant === 'text' || variant === 'destructive';
+    variant === 'primary'
+      ? color.action.onPrimary
+      : variant === 'destructive'
+        ? color.status.attention
+        : variant === 'subtle'
+          ? color.text.secondary
+          : color.text.primary;
+  const textOnly = variant === 'text' || variant === 'subtle' || variant === 'destructive';
 
   return (
     <Pressable
@@ -99,6 +108,8 @@ export function Button({
             ? { borderWidth: size.outline, borderColor: color.stroke.control }
             : undefined,
           textOnly ? styles.textOnly : undefined,
+          // A full-width text link centres its label (Figma, D5); otherwise it sits on the text margin.
+          textOnly && fullWidth ? styles.centred : undefined,
           press.style,
         ]}
       >
@@ -108,7 +119,6 @@ export function Button({
           variant="bodyStrong"
           tone={labelTone}
           style={[
-            textOnly ? styles.underline : undefined,
             variant === 'destructive' ? { color: labelColor } : undefined,
             loading ? styles.hidden : undefined,
           ]}
@@ -138,7 +148,7 @@ const styles = StyleSheet.create({
   },
   // Text-only sits on the text margin, so its label lines up with the text above it. The touch target is still 48 x 48.
   textOnly: { paddingHorizontal: 0, minWidth: size.touch, alignItems: 'flex-start' },
-  underline: { textDecorationLine: 'underline' },
+  centred: { alignItems: 'center' },
   hidden: { opacity: 0 },
   spinner: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
 });

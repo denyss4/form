@@ -211,7 +211,7 @@ export default function Week() {
         <Text variant="body" tone="secondary">
           {copy.week.empty.body}
         </Text>
-        <Button label={copy.week.empty.action} onPress={() => router.push('/connect-calendar')} />
+        <Button label={copy.week.empty.action} fullWidth onPress={() => router.push('/connect-calendar')} />
       </View>
     );
   } else if (scenario === 'error') {

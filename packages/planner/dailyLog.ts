@@ -26,7 +26,7 @@ export function buildLog(args: {
   today: WeekDay;
   tomorrow?: WeekDay;
   answers: EveningAnswers;
-  readiness10?: number; // this morning's 0-10 rating, if given
+  readiness10?: number; // this morning's 1-10 rating (D5), if given; stored as rating × 10
 }): DailyLog {
   const { today, tomorrow, answers, readiness10 } = args;
   const session = today.sessions[0];

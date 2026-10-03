@@ -1,8 +1,8 @@
 // Layout plan. Job: one explicit answer per question. Focal element: the two options, side by side. Quiet: nothing else.
 // Equal weight before an answer: neither option is filled, neither is preselected (GDPR: no defaults). At most 4 options (Hick).
-// Selected = filled with a checkmark, cross-faded over `motion.quick` (opacity only), with a selection haptic (MASTER_PROMPT §6).
-import { useEffect } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+// Selected = the sage fill with canvas text (D5, no check), cross-faded over `motion.quick` (opacity only), with a selection haptic (MASTER_PROMPT §6).
+import { useEffect, useState } from 'react';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -10,13 +10,13 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import Check from 'lucide-react-native/icons/check';
 
-import { motion, radius, size, space } from '@tokens';
+import { motion, radius, size, space, type } from '@tokens';
 
 import { FocusRing, useFocus } from './focus';
 import { haptic } from './haptics';
 import { Text } from './Text';
+import { useTextScale } from './textScale';
 import { useTheme } from './theme';
 import { useFontScale } from './useFontScale';
 import { usePress } from './usePress';
@@ -31,19 +31,21 @@ function Option({
   selected,
   onPress,
   columns,
-  compact,
+  onLines,
 }: {
   label: string;
   selected: boolean;
   onPress: () => void;
   columns: number;
-  compact: boolean;
+  onLines: (lines: number) => void;
 }) {
   const { color } = useTheme();
   const reduceMotion = useReducedMotion();
   const press = usePress();
   const focus = useFocus();
   const on = useSharedValue(selected ? 1 : 0);
+  // Native reports the label's line count; the web build does not, so there the label's height against one line stands in.
+  const webLine = type.bodyStrong.lineHeight! * useTextScale();
 
   useEffect(() => {
     on.value = withTiming(selected ? 1 : 0, {
@@ -73,24 +75,20 @@ function Option({
           pointerEvents="none"
           style={[styles.fill, { backgroundColor: color.state.selected }, shown]}
         />
-        {compact ? null : (
-          <Animated.View pointerEvents="none" style={[styles.check, shown]}>
-            <Check color={color.action.onPrimary} size={size.iconSm} strokeWidth={size.outline} />
-          </Animated.View>
-        )}
-        <View style={compact ? undefined : styles.label}>
+        {/* Selected is the solid sage fill with canvas text; unselected is the outline (Figma, D5: no check mark). Fill versus outline is the
+            non-colour cue, and the radio state is announced. */}
+        <View>
           <Animated.View style={hidden}>
-            <Text variant="bodyStrong" style={styles.labelText}>
+            <Text
+              variant="bodyStrong"
+              style={styles.labelText}
+              onTextLayout={(e) => onLines(e.nativeEvent.lines.length)}
+              onLayout={Platform.OS === 'web' ? (e) => onLines(e.nativeEvent.layout.height > webLine * 1.5 ? 2 : 1) : undefined}
+            >
               {label}
             </Text>
           </Animated.View>
-          {/* Same padding as the plain label, so the selected label wraps and centres exactly like it. Compact: the check sits inline. */}
-          <Animated.View pointerEvents="none" style={[styles.overlay, compact ? styles.overlayCompact : styles.label, shown]}>
-            {compact ? (
-              <View style={styles.inlineCheck}>
-                <Check color={color.action.onPrimary} size={size.iconSm} strokeWidth={size.outline} />
-              </View>
-            ) : null}
+          <Animated.View pointerEvents="none" style={[styles.overlay, shown]}>
             <Text variant="bodyStrong" tone="inverse" style={styles.labelText}>
               {label}
             </Text>
@@ -107,7 +105,6 @@ export function ChoiceGroup<T extends string>({
   value,
   onChange,
   columns: preferred = options.length,
-  compact = false,
 }: {
   label: string;
   options: Choice<T>[];
@@ -115,12 +112,19 @@ export function ChoiceGroup<T extends string>({
   onChange: (value: T) => void;
   /** Options per row. Four options read better as two rows of two. */
   columns?: number;
-  /** Short labels (times, numbers): no space reserved for the check, which sits inline when selected. */
+  /** Kept for call sites from before D5 (short labels such as times); the pill no longer reserves room for a check, so it changes nothing. */
   compact?: boolean;
 }) {
   // Larger text needs wider options, so the group stacks: two per row above 1.3x, one per row from 2x.
+  // And if any label still breaks onto a second line in a shared row, the whole group goes one per row, so no pill is taller than its
+  // neighbour or splits a phrase (iPhone, 2 Oct: "Did something / else"). Sticky until the text size or the labels change.
   const scale = useFontScale();
-  const columns = scale >= 2 ? 1 : scale > 1.3 ? Math.min(preferred, 2) : preferred;
+  // Remembered per text size and label set: a change starts the check again.
+  const key = `${scale}|${options.map((o) => o.label).join('|')}`;
+  const [wrapsAt, setWrapsAt] = useState<string | null>(null);
+  const wraps = wrapsAt === key;
+  const sized = scale >= 2 ? 1 : scale > 1.3 ? Math.min(preferred, 2) : preferred;
+  const columns = wraps ? 1 : sized;
   return (
     <View accessibilityRole="radiogroup" accessibilityLabel={label} style={styles.group}>
       {options.map((option) => (
@@ -129,7 +133,9 @@ export function ChoiceGroup<T extends string>({
           label={option.label}
           selected={option.value === value}
           columns={columns}
-          compact={compact}
+          onLines={(lines) => {
+            if (lines > 1 && columns > 1) setWrapsAt(key);
+          }}
           onPress={() => {
             if (option.value !== value) haptic.selection();
             onChange(option.value);
@@ -144,7 +150,7 @@ const styles = StyleSheet.create({
   group: { flexDirection: 'row', flexWrap: 'wrap', gap: space.xs },
   option: {
     minHeight: size.touch,
-    paddingHorizontal: space.sm,
+    paddingHorizontal: space.xs, // 8: leaves about 151 pt for a label in a 2-column row at 390 pt, so "Did something else" fits at 1x
     borderRadius: radius.full,
     borderWidth: size.outline,
     alignItems: 'center',
@@ -159,15 +165,6 @@ const styles = StyleSheet.create({
     bottom: -size.outline,
     borderRadius: radius.full,
   },
-  check: { position: 'absolute', left: space.sm },
-  // Room for the checkmark on both sides keeps the label optically centred, and only the icon width (no extra gap) is reserved, so a
-  // 2-column pill keeps about 107 pt for its label. Found on the iPhone, 1 Oct: "Moderat / e" broke mid-word with about 82 pt.
-  // A long label still wraps at a word break, centred ("Did something else").
-  label: { paddingHorizontal: size.iconSm },
   labelText: { textAlign: 'center' },
   overlay: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
-  // Compact (short labels such as times, three to a row): nothing is reserved, so "20:00" never breaks; the check sits inline, overlapping
-  // the pill's own padding rather than the label. Found on the iPhone, 2 Oct: "20:0 / 0" in the reminder-time pills.
-  inlineCheck: { flexShrink: 0 }, // the label may wrap; the check never shrinks away
-  overlayCompact: { flexDirection: 'row', gap: space.xxs, transform: [{ translateX: -(size.iconSm + space.xxs) / 2 }] },
 });
