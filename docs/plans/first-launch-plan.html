@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Form first launch plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --canvas: #121212; --raised: #1E1E1E; --sunken: #181818; --hair: #2C2C2C; --control: #808080;
+  --text: #F5F5F7; --muted: #8E9298; --sage: #b3be8b; --sagePressed: #9ba47a; --attention: #C87A65;
+  --hard: #faab3f; --light: #eada78; --recover: #75d1c5; --deep: #b0a6ed;
+  --page: #0b0b0c; --panel: #161617;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--page); color: var(--text); font-family: 'Source Sans 3', 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.45; }
+main { max-width: 1240px; margin: 0 auto; padding: 32px 20px 96px; }
+h1 { font-family: 'Manrope', 'Segoe UI', sans-serif; font-weight: 800; font-size: 30px; letter-spacing: -0.5px; margin: 0 0 6px; }
+h2 { font-family: 'Manrope', 'Segoe UI', sans-serif; font-weight: 700; font-size: 22px; margin: 56px 0 12px; }
+h3 { font-family: 'Manrope', 'Segoe UI', sans-serif; font-weight: 700; font-size: 16px; margin: 0 0 6px; }
+p { margin: 0 0 10px; }
+.lede { color: var(--muted); max-width: 820px; }
+.tag { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--hair); color: var(--muted); margin-right: 6px; }
+.tag.new { border-color: var(--sage); color: var(--sage); }
+.tag.rm { border-color: var(--attention); color: var(--attention); }
+.tag.q { border-color: var(--light); color: var(--light); }
+nav.toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 8px; }
+nav.toc a { color: var(--text); text-decoration: none; border: 1px solid var(--hair); border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 4px; }
+.flow span { background: var(--raised); border: 1px solid var(--hair); border-radius: 10px; padding: 6px 10px; font-size: 13px; }
+.flow i { color: var(--muted); font-style: normal; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px 20px; margin-top: 16px; }
+.shot h3 { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.shot .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
+.note b { color: var(--text); font-weight: 600; }
+
+/* Phone frame: 390 x 844 at 0.75 */
+.phone { width: 292px; height: 633px; border-radius: 34px; border: 1px solid #333; background: var(--canvas); overflow: hidden; position: relative; }
+.screen { position: absolute; inset: 0; transform: scale(0.75); transform-origin: 0 0; width: 390px; height: 844px; padding: 54px 20px 24px; display: flex; flex-direction: column; gap: 16px; font-size: 16px; }
+.screen .grow { flex: 1; }
+.sb { position: absolute; top: 14px; left: 28px; right: 28px; display: flex; justify-content: space-between; font: 600 14px 'Source Sans 3', 'Segoe UI', sans-serif; color: var(--text); }
+.back { font: 600 16px 'Source Sans 3', 'Segoe UI', sans-serif; display: flex; gap: 8px; align-items: center; }
+.title { font: 700 28px/34px 'Manrope', 'Segoe UI', sans-serif; letter-spacing: -0.2px; }
+.heading { font: 600 20px/26px 'Manrope', 'Segoe UI', sans-serif; }
+.planT { font: 700 24px/30px 'Manrope', 'Segoe UI', sans-serif; display: flex; align-items: center; gap: 8px; }
+.body { font: 400 16px/24px 'Source Sans 3', 'Segoe UI', sans-serif; }
+.strong { font: 600 16px/24px 'Source Sans 3', 'Segoe UI', sans-serif; }
+.cap { font: 400 13px/18px 'Source Sans 3', 'Segoe UI', sans-serif; color: var(--muted); }
+.mut { color: var(--muted); }
+.btn { min-height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font: 600 16px 'Source Sans 3', 'Segoe UI', sans-serif; }
+.btn.primary { background: var(--sage); color: var(--canvas); }
+.btn.secondary { border: 2px solid var(--control); }
+.btn.text { color: var(--text); }
+.btn.subtle { color: var(--muted); }
+.btn.metal { border-radius: 999px; background: linear-gradient(#1E1E1E, #121212); border: 2px solid transparent; background-clip: padding-box; position: relative; }
+.btn.metal::before { content: ''; position: absolute; inset: -2px; border-radius: 999px; z-index: -1; background: conic-gradient(from 200deg, #f5f5f7, #555, #f5f5f7, #222, #c9c9d2, #444, #f5f5f7); }
+.field { gap: 8px; display: flex; flex-direction: column; }
+.input { min-height: 48px; border-radius: 12px; border: 1px solid var(--control); background: var(--sunken); display: flex; align-items: center; gap: 8px; padding: 0 12px; color: var(--muted); }
+.tabs { display: flex; background: var(--raised); border-radius: 999px; padding: 4px; }
+.tabs div { flex: 1; text-align: center; padding: 10px; border-radius: 999px; font: 600 15px 'Source Sans 3', 'Segoe UI', sans-serif; color: var(--muted); }
+.tabs div.on { border: 1px solid var(--text); color: var(--text); background: var(--canvas); }
+.pills { display: flex; gap: 8px; }
+.pill { flex: 1; min-height: 48px; border-radius: 999px; border: 2px solid var(--control); display: flex; align-items: center; justify-content: center; gap: 6px; font: 600 16px 'Source Sans 3', 'Segoe UI', sans-serif; }
+.pill.sel { background: var(--raised); border: 1.5px solid var(--text); }
+.pill.sage { background: var(--sage); color: var(--canvas); border-color: var(--sage); }
+.check { width: 24px; height: 24px; border: 2px solid var(--control); border-radius: 6px; flex: none; }
+.row { display: flex; align-items: center; gap: 12px; }
+.between { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.hair { height: 1px; background: var(--hair); }
+.stepper { display: flex; }
+.stepper .s { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.stepper .l { display: flex; align-items: center; gap: 6px; }
+.stepper .c { width: 28px; height: 28px; border-radius: 999px; border: 1px solid var(--control); display: flex; align-items: center; justify-content: center; font: 400 13px 'Source Sans 3', 'Segoe UI', sans-serif; color: var(--muted); }
+.stepper .c.done { background: var(--sage); border-color: var(--sage); color: var(--canvas); }
+.stepper .c.cur { border-color: var(--sage); color: var(--sage); }
+.stepper .ln { flex: 1; height: 1px; background: var(--hair); margin-right: 6px; }
+.stepper .ln.done { background: var(--sage); }
+.stepper .t { font: 400 13px 'Source Sans 3', 'Segoe UI', sans-serif; color: var(--muted); }
+.stepper .t.on { color: var(--text); }
+.rate { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.rate div { height: 52px; border-radius: 12px; border: 2px solid var(--control); display: flex; align-items: center; justify-content: center; font: 700 18px 'Manrope', 'Segoe UI', sans-serif; }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--raised); border-radius: 24px 24px 0 0; padding: 12px 20px 34px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 -12px 40px rgba(0,0,0,.5); }
+.grab { width: 36px; height: 5px; border-radius: 999px; background: var(--control); align-self: center; }
+.scrim { position: absolute; inset: 0; background: rgba(18,18,18,.6); }
+.tabbar { position: absolute; left: 0; right: 0; bottom: 0; height: 84px; border-top: 1px solid var(--hair); display: flex; justify-content: space-around; padding-top: 12px; font: 600 13px 'Source Sans 3', 'Segoe UI', sans-serif; color: var(--muted); background: rgba(18,18,18,.92); }
+.tabbar b { color: var(--text); font-weight: 600; }
+.seg { display: flex; gap: 4px; }
+.seg div { flex: 1; height: 12px; border-radius: 999px; }
+.seg .fit { background: var(--text); }
+.seg .out { border: 2px solid var(--text); }
+.seg .none { border: 1px dashed var(--control); }
+.slot { border: 1px dashed var(--control); border-radius: 16px; padding: 14px; color: var(--muted); font-size: 14px; }
+.hidden-tag { font: 600 11px 'Source Sans 3', 'Segoe UI', sans-serif; letter-spacing: .4px; color: var(--light); }
+.xbtn { position: absolute; right: 16px; top: 12px; width: 32px; height: 32px; border-radius: 999px; display: flex; align-items: center; justify-content: center; color: var(--muted); }
+.glow { position: absolute; left: 50%; top: 260px; width: 420px; height: 420px; transform: translate(-50%,-50%); background: radial-gradient(circle, rgba(234,218,120,.16), transparent 62%); pointer-events: none; }
+
+/* Panels */
+.panel { background: var(--panel); border: 1px solid var(--hair); border-radius: 16px; padding: 18px 20px; }
+.panels { display: grid; gap: 14px; }
+.conf { display: grid; grid-template-columns: 34px 1fr; gap: 4px 12px; }
+.conf .n { font: 800 18px 'Manrope', 'Segoe UI', sans-serif; color: var(--light); }
+.conf q { display: block; color: var(--muted); font-style: normal; border-left: 2px solid var(--hair); padding-left: 10px; margin: 4px 0; }
+.rec { color: var(--sage); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--hair); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; }
+.machine { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.state { background: var(--raised); border: 1px solid var(--hair); border-radius: 12px; padding: 10px 12px; min-width: 200px; }
+.state b { display: block; font-family: 'Manrope', 'Segoe UI', sans-serif; }
+.arrow { color: var(--muted); font-size: 13px; }
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; justify-items: center; } }
+</style>
+</head>
+<body>
+<main>
+  <span class="tag q">Plan, not built</span><span class="tag">3 Oct 2026</span>
+  <h1>First launch redesign and the phone-recording fixes</h1>
+  <p class="lede">Every screen below is a mockup of the proposed change, drawn with the Lichen tokens at phone size. Nothing in the app has changed yet. After your approval it is built in four phases, with a phone check after each. Conflicts with earlier rules and decisions are listed with both passages and a recommendation; open questions are marked <span class="tag q">question</span>.</p>
+  <nav class="toc">
+    <a href="#flow">New first launch</a><a href="#auth">Auth</a><a href="#onboarding">Onboarding</a><a href="#reveal">Rating and reveal</a><a href="#today">Today</a><a href="#prompts">Prompts after value</a><a href="#progress">Progress</a><a href="#other">Profile, Week</a><a href="#label">Estimate label</a><a href="#conflicts">Conflicts</a><a href="#questions">Questions</a><a href="#gaps">GAPs</a><a href="#phases">Phases</a><a href="#strings">New strings</a>
+  </nav>
+
+  <h2 id="flow">New first launch</h2>
+  <div class="flow">
+    <span>Welcome</span><i>→</i><span>Intro (1 slide)</span><i>→</i><span>Consent · step 1</span><i>→</i><span>Calendar · step 2</span><i>→</i><span>First log · step 3</span><i>→</i><span>Rating (before 12:00 only)</span><i>→</i><span>Reveal</span><i>→</i><span>Today</span><i>→</i><span>Notifications sheet (day 1, after the reveal)</span>
+  </div>
+  <p class="note mut">Guest is the default. Account is not a step: Sign in stays on Welcome; Create account is offered after the first saved evening log. Notifications leave onboarding.</p>
+
+  <h2 id="auth">Auth: sign in and create account</h2>
+  <div class="grid">
+    <div class="shot">
+      <h3><span class="tag rm">removed</span>Sign in: no stepper, no "Remember me"</h3>
+      <div class="phone"><div class="screen">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="back">← Back</div>
+        <div class="title">Sign in</div>
+        <div class="tabs"><div class="on">Sign in</div><div>Create account</div></div>
+        <div class="field"><span class="strong">Email</span><div class="input">✉</div></div>
+        <div class="field"><span class="strong">Password</span><div class="input">🔒<span class="grow"></span>👁</div></div>
+        <div class="btn text" style="justify-content:flex-start">Forgot password?</div>
+        <div class="btn primary">Sign in</div>
+        <div class="grow"></div>
+        <div class="cap">Demo: accounts live on this phone until the app closes. Nothing is sent anywhere.</div>
+      </div></div>
+      <p class="note">Items 2, 3. Sign in is not a setup step. Remember me did nothing (GAP G58 closes).</p>
+    </div>
+    <div class="shot">
+      <h3><span class="tag">changed</span>Create account: name optional, no code step</h3>
+      <div class="phone"><div class="screen">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="back">← Back</div>
+        <div class="title">Create your account</div>
+        <div class="tabs"><div>Sign in</div><div class="on">Create account</div></div>
+        <div class="field"><span class="strong">Name <span class="mut" style="font-weight:400">(optional)</span></span><div class="input">👤</div></div>
+        <div class="field"><span class="strong">Email</span><div class="input">✉</div></div>
+        <div class="field"><span class="strong">Password</span><div class="input">🔒<span class="grow"></span>👁</div><div class="seg"><div class="fit"></div><div class="fit"></div><div class="fit"></div><div class="none"></div><div class="none"></div></div><span class="cap">Password strength: Fair</span></div>
+        <div class="row"><div class="check"></div><span class="body">I agree to the terms of use and the privacy notice.</span></div>
+        <div class="btn primary">Create account</div>
+      </div></div>
+      <p class="note">Items 1, 11. Create account goes straight to "Account created". Real email verification goes to LATER.md with real auth. Without a name, the profile shows the email's first letter in the capsule and no name arc.</p>
+    </div>
+  </div>
+
+  <h2 id="onboarding">Onboarding</h2>
+  <div class="grid">
+    <div class="shot">
+      <h3><span class="tag q">question</span>Welcome: guest first</h3>
+      <div class="phone"><div class="screen" style="align-items:stretch">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="grow"></div>
+        <div style="text-align:center;font:800 54px 'Manrope', 'Segoe UI', sans-serif;font-style:italic;letter-spacing:2px">FORM</div>
+        <div class="body mut" style="text-align:center">Plan your week around how you'll feel.</div>
+        <div class="grow"></div>
+        <div style="display:flex;justify-content:space-around;color:var(--light);opacity:.5">∘ ∘ ∘ ∘ ∘ ∘ ∘</div>
+        <div class="hair"></div>
+        <div class="btn metal" style="z-index:1">Get started</div>
+        <div class="btn text">I already have an account</div>
+      </div></div>
+      <p class="note">Item 5. <b>Recommended:</b> the liquid metal button becomes "Get started" (the guest path); "I already have an account" opens Sign in. "Create account" and "Continue without an account" leave Welcome. See question Q1.</p>
+    </div>
+    <div class="shot">
+      <h3><span class="tag rm">removed</span>Intro: one slide, no dots</h3>
+      <div class="phone"><div class="screen">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div style="align-self:flex-end" class="strong">Skip</div>
+        <div class="grow"></div>
+        <div style="background:var(--raised);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px"><div class="planT" style="color:var(--light);font-size:20px">ʘ Train light</div><div class="row"><span style="font:700 28px 'Manrope', 'Segoe UI', sans-serif">51</span><span class="mut">Likely 34–68</span></div></div>
+        <div class="grow"></div>
+        <div class="title">One plan for your day, with the reasons.</div>
+        <div class="body mut">Each morning Form turns last night's log into a plan and a likely range.</div>
+        <div class="grow"></div>
+        <div class="btn primary">Continue</div>
+      </div></div>
+      <p class="note">Item 4. Slides 2 and 3 go; with one slide the page dots go too.</p>
+    </div>
+    <div class="shot">
+      <h3><span class="tag">changed</span>Consent: one line each, new selected style</h3>
+      <div class="phone"><div class="screen" style="gap:14px">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="back">← Back</div>
+        <div class="title">What Form may use</div>
+        <div class="stepper">
+          <div class="s"><div class="l"><div class="c cur">1</div><div class="ln"></div></div><span class="t on">Consent</span></div>
+          <div class="s"><div class="l"><div class="c">2</div><div class="ln"></div></div><span class="t">Calendar</span></div>
+          <div class="s"><div class="l"><div class="c">3</div></div><span class="t">First log</span></div>
+        </div>
+        <div class="field"><div class="between"><span class="strong">Score and plan</span><span class="cap" style="color:var(--text)">What this means ⌄</span></div><div class="pills"><div class="pill">Not now</div><div class="pill sel">✓ Allow</div></div></div>
+        <div class="field"><div class="between"><span class="strong">Learn your own pattern</span><span class="cap" style="color:var(--text)">What this means ⌄</span></div><div class="pills"><div class="pill">Not now</div><div class="pill">Allow</div></div></div>
+        <div class="field"><div class="between"><span class="strong">Read your calendar</span><span class="cap" style="color:var(--text)">What this means ⌃</span></div><div class="cap">Event titles and times, to predict day types such as work, training and travel. Form only reads your calendar.</div><div class="pills"><div class="pill sel">Not now ✓</div><div class="pill">Allow</div></div></div>
+        <div class="field"><div class="between"><span class="strong">Read health data</span><span class="cap" style="color:var(--text)">What this means ⌄</span></div><div class="pills"><div class="pill">Not now</div><div class="pill">Allow</div></div></div>
+        <div class="btn primary" style="opacity:.45">Continue</div>
+      </div></div>
+      <p class="note">Item 12. Selected = raised #1E1E1E, 1.5 pt Text High stroke and a check, on either answer. Sage only on Continue. Nothing preselected. Details open in place (announced as expanded). See conflict C3.</p>
+    </div>
+    <div class="shot">
+      <h3><span class="tag new">new</span>First log, morning (before 12:00)</h3>
+      <div class="phone"><div class="screen" style="gap:14px">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="title">About yesterday</div>
+        <div class="stepper">
+          <div class="s"><div class="l"><div class="c done">✓</div><div class="ln done"></div></div><span class="t on">Consent</span></div>
+          <div class="s"><div class="l"><div class="c done">✓</div><div class="ln done"></div></div><span class="t on">Calendar</span></div>
+          <div class="s"><div class="l"><div class="c cur">3</div></div><span class="t on">First log</span></div>
+        </div>
+        <div class="body mut">Three taps, and Form has your first plan.</div>
+        <div class="field"><span class="strong">How hard was your Push session?</span><div class="pills"><div class="pill">Skipped</div><div class="pill">Easy</div></div><div class="pills"><div class="pill">Moderate</div><div class="pill">Hard</div></div></div>
+        <div class="field"><span class="strong">Any alcohol yesterday?</span><div class="pills"><div class="pill">No</div><div class="pill">Yes</div></div></div>
+        <div class="field"><span class="strong">Anything unusual yesterday?</span><div class="pills"><div class="pill">No</div><div class="pill">Yes</div></div></div>
+        <div class="grow"></div>
+        <div class="btn primary" style="opacity:.45">Show my plan</div>
+        <div class="btn subtle">Skip for now</div>
+      </div></div>
+      <p class="note">Item 6. The same 3 questions as the evening log, about yesterday. No known session → "Did you train yesterday?" (No / Easy / Moderate / Hard). Then the rating, then the reveal of today's plan.</p>
+    </div>
+    <div class="shot">
+      <h3><span class="tag new">new</span>First log, afternoon and evening</h3>
+      <div class="phone"><div class="screen" style="gap:14px">
+        <div class="sb"><span>16:20</span><span>●●●</span></div>
+        <div class="title">About today</div>
+        <div class="stepper">
+          <div class="s"><div class="l"><div class="c done">✓</div><div class="ln done"></div></div><span class="t on">Consent</span></div>
+          <div class="s"><div class="l"><div class="c done">✓</div><div class="ln done"></div></div><span class="t on">Calendar</span></div>
+          <div class="s"><div class="l"><div class="c cur">3</div></div><span class="t on">First log</span></div>
+        </div>
+        <div class="field"><span class="strong">Did you train today?</span><div class="pills"><div class="pill">No</div><div class="pill">Easy</div></div><div class="pills"><div class="pill">Moderate</div><div class="pill">Hard</div></div></div>
+        <div class="field"><span class="strong">Any alcohol today?</span><div class="pills"><div class="pill">No</div><div class="pill">Yes</div></div></div>
+        <div class="field"><span class="strong">Anything unusual today?</span><div class="pills"><div class="pill">No</div><div class="pill">Yes</div></div></div>
+        <div class="btn text">Log yesterday instead</div>
+        <div class="grow"></div>
+        <div class="btn primary" style="opacity:.45">Show tomorrow's plan</div>
+      </div></div>
+      <p class="note"><b>12:00–15:00:</b> "About yesterday", no rating, reveal today's plan. <b>After 15:00:</b> "About today", no rating, reveal tomorrow's plan; "Log yesterday instead" switches to the 12:00–15:00 form. The demo clock decides the time when it is on. See Q6.</p>
+    </div>
+  </div>
+
+  <h2 id="reveal">Rating and reveal</h2>
+  <div class="grid">
+    <div class="shot">
+      <h3><span class="tag">changed</span>Morning rating: spec R2, 0–10</h3>
+      <div class="phone"><div class="screen">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="cap">Today, Monday 5 Oct</div>
+        <div class="title" style="margin-top:24px">How do you feel this morning?</div>
+        <div class="body mut">0 is very low, 10 is very high.</div>
+        <div class="rate"><div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div></div>
+        <div class="rate" style="grid-template-columns:repeat(5,1fr)"><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div></div>
+        <div class="btn text">Skip to my plan</div>
+      </div></div>
+      <p class="note">Item 13. 11 targets in two rows, no default, a tap stores <code>{rating 0–10, timestamp, beforeReveal}</code> and starts the reveal. Never asked again that day. Stored label: 0–10 (today the app stores 1–10). See conflict C2.</p>
+    </div>
+    <div class="shot">
+      <h3><span class="tag new">new</span>Reveal: empty dial, then the arc</h3>
+      <div class="phone"><div class="screen" style="align-items:center">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="glow"></div>
+        <div style="align-self:flex-start"><div class="planT" style="color:var(--light)">ʘ Train light</div><div class="cap">Today, Monday 5 Oct</div></div>
+        <svg width="260" height="230" viewBox="0 0 260 230" style="margin-top:14px">
+          <path d="M 45 200 A 110 110 0 1 1 215 200" fill="none" stroke="#808080" stroke-width="14" stroke-linecap="round"/>
+          <path d="M 45 200 A 110 110 0 0 1 131 40" fill="none" stroke="#eada78" stroke-width="14" stroke-linecap="round"/>
+          <text x="130" y="140" text-anchor="middle" fill="#F5F5F7" style="font:800 72px 'Manrope', 'Segoe UI', sans-serif">51</text>
+        </svg>
+        <div class="strong">First estimate</div>
+        <div class="body">Likely 34–68</div>
+        <div class="body" style="align-self:stretch">Alcohol and training load pull your score down. Keep today's Push session light.</div>
+      </div></div>
+      <p class="note">Item 7. Before the reveal the dial is empty: grey track, no number, never "0". The arc grows from empty to the score (600 ms; Reduce Motion: a cross-fade). "First estimate" sits on its own line above the range. See C1 and the estimate label rules.</p>
+    </div>
+    <div class="shot">
+      <h3><span class="tag new">new</span>First log skipped</h3>
+      <div class="phone"><div class="screen" style="align-items:center">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div style="align-self:flex-start"><div class="title">Today</div><div class="cap">Today, Monday 5 Oct</div></div>
+        <svg width="260" height="230" viewBox="0 0 260 230" style="margin-top:14px">
+          <path d="M 45 200 A 110 110 0 1 1 215 200" fill="none" stroke="#808080" stroke-width="14" stroke-linecap="round"/>
+        </svg>
+        <div class="body" style="text-align:center">Log once to get your first plan.</div>
+        <div class="btn primary" style="align-self:stretch">Log now</div>
+        <div class="tabbar"><b>Today</b><span>Week</span><span>Progress</span></div>
+      </div></div>
+      <p class="note">Item 7. Empty dial, no number, one line, one action that opens First log.</p>
+    </div>
+  </div>
+
+  <h2 id="today">Today</h2>
+  <div class="grid">
+    <div class="shot">
+      <h3><span class="tag">changed</span>Reason and tip in one block</h3>
+      <div class="phone"><div class="screen">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="glow"></div>
+        <div><div class="planT" style="color:var(--light)">ʘ Train light</div><div class="cap">Today, Monday 5 Oct</div></div>
+        <svg width="260" height="200" viewBox="0 0 260 230" style="align-self:center">
+          <path d="M 45 200 A 110 110 0 1 1 215 200" fill="none" stroke="#808080" stroke-width="14" stroke-linecap="round"/>
+          <path d="M 45 200 A 110 110 0 0 1 131 40" fill="none" stroke="#eada78" stroke-width="14" stroke-linecap="round"/>
+          <text x="130" y="140" text-anchor="middle" fill="#F5F5F7" style="font:800 72px 'Manrope', 'Segoe UI', sans-serif">51</text>
+        </svg>
+        <div style="text-align:center" class="body">Likely 34–68</div>
+        <div class="body">Alcohol and training load pull your score down. Keep today's Push session light.</div>
+        <div class="cap" style="text-align:center">↓ What moved your score</div>
+        <div class="tabbar"><b>Today</b><span>Week</span><span>Progress</span></div>
+      </div></div>
+      <p class="note">Item 8. Above the fold: plan, date, dial and score, range (and the estimate label when shown), one 2-line reason. The reason names the top driver(s) and the plan's action, wellness words only. Drivers stay below, on the gradient card. See C11.</p>
+    </div>
+    <div class="shot">
+      <h3><span class="tag new">new slot, hidden</span>"Why it matters", end of Today</h3>
+      <div class="phone"><div class="screen">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="heading">What moved your score</div>
+        <div class="between"><span class="strong">↑ Recent readiness</span><span class="strong">+6</span></div>
+        <div class="between"><span class="strong">↓ Training load</span><span class="strong">−4</span></div>
+        <div class="between"><span class="strong">↓ Alcohol</span><span class="strong">−2</span></div>
+        <div class="slot"><span class="hidden-tag">HIDDEN UNTIL THE LIBRARY ARRIVES</span><div class="between" style="margin-top:6px"><span class="strong" style="color:var(--text)">Why it matters</span><span>⌄</span></div><div>One curated line, ≤ 25 words, with its source; chosen by today's top driver, one a day.</div></div>
+        <div class="grow"></div>
+        <div class="tabbar"><b>Today</b><span>Week</span><span>Progress</span></div>
+      </div></div>
+      <p class="note">Item 18. The slot is built (collapsed row, one entry a day, top-driver match, generic fallback, excluded topics), but renders nothing while the library is empty. No live AI, no facts written by me.</p>
+    </div>
+  </div>
+
+  <h2 id="prompts">Prompts after value (never two in one session)</h2>
+  <div class="grid">
+    <div class="shot">
+      <h3><span class="tag new">new</span>Notifications sheet, day 1 after the reveal</h3>
+      <div class="phone"><div class="screen">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="planT" style="color:var(--light)">ʘ Train light</div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <div class="xbtn">✕</div>
+          <div class="heading">Want tomorrow's plan at 7:00?</div>
+          <div style="background:var(--canvas);border-radius:12px;padding:12px"><div class="between"><span class="strong">Form</span><span class="cap">now</span></div><div class="body">ʘ Train light. Likely 34–68</div></div>
+          <div class="btn primary">Allow notifications</div>
+        </div>
+      </div></div>
+      <p class="note">Item 9. One button → the system alert. No "Not now"; swipe down dismisses. <b>Proposed:</b> a small "Close" icon for VoiceOver and Switch Control users (C4). "7:00" needs a source (GAP).</p>
+    </div>
+    <div class="shot">
+      <h3><span class="tag new">new</span>Account offer after the first saved evening log</h3>
+      <div class="phone"><div class="screen">
+        <div class="sb"><span>21:10</span><span>●●●</span></div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <div class="row"><span style="color:var(--sage)">✓</span><span class="strong">Logged. Tomorrow's plan arrives in the morning.</span></div>
+          <div class="hair"></div>
+          <div class="heading">Keep your history with an account</div>
+          <div class="body mut">Demo: accounts live on this phone until the app closes. Nothing is backed up yet.</div>
+          <div class="btn primary">Create account</div>
+          <div class="slot"><span class="hidden-tag">HIDDEN UNTIL THE LIBRARY ARRIVES</span><div class="strong" style="color:var(--text)">Why it matters</div></div>
+        </div>
+      </div></div>
+      <p class="note">Item 10. Offered once, after the first saved evening log (not at the reveal), and never in the same session as the notifications sheet. Wording avoids "back up" while nothing is backed up (C5, Q3).</p>
+    </div>
+  </div>
+
+  <h2 id="progress">Progress</h2>
+  <div class="grid">
+    <div class="shot">
+      <h3><span class="tag rm">tiles removed</span>Plan fit: headline and 7-segment meter</h3>
+      <div class="phone"><div class="screen">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="title">Progress</div>
+        <div class="tabs"><div class="on">Plan fit</div><div>Felt vs forecast</div></div>
+        <div class="heading">5 of 6 days fit.</div>
+        <div class="seg"><div class="fit"></div><div class="out"></div><div class="fit"></div><div class="fit"></div><div class="fit"></div><div class="fit"></div><div class="none"></div></div>
+        <div class="cap">Filled: the plan fit. Outlined: too hard or too easy. Dashed: no answer.</div>
+        <div class="row"><span class="mut">ʘ</span><div class="grow"><div class="strong">Deep-work day</div><div class="mut">Fit</div></div><span class="cap">Tue 29</span></div>
+        <div class="hair"></div>
+        <div class="row"><span style="color:var(--hard)">ʘ</span><div class="grow"><div class="strong">Train hard</div><div class="strong">Too hard</div></div><span class="cap">Wed 30</span></div>
+        <div class="tabbar"><span>Today</span><span>Week</span><b>Progress</b></div>
+      </div></div>
+      <p class="note">Item 14. The tiles and hatch go (they repeated "inside the likely range", which belongs to Felt vs forecast). The day list (9B) stays. See Q9 for what the 7 segments mean.</p>
+    </div>
+    <div class="shot">
+      <h3><span class="tag">changed</span>Felt vs forecast: "8 of 10"</h3>
+      <div class="phone"><div class="screen">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="tabs"><div>Plan fit</div><div class="on">Felt vs forecast</div></div>
+        <div class="cap">Your rating is 0–10. On the line it is shown ×10, next to the 0–100 forecast.</div>
+        <div class="strong">Mon 5</div>
+        <div class="body">Felt 8 of 10, forecast 51, likely 34–68</div>
+        <div style="position:relative;height:24px"><div style="position:absolute;top:8px;left:0;right:0;height:8px;border-radius:999px;background:var(--sunken);border:1px solid var(--hair)"></div><div style="position:absolute;top:8px;left:34%;width:34%;height:8px;border-radius:999px;background:var(--control)"></div><div style="position:absolute;top:2px;left:49%;width:20px;height:20px;border-radius:999px;background:var(--text)"></div><div style="position:absolute;top:2px;left:78%;width:20px;height:20px;border-radius:999px;background:var(--canvas);border:2px solid var(--text)"></div></div>
+        <div class="strong" style="margin-top:8px">Sun 4</div>
+        <div class="body">Felt 5.5 of 10, forecast 58, likely 41–75</div>
+      </div></div>
+      <p class="note">Item 15. The scales never mix silently: the rating reads "of 10", and one caption explains the ×10 on the line. Fixture ratings are 0–100 (65, 45, 55…), so they read with one decimal (C9, Q4).</p>
+    </div>
+  </div>
+
+  <h2 id="other">Profile and Week</h2>
+  <div class="grid">
+    <div class="shot">
+      <h3><span class="tag rm">hidden</span>Profile Training: sessions only</h3>
+      <div class="phone"><div class="screen">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="heading">Training</div>
+        <div class="cap">Form reads your training from the calendar.</div>
+        <div class="body">Sessions: Push, Pull, Heavy legs, Full body</div>
+        <div class="heading" style="margin-top:28px">Connections</div>
+        <div class="between"><div><div class="strong">Calendar</div><div class="cap">Connected (demo)</div></div><span class="mut">›</span></div>
+      </div></div>
+      <p class="note">Item 16. Training days, usual time and work days are hidden (Profile and Edit profile) until the engine reads them; the GAP stays. The 11B slider and 12B time picker then appear nowhere (C8).</p>
+    </div>
+    <div class="shot">
+      <h3><span class="tag">fixed</span>Week: "Move to Wednesday" full sage</h3>
+      <div class="phone"><div class="screen">
+        <div class="sb"><span>9:41</span><span>●●●</span></div>
+        <div class="title">Week</div>
+        <div class="body strong">Heavy legs on Thursday sits before a late dinner and a Friday flight.</div>
+        <div class="body mut">Wednesday becomes Train hard. Thursday becomes Deep-work day.</div>
+        <div class="btn primary">Move to Wednesday</div>
+        <div class="btn text" style="justify-content:flex-start">Keep Thursday</div>
+      </div></div>
+      <p class="note">Item 17. In the recording the button was dimmed: it is disabled while a move is pending. Fix: the full sage primary whenever it can be pressed; while pending it shows its loading state instead of the disabled look.</p>
+    </div>
+  </div>
+
+  <h2 id="label">Estimate label (your second message)</h2>
+  <div class="panel">
+    <div class="machine">
+      <div class="state"><b>First estimate</b><span class="cap">until 5 logs have ever been saved</span></div>
+      <span class="arrow">5th log saved →</span>
+      <div class="state"><b>No label</b><span class="cap">while ≥ 5 logs in the last 7 days</span></div>
+      <span class="arrow">drops to ≤ 3 →</span>
+      <div class="state"><b>Fewer logs this week</b><span class="cap">until it is back to ≥ 5 (4 keeps the current state)</span></div>
+    </div>
+    <p class="note" style="margin-top:12px">Counts saved evening logs only, in a rolling 7-day window (the model's training-load window). Profile and settings changes never move it. Neutral words only: no "you missed", no streak language. The "so a wider range" clause waits until the range really widens (C12). This resolves the "how long First estimate lasts" GAP: it is the first 5 logs, not days 1–6. Recorded in DECISIONS.md.</p>
+  </div>
+
+  <h2 id="conflicts">Conflicts (both passages, my recommendation)</h2>
+  <div class="panels">
+    <div class="panel conf"><span class="n">C1</span><div><h3>"This gets sharper as you log."</h3><q>Your item 7: label "First estimate" … and the line "This gets sharper as you log."</q><q>CLAUDE.md, Model facts: "Never write 'gets sharper as you log'."</q><p class="rec">Recommend: drop the line. Your second message already says what replaces it (the log-count label), and the model's range does not shrink with logs today.</p></div></div>
+    <div class="panel conf"><span class="n">C2</span><div><h3>Morning rating</h3><q>Your item 13: spec R2, 0–10, 11 tap targets in two rows, no default.</q><q>DECISIONS.md, D5 (2 Oct): "a 1-10 slider as drawn in Figma, the thumb resting on 3"; 11B "use the new bar to all bars".</q><p class="rec">Recommend: follow item 13 (latest instruction) and record that it reverses D5. Stored value becomes 0–10; the ×10 for the 0–100 line happens only where it is drawn.</p></div></div>
+    <div class="panel conf"><span class="n">C3</span><div><h3>Selected state colour</h3><q>Your item 12: selected Allow = raised #1E1E1E + 1.5 pt #F5F5F7 stroke + check, not sage; sage only on Continue.</q><q>CLAUDE.md colour table: state.selected = sage. DECISIONS D5: selected pill = sage fill, no check (Figma). Size tokens have 1 and 2 pt strokes, no 1.5.</q><p class="rec">Recommend: change state.selected to the new style everywhere (consent, privacy, evening log, language, first log), so sage stays the one action on each screen; add a 1.5 pt stroke token. Q2.</p></div></div>
+    <div class="panel conf"><span class="n">C4</span><div><h3>A sheet with no way out but a swipe</h3><q>Your item 9: no "Not now"; swipe-down dismisses.</q><q>CLAUDE.md: every interactive element has accessible states; WCAG 2.1.1 / 2.5.1: a path that needs a gesture needs an alternative.</q><p class="rec">Recommend: keep one button, add a small "Close" icon (not a second button) so VoiceOver and Switch Control users can leave. Equal weight does not apply: this is not health-data consent; the system alert is the consent.</p></div></div>
+    <div class="panel conf"><span class="n">C5</span><div><h3>"Back up your history"</h3><q>Your item 10: "Back up your history" (create account).</q><q>GAP G56 and the auth demo note: accounts live on this phone until the app closes; nothing is synced.</q><p class="rec">Recommend: "Keep your history with an account" plus the demo note, until sync exists. Q3.</p></div></div>
+    <div class="panel conf"><span class="n">C6</span><div><h3>Welcome's one action</h3><q>Your item 5: guest is the default; account is optional.</q><q>Welcome today: "Create account" is the liquid metal primary (your 4B); guest is a text link.</q><p class="rec">Recommend: liquid metal "Get started" (guest), "I already have an account" as text; Create account comes after the first evening log. Q1.</p></div></div>
+    <div class="panel conf"><span class="n">C7</span><div><h3>Undoing 8B</h3><q>Your item 14: remove the stat-card grid and the hatch.</q><q>DECISIONS D5: 8B chosen ("let's try"); the hatch fix shipped this morning.</q><p class="rec">Recommend: follow item 14; keep the 9B day list. Record as "8B tried and removed".</p></div></div>
+    <div class="panel conf"><span class="n">C8</span><div><h3>Hidden profile fields vs 11B and 12B</h3><q>Your item 16: show Sessions only; hide days, time, work days.</q><q>DECISIONS D5: 11B slider and 12B time picker live in Edit profile; item 13 moves the rating off the slider.</q><p class="rec">Recommend: hide them in Profile and Edit profile; keep both components in the gallery for when the engine reads the fields.</p></div></div>
+    <div class="panel conf"><span class="n">C9</span><div><h3>"8 of 10" and the fixtures</h3><q>Your item 15: show felt as "8 of 10".</q><q>fixtures/marta-week.json: felt ratings are on 0–100 (65, 60, 50, 45, 60, 55), not whole tenths.</q><p class="rec">Recommend: one decimal for fixture days ("6.5 of 10"), whole numbers for new ratings; or Person B rounds the fixtures. Q4.</p></div></div>
+    <div class="panel conf"><span class="n">C10</span><div><h3>First launch vs Marta's scripted history</h3><q>Your items 6–7: day 1, First log, "First estimate".</q><q>Demo build: fixtures give Marta six logged days before 5 Oct (Progress shows 5 of 6).</q><p class="rec">Q5: in the demo build, does first launch start from an empty history (scores then need the GAP engine work), or keep Marta's history (then "First estimate" never shows)?</p></div></div>
+    <div class="panel conf"><span class="n">C11</span><div><h3>"Max 2 lines"</h3><q>Your item 8: one block, max 2 lines.</q><q>CLAUDE.md: Dynamic Type stays on; text wraps, never truncates.</q><p class="rec">Recommend: 2 lines at the default text size in English and Polish (a copy rule, tested at 390 pt); larger text wraps freely.</p></div></div>
+    <div class="panel conf"><span class="n">C12</span><div><h3>"So a wider range"</h3><q>Your second message: "Fewer logs this week, so a wider range"; the range must widen when logs are sparse.</q><q>CLAUDE.md model facts: the range is ±17.2, not calibrated; "Do not add model facts."</q><p class="rec">Recommend: show "Fewer logs this week" alone until Person B widens the range; then add the clause. GAP.</p></div></div>
+    <div class="panel conf"><span class="n">C13</span><div><h3>Timing</h3><q>SPEC v2 §9: "3–4 Oct | Hackathon. No new features; fixes only".</q><q>Step 1, conflict 4 (your decision): no demo freeze; a tag marks the fallback build.</q><p class="rec">Recommend: first tag the pushed D5 build as <code>demo-d5</code> (the fallback), and commit this morning's phone fixes, before phase 1.</p></div></div>
+  </div>
+
+  <h2 id="questions">Questions for you</h2>
+  <div class="panel">
+    <table>
+      <tr><th>#</th><th>Question</th><th>My recommendation</th></tr>
+      <tr><td>Q1</td><td>Welcome: what is the liquid metal button?</td><td>"Get started" (guest); "I already have an account" as text</td></tr>
+      <tr><td>Q2</td><td>New selected style on consent only, or on every choice pill?</td><td>Every choice pill</td></tr>
+      <tr><td>Q3</td><td>Account offer wording while nothing is backed up</td><td>"Keep your history with an account" + demo note</td></tr>
+      <tr><td>Q4</td><td>Fixture felt ratings (0–100) as "x of 10"</td><td>One decimal for fixture days</td></tr>
+      <tr><td>Q5</td><td>Demo build: empty history on first launch, or Marta's week?</td><td>Marta's week (real model output); the first-launch flow still runs</td></tr>
+      <tr><td>Q6</td><td>After 15:00 on day 1, what does Today show after revealing tomorrow's plan?</td><td>Today keeps the day-1 state with a line "Tomorrow: Train light, likely 34–68"</td></tr>
+      <tr><td>Q7</td><td>A "Close" icon on the notifications sheet for screen readers?</td><td>Yes</td></tr>
+      <tr><td>Q8</td><td>Hide days, time and work days in Edit profile too?</td><td>Yes</td></tr>
+      <tr><td>Q9</td><td>The 7 segments: one per day of the last 7?</td><td>Yes: filled = fit, outlined = too hard / too easy, dashed = no answer or not followed; the headline still counts followed days only (spec R1)</td></tr>
+    </table>
+  </div>
+
+  <h2 id="gaps">GAPs (listed in GAPS.md, not worked around)</h2>
+  <div class="panel">
+    <table>
+      <tr><th>GAP</th><th>What is missing</th><th>Owner</th></tr>
+      <tr><td>New</td><td>Engine scoring from a single log on day 1, and the day-1 range width</td><td>Person B</td></tr>
+      <tr><td>New</td><td>The range widening when logs are sparse (so "Fewer logs this week" can say "so a wider range")</td><td>Person B</td></tr>
+      <tr><td>New</td><td>"Why it matters" library: entries ≤ 25 words with sources, English and Polish</td><td>You</td></tr>
+      <tr><td>New</td><td>Where "7:00" in the notifications sheet comes from (a default morning time, or the person's own)</td><td>You</td></tr>
+      <tr><td>Resolved</td><td>How long "First estimate" lasts: until 5 logs ever (your second message)</td><td>Decided</td></tr>
+      <tr><td>LATER.md</td><td>Real auth: email verification, persistence, sync (G56, G58 close in the app)</td><td>After the demo</td></tr>
+    </table>
+  </div>
+
+  <h2 id="phases">Phases (a phone check after each)</h2>
+  <div class="panels">
+    <div class="panel"><h3>Phase 0: fallback</h3><p class="mut">Commit this morning's phone fixes, push, tag <code>demo-d5</code>.</p></div>
+    <div class="panel"><h3>Phase 1: removals and small fixes</h3><p class="mut">1 email code, 2 remember me, 3 stepper on Sign in, 4 slides 2–3, 11 name optional, 16 hidden profile fields, 17 Move button. LATER.md for real auth.</p></div>
+    <div class="panel"><h3>Phase 2: inputs and displays</h3><p class="mut">12 consent (and the selected style), 13 rating 0–10, 14 Plan fit headline and meter, 15 "of 10".</p></div>
+    <div class="panel"><h3>Phase 3: first launch</h3><p class="mut">5 new order and stepper, 6 First log by time of day, 7 empty dial and reveal arc, 8 one reason block, the estimate label rules; DECISIONS.md.</p></div>
+    <div class="panel"><h3>Phase 4: prompts after value, and the slot</h3><p class="mut">9 notifications sheet, 10 account offer, the one-prompt-per-session rule, 18 "Why it matters" slot (hidden until the library).</p></div>
+  </div>
+
+  <h2 id="strings">New strings (English and Polish)</h2>
+  <div class="panel">
+    <table>
+      <tr><th>Where</th><th>English</th><th>Polski</th></tr>
+      <tr><td>Welcome</td><td>Get started</td><td>Zaczynamy</td></tr>
+      <tr><td>Welcome</td><td>I already have an account</td><td>Mam już konto</td></tr>
+      <tr><td>Stepper</td><td>First log</td><td>Pierwszy wpis</td></tr>
+      <tr><td>First log</td><td>About yesterday / About today</td><td>Wczoraj / Dzisiaj</td></tr>
+      <tr><td>First log</td><td>Three taps, and Form has your first plan.</td><td>Trzy stuknięcia i Form ma twój pierwszy plan.</td></tr>
+      <tr><td>First log</td><td>Did you train yesterday? / today?</td><td>Czy był wczoraj trening? / dziś trening?</td></tr>
+      <tr><td>First log</td><td>Any alcohol yesterday? · Anything unusual yesterday?</td><td>Czy był wczoraj alkohol? · Czy wczoraj było coś nietypowego?</td></tr>
+      <tr><td>First log</td><td>Log yesterday instead</td><td>Wpisz wczorajszy dzień</td></tr>
+      <tr><td>First log</td><td>Show my plan / Show tomorrow's plan</td><td>Pokaż mój plan / Pokaż plan na jutro</td></tr>
+      <tr><td>First log</td><td>Skip for now</td><td>Na razie pomiń</td></tr>
+      <tr><td>Rating</td><td>0 is very low, 10 is very high.</td><td>0 to bardzo słabo, 10 to bardzo dobrze.</td></tr>
+      <tr><td>Today</td><td>First estimate</td><td>Pierwsza prognoza</td></tr>
+      <tr><td>Today</td><td>Fewer logs this week</td><td>Mniej wpisów w tym tygodniu</td></tr>
+      <tr><td>Today</td><td>Log once to get your first plan. · Log now</td><td>Zrób jeden wpis, by dostać pierwszy plan. · Zrób wpis</td></tr>
+      <tr><td>Today</td><td>Keep today's {session} session light.</td><td>Niech dzisiejsza sesja {session} będzie lekka.</td></tr>
+      <tr><td>Consent</td><td>What this means</td><td>Co to oznacza</td></tr>
+      <tr><td>Sheet</td><td>Want tomorrow's plan at 7:00?</td><td>Chcesz dostawać plan na jutro o 7:00?</td></tr>
+      <tr><td>Account offer</td><td>Keep your history with an account</td><td>Zachowaj historię dzięki kontu</td></tr>
+      <tr><td>Felt</td><td>Felt {n} of 10 · Your rating is 0–10. On the line it is shown ×10, next to the 0–100 forecast.</td><td>Odczucie {n} z 10 · Twoja ocena jest w skali 0–10. Na linii pokazujemy ją ×10, obok prognozy 0–100.</td></tr>
+      <tr><td>Auth</td><td>Name (optional)</td><td>Imię (opcjonalnie)</td></tr>
+    </table>
+  </div>
+</main>
+</body>
+</html>

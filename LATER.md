@@ -66,3 +66,4 @@ These need a decision because they change the design system or the demo path:
 - A thinner dial track, if it can stay at 3:1 or more (critique D4 #8).
 - Sign in with Apple, real accounts and sync remain out of scope (see D2).
 - Re-run `/impeccable critique` after the hackathon, against the Lichen DESIGN.md.
+- Real authentication: email verification (the 6-digit code was removed on 3 Oct; mocked auth gains nothing from it), persistence across launches, sync. Then the account offer can promise to keep history.

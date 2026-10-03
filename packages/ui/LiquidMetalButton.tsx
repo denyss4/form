@@ -24,6 +24,7 @@ import { radius, size, space } from '@tokens';
 import { Text } from './Text';
 import { useTheme } from './theme';
 import { alpha } from './alpha';
+import { FillSvg } from './FillSvg';
 import { MetalShader } from './MetalShader';
 
 const RIM = size.outline; // 2 pt
@@ -98,15 +99,19 @@ export function LiquidMetalButton({ label, onPress, fullWidth = true }: { label:
           </Animated.View>
         ) : null}
         <View style={[styles.inner, { backgroundColor: color.bg.canvas }]}>
-          <Svg style={StyleSheet.absoluteFill} width="100%" height="100%">
-            <Defs>
-              <LinearGradient id="pill" x1="0" y1="0" x2="0" y2="1">
-                <Stop offset="0" stopColor={color.bg.raised} />
-                <Stop offset="1" stopColor={color.bg.canvas} />
-              </LinearGradient>
-            </Defs>
-            <Rect width="100%" height="100%" fill="url(#pill)" />
-          </Svg>
+          <FillSvg>
+            {({ width, height }) => (
+              <>
+                <Defs>
+                  <LinearGradient id="pill" x1="0" y1="0" x2="0" y2="1">
+                    <Stop offset="0" stopColor={color.bg.raised} />
+                    <Stop offset="1" stopColor={color.bg.canvas} />
+                  </LinearGradient>
+                </Defs>
+                <Rect width={width} height={height} fill="url(#pill)" />
+              </>
+            )}
+          </FillSvg>
           <Animated.View pointerEvents="none" style={[styles.ripple, { left: at.x - space.sm, top: at.y - space.sm, backgroundColor: alpha(color.text.primary, 0.4) }, wave]} />
           <Text variant="bodyStrong">{label}</Text>
         </View>

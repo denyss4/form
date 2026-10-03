@@ -11,6 +11,12 @@ import { liquidMetalFragmentShader } from '@paper-design/shaders';
 
 import { metalVertexShader } from './metalVertex';
 
+// The shaders ask for mediump floats. Desktop GPUs give 32-bit anyway, but iPhone GPUs give real 16-bit floats, and the simplex noise
+// inside the liquid metal shader reaches about 2.8 million (max 65,504 in 16 bits): the colours overflow to NaN and the metal draws as
+// nothing (found on the iPhone, 3 Oct: a dark rim). So both shaders are compiled at highp. Only the precision line changes.
+const highp = (source: string) => source.replace('precision mediump float;', 'precision highp float;');
+const STILL_FRAMES = 4; // Reduce Motion: a few frames, so a first frame the layer drops cannot leave the rim empty
+
 const ORIGINAL_RATIO = 142 / 46;
 const uniforms: Record<string, number> = {
   u_repetition: 4,
@@ -52,8 +58,8 @@ export function MetalShader({ speed, still, onFail }: { speed: RefObject<number>
       }
       return shader;
     };
-    const vertex = compile(gl.VERTEX_SHADER, metalVertexShader);
-    const fragment = compile(gl.FRAGMENT_SHADER, liquidMetalFragmentShader);
+    const vertex = compile(gl.VERTEX_SHADER, highp(metalVertexShader));
+    const fragment = compile(gl.FRAGMENT_SHADER, highp(liquidMetalFragmentShader));
     const program = gl.createProgram();
     if (!vertex || !fragment || !program) return onFail();
     gl.attachShader(program, vertex);
@@ -88,6 +94,7 @@ export function MetalShader({ speed, still, onFail }: { speed: RefObject<number>
 
     let elapsed = 0;
     let last: number | null = null;
+    let drawn = 0;
     const draw = (now: number) => {
       if (last !== null) elapsed += (now - last) * (speed.current ?? 0);
       last = now;
@@ -97,7 +104,8 @@ export function MetalShader({ speed, still, onFail }: { speed: RefObject<number>
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       gl.flush();
       gl.endFrameEXP?.();
-      if (!still) frame.current = requestAnimationFrame(draw);
+      drawn += 1;
+      if (!still || drawn < STILL_FRAMES) frame.current = requestAnimationFrame(draw);
     };
     frame.current = requestAnimationFrame(draw);
   };

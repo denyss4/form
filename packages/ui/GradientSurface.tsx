@@ -6,10 +6,11 @@
 import { useEffect, useId, type ReactNode } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
+import { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
 import { radius, size, space } from '@tokens';
 
+import { FillSvg } from './FillSvg';
 import { useTheme } from './theme';
 
 export function GradientSurface({ children, enter = true }: { children: ReactNode; enter?: boolean }) {
@@ -27,15 +28,19 @@ export function GradientSurface({ children, enter = true }: { children: ReactNod
 
   return (
     <Animated.View style={[styles.surface, { borderColor: color.stroke.hairline }, settle]}>
-      <Svg style={StyleSheet.absoluteFill} width="100%" height="100%">
-        <Defs>
-          <LinearGradient id={id} x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor={color.bg.canvas} />
-            <Stop offset="1" stopColor={color.bg.raised} />
-          </LinearGradient>
-        </Defs>
-        <Rect width="100%" height="100%" fill={`url(#${id})`} />
-      </Svg>
+      <FillSvg>
+        {({ width, height }) => (
+          <>
+            <Defs>
+              <LinearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+                <Stop offset="0" stopColor={color.bg.canvas} />
+                <Stop offset="1" stopColor={color.bg.raised} />
+              </LinearGradient>
+            </Defs>
+            <Rect width={width} height={height} fill={`url(#${id})`} />
+          </>
+        )}
+      </FillSvg>
       {children}
     </Animated.View>
   );

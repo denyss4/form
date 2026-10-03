@@ -3,11 +3,13 @@
 // carries the original's fine diagonal hatch, fading out towards the bottom left.
 // The original paints the large tile in the brand colour; Form keeps sage for the one action on a screen (CLAUDE.md), so the large tile
 // is raised with the hatch in the control stroke. Sentence case, not the original's uppercase.
+import type { ReactElement } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Defs, Line, LinearGradient, Mask, Rect, Stop } from 'react-native-svg';
+import { Defs, G, Line, LinearGradient, Mask, Rect, Stop } from 'react-native-svg';
 
 import { radius, scoreMaxFontScale, size, space } from '@tokens';
 
+import { FillSvg } from './FillSvg';
 import { Text } from './Text';
 import { useTheme } from './theme';
 
@@ -25,24 +27,25 @@ const HATCH = space.sm - space.xxs; // 8 pt between hatch lines
 
 function Hatch() {
   const { color } = useTheme();
-  const lines = [];
+  const lines: ReactElement[] = [];
   for (let i = -40; i < 80; i++) lines.push(<Line key={i} x1={i * HATCH} y1={0} x2={i * HATCH + 400} y2={400} stroke={color.stroke.control} strokeWidth={size.hairline} />);
   return (
-    <Svg style={StyleSheet.absoluteFill} width="100%" height="100%">
-      <Defs>
-        <LinearGradient id="hatch-fade" x1="1" y1="0" x2="0" y2="1">
-          <Stop offset="0" stopColor={color.text.primary} stopOpacity={0.35} />
-          <Stop offset="0.7" stopColor={color.text.primary} stopOpacity={0} />
-        </LinearGradient>
-        <Mask id="hatch-mask">
-          <Rect width="100%" height="100%" fill="url(#hatch-fade)" />
-        </Mask>
-      </Defs>
-      <Rect width="100%" height="100%" fill="transparent" />
-      <Svg width="100%" height="100%" mask="url(#hatch-mask)">
-        {lines}
-      </Svg>
-    </Svg>
+    <FillSvg>
+      {({ width, height }) => (
+        <>
+          <Defs>
+            <LinearGradient id="hatch-fade" x1="1" y1="0" x2="0" y2="1">
+              <Stop offset="0" stopColor={color.text.primary} stopOpacity={0.35} />
+              <Stop offset="0.7" stopColor={color.text.primary} stopOpacity={0} />
+            </LinearGradient>
+            <Mask id="hatch-mask">
+              <Rect width={width} height={height} fill="url(#hatch-fade)" />
+            </Mask>
+          </Defs>
+          <G mask="url(#hatch-mask)">{lines}</G>
+        </>
+      )}
+    </FillSvg>
   );
 }
 

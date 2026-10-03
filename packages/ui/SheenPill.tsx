@@ -4,10 +4,11 @@
 // The label is Text High (the original's #3e3e3e is for a white page).
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
+import { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
 import { radius, size, space } from '@tokens';
 
+import { FillSvg } from './FillSvg';
 import { Text } from './Text';
 import { useTheme } from './theme';
 import { alpha } from './alpha';
@@ -26,7 +27,9 @@ export function SheenPill({ label, onPress, fullWidth = true }: { label: string;
       style={[fullWidth ? styles.stretch : styles.hug, pressed ? styles.down : undefined]}
     >
       <View style={[styles.shell, { backgroundColor: alpha(color.text.primary, 0.08), borderColor: alpha(color.text.primary, 0.18) }]}>
-        <Svg style={StyleSheet.absoluteFill} width="100%" height="100%">
+        <FillSvg>
+          {({ width, height }) => (
+            <>
           <Defs>
             <LinearGradient id="sheen-pill" x1="0" y1="0" x2="1" y2="1">
               <Stop offset="0" stopColor={color.text.primary} stopOpacity={light} />
@@ -35,8 +38,10 @@ export function SheenPill({ label, onPress, fullWidth = true }: { label: string;
               <Stop offset="1" stopColor={color.text.primary} stopOpacity={light} />
             </LinearGradient>
           </Defs>
-          <Rect width="100%" height="100%" rx={size.touch} fill="url(#sheen-pill)" />
-        </Svg>
+          <Rect width={width} height={height} rx={size.touch} fill="url(#sheen-pill)" />
+            </>
+          )}
+        </FillSvg>
         <View pointerEvents="none" style={[styles.rim, { borderColor: alpha(color.text.primary, pressed ? 0.45 : 0.2) }]} />
         <Text variant="bodyStrong">{label}</Text>
       </View>

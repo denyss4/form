@@ -41,6 +41,7 @@ import {
   TextField,
   type ComboOption,
   useFocus,
+  useFontScale,
   usePress,
   useTheme,
 } from '@ui';
@@ -58,7 +59,9 @@ const timeOptions = (current: string) =>
 const SAVED_MS = 700; // "Saved." stays long enough to read before Profile returns
 const days = [0, 1, 2, 3, 4, 5, 6];
 
-function DayToggle({ day, on, onChange }: { day: number; on: boolean; onChange: (on: boolean) => void }) {
+// Seven equal columns in one row, about 48 pt each at 390 pt (iPhone, 3 Oct: "Nd" wrapped onto a second line in Polish). From 1.3x text
+// the days keep their own width and wrap, so no label is squeezed.
+function DayToggle({ day, on, onChange, fill }: { day: number; on: boolean; onChange: (on: boolean) => void; fill: boolean }) {
   const { color } = useTheme();
   const press = usePress();
   const focus = useFocus();
@@ -76,10 +79,12 @@ function DayToggle({ day, on, onChange }: { day: number; on: boolean; onChange: 
       onPressOut={press.onPressOut}
       onFocus={focus.onFocus}
       onBlur={focus.onBlur}
+      style={fill ? styles.dayColumn : undefined}
     >
       <Animated.View
         style={[
           styles.day,
+          fill ? styles.dayFill : undefined,
           on
             ? {
                 backgroundColor: color.state.selected,
@@ -104,6 +109,7 @@ export default function EditProfile() {
   const navigation = useNavigation();
   const app = useAppState();
   const signedIn = app.account !== null;
+  const dayFill = useFontScale() <= 1.3; // seven equal columns; larger text wraps
 
   const [name, setName] = useState(app.account?.name ?? '');
   const [photo, setPhoto] = useState(app.photo);
@@ -343,11 +349,12 @@ export default function EditProfile() {
         </Section>
 
         <Section title={copy.editProfile.workDays} note={copy.editProfile.workDaysHint}>
-          <View style={styles.days} accessibilityRole="none">
+          <View style={[styles.days, dayFill ? styles.daysFill : undefined]} accessibilityRole="none">
             {days.map((d) => (
               <DayToggle
                 key={d}
                 day={d}
+                fill={dayFill}
                 on={workDays.includes(d)}
                 onChange={(on) => setWorkDays((list) => (on ? [...list, d] : list.filter((x) => x !== d)))}
               />
@@ -417,6 +424,9 @@ const styles = StyleSheet.create({
   sessionTools: { flexDirection: 'row' },
   slot: { width: size.touch, height: size.touch },
   days: { flexDirection: 'row', flexWrap: 'wrap', gap: space.xs },
+  daysFill: { flexWrap: 'nowrap', gap: space.xxs / 2 },
+  dayColumn: { flex: 1 },
+  dayFill: { minWidth: 0, paddingHorizontal: 0 },
   day: {
     minWidth: size.touch,
     minHeight: size.touch,

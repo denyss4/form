@@ -80,6 +80,8 @@ export function Checkbox({
         onPressOut={press.onPressOut}
         onFocus={focus.onFocus}
         onBlur={focus.onBlur}
+        // The box is 24 pt wide; the hit area grows to 48 pt without pushing the label away (iPhone, 3 Oct: a 32 pt gap).
+        hitSlop={{ left: (size.touch - size.check) / 2, right: (size.touch - size.check) / 2 }}
         style={styles.target}
       >
         <Animated.View
@@ -99,8 +101,8 @@ export function Checkbox({
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'flex-start', gap: space.xs },
-  target: { width: size.touch, minHeight: size.touch, alignItems: 'flex-start', justifyContent: 'center' },
+  row: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm },
+  target: { width: size.check, minHeight: size.touch, alignItems: 'flex-start', justifyContent: 'center' },
   box: {
     width: size.check,
     height: size.check,
